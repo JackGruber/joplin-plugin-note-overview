@@ -1,0 +1,12 @@
+{
+	"manifest_version": 1,
+	"id": "io.github.jackgruber.note-overview",
+	"app_min_version": "1.6.5",
+	"version": "0.1.0",
+	"name": "Note overview",
+	"description": "Creates or updates a note with a list of all notes that match the search query",
+	"author": "JackGruber",
+	"homepage_url": "https://github.com/JackGruber",
+	"repository_url": "https://github.com/JackGruber",
+	"keywords": []
+}
