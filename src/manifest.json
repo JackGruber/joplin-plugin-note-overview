@@ -6,7 +6,7 @@
 	"name": "Note overview",
 	"description": "Creates or updates a note with a list of all notes that match the search query",
 	"author": "JackGruber",
-	"homepage_url": "https://github.com/JackGruber",
-	"repository_url": "https://github.com/JackGruber",
+	"homepage_url": "https://github.com/JackGruber/joplin-plugin-note-overview",
+	"repository_url": "https://github.com/JackGruber/joplin-plugin-note-overview",
 	"keywords": []
 }
