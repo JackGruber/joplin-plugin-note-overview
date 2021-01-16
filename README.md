@@ -9,7 +9,7 @@ A note overview is created based on the defined search and the specified fields.
 ### Automatic
 
 - Go to `Tools > Options > Plugins`
-- Search for `combine-notes`
+- Search for `Note overview`
 - Click Install plugin
 - Restart Joplin to enable the plugin
 
@@ -36,7 +36,7 @@ sort: title DESC
 - `fields` Which fields should be output in the table. [Documentation of the possible fields](https://joplinapp.org/api/references/rest_api/#properties)
 - `sort` By which field should be sorted. \<field\> DESC/ASC
 
-The note content is updated every 5 minutes or manualy by `Tools > Create note overview`.
+The note content is updated every 5 minutes or manualy by `Tools > Create Note overview`.
 
 ## Build
 
