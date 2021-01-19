@@ -1,7 +1,7 @@
 import joplin from "api";
 import { MenuItemLocation } from "api/types";
 
-const moment = require('moment');
+const moment = require("moment");
 
 joplin.plugins.register({
   onStart: async function () {
@@ -12,7 +12,7 @@ joplin.plugins.register({
       label: "Create note overview",
       execute: async () => {
         runCreateNoteOverview();
-      }
+      },
     });
 
     await joplin.views.menuItems.create(
@@ -56,7 +56,11 @@ joplin.plugins.register({
               "fields",
               null
             );
-            let sort: string = await getParameter(settingsBlock, "sort", "title ASC");
+            let sort: string = await getParameter(
+              settingsBlock,
+              "sort",
+              "title ASC"
+            );
             if (query) {
               let fieldsArray = [];
               if (fields) {
@@ -72,8 +76,8 @@ joplin.plugins.register({
               newBody.push("| " + fieldsArray.join(" | ") + " |");
               newBody.push("|" + " --- |".repeat(fieldsArray.length));
 
-              if(!sortArray[1]){
-                sortArray[1] = "ASC"
+              if (!sortArray[1]) {
+                sortArray[1] = "ASC";
               }
               let pageQueryNotes = 1;
               do {
@@ -109,14 +113,20 @@ joplin.plugins.register({
                         let dateObject = new Date(
                           queryNotes.items[queryNotesKey][fieldsArray[field]]
                         );
-                        let dateString = moment(dateObject.getTime()).format(dateFormat) + " " + moment(now.getTime()).format(timeFormat);
-                        if(fieldsArray[field] === "todo_due" && dateObject.getTime() < now.getTime()){
-                          noteInfos.push("<font color='red'>" + dateString + "</font>");
-                        }
-                        else{
+                        let dateString =
+                          moment(dateObject.getTime()).format(dateFormat) +
+                          " " +
+                          moment(now.getTime()).format(timeFormat);
+                        if (
+                          fieldsArray[field] === "todo_due" &&
+                          dateObject.getTime() < now.getTime()
+                        ) {
+                          noteInfos.push(
+                            "<font color='red'>" + dateString + "</font>"
+                          );
+                        } else {
                           noteInfos.push(dateString);
                         }
-                        
                       } else {
                         noteInfos.push(
                           queryNotes.items[queryNotesKey][fieldsArray[field]]
