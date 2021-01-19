@@ -191,7 +191,6 @@ joplin.plugins.register({
           tagNames.push(tag.title);
         }
       } while (tags.has_more);
-      console.log(tagNames)
       return tagNames;
     }
 
