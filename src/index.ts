@@ -116,7 +116,7 @@ joplin.plugins.register({
                         let dateString =
                           moment(dateObject.getTime()).format(dateFormat) +
                           " " +
-                          moment(now.getTime()).format(timeFormat);
+                          moment(dateObject.getTime()).format(timeFormat);
                         if (
                           fieldsArray[field] === "todo_due" &&
                           dateObject.getTime() < now.getTime()
