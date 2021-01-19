@@ -30,6 +30,7 @@ joplin.plugins.register({
       let pageNum = 1;
       let overviewNotes = null;
       let queryNotes = null;
+
       do {
         overviewNotes = await joplin.data.get(["search"], {
           query: '/"<!-- note-overview-plugin"',
@@ -71,6 +72,12 @@ joplin.plugins.register({
               } else {
                 fieldsArray = ["update_time", "title"];
               }
+
+              // Remove virtual fields from dbFieldsArray
+              let dbFieldsArray = [...fieldsArray];
+              dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "notebook");
+              dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "tags");
+
               let sortArray = sort.toLowerCase().split(" ");
               let newBody = [];
               newBody.push("| " + fieldsArray.join(" | ") + " |");
@@ -83,7 +90,7 @@ joplin.plugins.register({
               do {
                 queryNotes = await joplin.data.get(["search"], {
                   query: query,
-                  fields: "id," + fieldsArray.join(","),
+                  fields: "id, parent_id, " + dbFieldsArray.join(","),
                   order_by: sortArray[0],
                   order_dir: sortArray[1].toUpperCase(),
                   limit: 50,
@@ -127,6 +134,16 @@ joplin.plugins.register({
                         } else {
                           noteInfos.push(dateString);
                         }
+                      } else if (fieldsArray[field] === "tags") {
+                        let tags: any = await getTags(
+                          queryNotes.items[queryNotesKey]["id"]
+                        );
+                        noteInfos.push(tags.join(", "));
+                      } else if (fieldsArray[field] === "notebook") {
+                        let notbook: string = await getNotebookName(
+                          queryNotes.items[queryNotesKey]["parent_id"]
+                        );
+                        noteInfos.push(notbook);
                       } else {
                         noteInfos.push(
                           queryNotes.items[queryNotesKey][fieldsArray[field]]
@@ -154,13 +171,50 @@ joplin.plugins.register({
       window.setTimeout(runCreateNoteOverview, 1000 * 60 * 5);
     }
 
+    async function getNotebookName(id): Promise<string> {
+      var folder = await joplin.data.get(["folders", id], {
+        fields: "title",
+      });
+      return folder.title;
+    }
+
+    async function getTags(noteId): Promise<any> {
+      const tagNames = [];
+      let pageNum = 1;
+      do {
+        var tags = await joplin.data.get(["notes", noteId, "tags"], {
+          fields: "id, title, parent_id",
+          limit: 50,
+          page: pageNum++,
+        });
+        for (const tag of tags.items) {
+          tagNames.push(tag.title);
+        }
+      } while (tags.has_more);
+      console.log(tagNames)
+      return tagNames;
+    }
+
+    // Remove all occurens of value from array
+    async function arrayRemoveAll(arr: any, value: any): Promise<any> {
+      var i = 0;
+      while (i < arr.length) {
+        if (arr[i] === value) {
+          arr.splice(i, 1);
+        } else {
+          ++i;
+        }
+      }
+      return arr;
+    }
+
     // extract settings from block
     async function getParameter(
       settings: string,
       parameter: string,
       defval: string
     ): Promise<string> {
-      var regex = new RegExp("^" + parameter + ":\s?(.*)$", "im");
+      var regex = new RegExp("^" + parameter + ":s?(.*)$", "im");
       const match = settings.match(regex);
       if (match) {
         return match[1].trim();
