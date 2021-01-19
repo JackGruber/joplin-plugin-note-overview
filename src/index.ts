@@ -1,6 +1,8 @@
 import joplin from "api";
 import { MenuItemLocation } from "api/types";
 
+const moment = require('moment');
+
 joplin.plugins.register({
   onStart: async function () {
     console.info("Note overview plugin started!");
@@ -20,11 +22,14 @@ joplin.plugins.register({
     );
 
     async function runCreateNoteOverview() {
+      const now = new Date();
+      const dateFormat = await joplin.settings.globalValue("dateFormat");
+      const timeFormat = await joplin.settings.globalValue("timeFormat");
+
       // search all notes
       let pageNum = 1;
       let overviewNotes = null;
       let queryNotes = null;
-      const now = new Date();
       do {
         overviewNotes = await joplin.data.get(["search"], {
           query: '/"<!-- note-overview-plugin"',
@@ -104,11 +109,12 @@ joplin.plugins.register({
                         let dateObject = new Date(
                           queryNotes.items[queryNotesKey][fieldsArray[field]]
                         );
+                        let dateString = moment(dateObject.getTime()).format(dateFormat) + " " + moment(now.getTime()).format(timeFormat);
                         if(fieldsArray[field] === "todo_due" && dateObject.getTime() < now.getTime()){
-                          noteInfos.push("<font color='red'>" + dateObject.toLocaleString() + "</font>");
+                          noteInfos.push("<font color='red'>" + dateString + "</font>");
                         }
                         else{
-                          noteInfos.push(dateObject.toLocaleString());
+                          noteInfos.push(dateString);
                         }
                         
                       } else {

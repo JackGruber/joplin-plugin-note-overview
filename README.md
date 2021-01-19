@@ -48,6 +48,10 @@ To update the plugin framework, run `npm run update`
 
 ## Changelog
 
+### Not published
+
+- Use Joplin Date and Time settings
+
 ### v1.0.0 (2021-01-16)
 
 - First version
