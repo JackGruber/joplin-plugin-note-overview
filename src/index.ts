@@ -63,6 +63,7 @@ joplin.plugins.register({
               "title ASC"
             );
             if (query) {
+              // create array from fields
               let fieldsArray = [];
               if (fields) {
                 fieldsArray = fields
@@ -78,7 +79,9 @@ joplin.plugins.register({
               dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "notebook");
               dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "tags");
 
+              // field sorting information
               let sortArray = sort.toLowerCase().split(" ");
+
               let newBody = [];
               newBody.push("| " + fieldsArray.join(" | ") + " |");
               newBody.push("|" + " --- |".repeat(fieldsArray.length));
@@ -87,6 +90,8 @@ joplin.plugins.register({
                 sortArray[1] = "ASC";
               }
               let pageQueryNotes = 1;
+              
+              // Search notes from query and add info to new body
               do {
                 queryNotes = await joplin.data.get(["search"], {
                   query: query,
@@ -154,6 +159,8 @@ joplin.plugins.register({
                   }
                 }
               } while (queryNotes.has_more);
+              
+              // Note update needed? 
               let newBodyStr = settingsBlock + "\n" + newBody.join("\n");
               if (noteBody != newBodyStr) {
                 console.info("Update note " + noteTitle + " (" + noteId + ")");
