@@ -48,7 +48,7 @@ To update the plugin framework, run `npm run update`
 
 ## Changelog
 
-### Not published
+### v1.0.0 (2021-01-19)
 
 - Use Joplin Date and Time settings
 - Add `tags`and `notebook` as fields for output
