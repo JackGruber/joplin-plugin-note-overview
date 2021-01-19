@@ -7,6 +7,8 @@ joplin.plugins.register({
   onStart: async function () {
     console.info("Note overview plugin started!");
 
+    const noteoverviewDialog = await joplin.views.dialogs.create("noteoverviewDialog");
+
     await joplin.commands.register({
       name: "createNoteOverview",
       label: "Create note overview",
@@ -93,14 +95,31 @@ joplin.plugins.register({
               
               // Search notes from query and add info to new body
               do {
-                queryNotes = await joplin.data.get(["search"], {
-                  query: query,
-                  fields: "id, parent_id, " + dbFieldsArray.join(","),
-                  order_by: sortArray[0],
-                  order_dir: sortArray[1].toUpperCase(),
-                  limit: 50,
-                  page: pageQueryNotes++,
-                });
+                try {
+                  queryNotes = await joplin.data.get(["search"], {
+                    query: query,
+                    fields: "id, parent_id, " + dbFieldsArray.join(","),
+                    order_by: sortArray[0],
+                    order_dir: sortArray[1].toUpperCase(),
+                    limit: 50,
+                    page: pageQueryNotes++,
+                  });
+                } catch (e) {
+                  await joplin.views.dialogs.setButtons(noteoverviewDialog, [{ id: "ok" }]);
+                  await joplin.views.dialogs.setHtml(
+                    noteoverviewDialog,
+                    `
+                    <div style="overflow-wrap: break-word;">
+                      <h3>Noteoverview error</h3>
+                      <p>Note: ${noteTitle}</p>
+                      <p>Fields: ${fieldsArray.join(", ")}</p>
+                      <p>Sort: ${sortArray.join(", ")}</p>
+                    </div>
+                    `
+                  );
+                  await joplin.views.dialogs.open(noteoverviewDialog);
+                  throw e;
+                }
                 for (let queryNotesKey in queryNotes.items) {
                   if (queryNotes.items[queryNotesKey].id != noteId) {
                     let noteInfos = [];
