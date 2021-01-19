@@ -33,7 +33,7 @@ sort: title DESC
 ```
 
 - `search` Search filters like in Joplin [Documentation of search filters](https://joplinapp.org/#search-filters)
-- `fields` Which fields should be output in the table. [Documentation of the possible fields](https://joplinapp.org/api/references/rest_api/#properties)
+- `fields` Which fields should be output in the table. [Documentation of the possible fields](https://joplinapp.org/api/references/rest_api/#properties), additionally the fields `tag` and `notebook` available
 - `sort` By which field should be sorted. \<field\> DESC/ASC
 
 The note content is updated every 5 minutes or manualy by `Tools > Create Note overview`.
