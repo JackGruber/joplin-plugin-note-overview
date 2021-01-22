@@ -232,7 +232,6 @@ joplin.plugins.register({
           size += Number.parseInt(resource.size);
         }
       } while (resources.has_more);
-      console.log(size);
       if (size < 1024) {
         return size + " Byte";
       } else if (size < 1024 * 500) {
