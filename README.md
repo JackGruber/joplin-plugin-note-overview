@@ -34,8 +34,8 @@ sort: title DESC
 ```
 
 - `search` Search filters like in Joplin [Documentation of search filters](https://joplinapp.org/#search-filters).
-- `fields` Which fields should be output in the table (Optional). [Documentation of the possible fields](https://joplinapp.org/api/references/rest_api/#properties), additionally the fields `tag` and `notebook` available. Default: `updated_time, title`
-- `sort` By which field should be sorted (Optional). `<field> DESC/ASC`, Default: `title ASC`.
+- `fields` Which fields should be output in the table (Optional). [Documentation of the possible fields](https://joplinapp.org/api/references/rest_api/#properties), additionally the fields `size`, `tag` and `notebook` available. Default: `updated_time, title`
+- `sort` By which field should be sorted, the `size`, `tag` and `notebook` fields can't be sorted (Optional). `<field> DESC/ASC`, Default: `title ASC`.
 - `alias` Rename fields (Optional). `<field> AS <new field name>`, multiple fields comma seperated.
 
 The note content is updated every 5 minutes or manualy by `Tools > Create Note overview`.
@@ -53,6 +53,7 @@ To update the plugin framework, run `npm run update`
 ### v1.2.0 (2021-01-22)
 
 - New: Field alias
+- New: `size` as field f for output
 
 ### v1.1.1 (2021-01-19)
 

@@ -88,12 +88,15 @@ joplin.plugins.register({
               let dbFieldsArray = [...fieldsArray];
               dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "notebook");
               dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "tags");
+              dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "size");
 
               // field sorting information
               let sortArray = sort.toLowerCase().split(" ");
 
               // Field alias for header
-              const headerFields = await getHeaderFields(alias, [...fieldsArray]);
+              const headerFields = await getHeaderFields(alias, [
+                ...fieldsArray,
+              ]);
 
               let newBody = [];
               newBody.push("| " + headerFields.join(" | ") + " |");
@@ -171,6 +174,11 @@ joplin.plugins.register({
                         } else {
                           noteInfos.push(dateString);
                         }
+                      } else if (fieldsArray[field] === "size") {
+                        let size: string = await getNoteSize(
+                          queryNotes.items[queryNotesKey].id
+                        );
+                        noteInfos.push(size);
                       } else if (fieldsArray[field] === "tags") {
                         let tags: any = await getTags(
                           queryNotes.items[queryNotesKey]["id"]
@@ -208,6 +216,32 @@ joplin.plugins.register({
       } while (overviewNotes.has_more);
 
       window.setTimeout(runCreateNoteOverview, 1000 * 60 * 5);
+    }
+
+    // Calculate notes size including resources
+    async function getNoteSize(noteId): Promise<string> {
+      let size = 0;
+      let pageNum = 1;
+      do {
+        var resources = await joplin.data.get(["notes", noteId, "resources"], {
+          fields: "id, size",
+          limit: 50,
+          page: pageNum++,
+        });
+        for (const resource of resources.items) {
+          size += Number.parseInt(resource.size);
+        }
+      } while (resources.has_more);
+      console.log(size);
+      if (size < 1024) {
+        return size + " Byte";
+      } else if (size < 1024 * 500) {
+        return (size / 1024).toFixed(2) + " KiB";
+      } else if (size < 1024 * 1024 * 500) {
+        return (size / 1024 / 1024).toFixed(2) + " MiB";
+      } else {
+        return (size / 1024 / 1024 / 1024).toFixed(2) + " GiB";
+      }
     }
 
     // Replace fields for header with alias
