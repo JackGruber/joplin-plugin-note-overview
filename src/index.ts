@@ -197,6 +197,7 @@ joplin.plugins.register({
       window.setTimeout(runCreateNoteOverview, 1000 * 60 * 5);
     }
 
+    // Get the notbook title froma notebook id
     async function getNotebookName(id): Promise<string> {
       var folder = await joplin.data.get(["folders", id], {
         fields: "title",
@@ -204,6 +205,7 @@ joplin.plugins.register({
       return folder.title;
     }
 
+    // Get all tags title as array for a note id
     async function getTags(noteId): Promise<any> {
       const tagNames = [];
       let pageNum = 1;
