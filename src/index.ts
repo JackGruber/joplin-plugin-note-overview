@@ -212,7 +212,7 @@ joplin.plugins.register({
       if (aliasStr.trim() !== "") {
         const aliasArry = aliasStr.trim().split(",");
         for (let field of aliasArry) {
-          let alias = field.replace(/ AS /g, "=").trim().split("=");
+          let alias = field.trim().split(" AS ");
           if (alias.length == 2) {
             fieldAlias[ alias[0].trim() ] = alias[1].trim();
           }
