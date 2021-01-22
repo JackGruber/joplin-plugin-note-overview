@@ -103,7 +103,7 @@ joplin.plugins.register({
                 sortArray[1] = "ASC";
               }
               let pageQueryNotes = 1;
-              
+
               // Search notes from query and add info to new body
               do {
                 try {
@@ -116,7 +116,9 @@ joplin.plugins.register({
                     page: pageQueryNotes++,
                   });
                 } catch (e) {
-                  await joplin.views.dialogs.setButtons(noteoverviewDialog, [{ id: "ok" }]);
+                  await joplin.views.dialogs.setButtons(noteoverviewDialog, [
+                    { id: "ok" },
+                  ]);
                   await joplin.views.dialogs.setHtml(
                     noteoverviewDialog,
                     `
@@ -189,8 +191,8 @@ joplin.plugins.register({
                   }
                 }
               } while (queryNotes.has_more);
-              
-              // Note update needed? 
+
+              // Note update needed?
               let newBodyStr = settingsBlock + "\n" + newBody.join("\n");
               if (noteBody != newBodyStr) {
                 console.info("Update note " + noteTitle + " (" + noteId + ")");
@@ -209,20 +211,23 @@ joplin.plugins.register({
     }
 
     // Replace fields for header with alias
-    async function getHeaderFields(aliasStr: string, fields: any): Promise<any> {
+    async function getHeaderFields(
+      aliasStr: string,
+      fields: any
+    ): Promise<any> {
       let fieldAlias = {};
       if (aliasStr.trim() !== "") {
         const aliasArry = aliasStr.trim().split(",");
         for (let field of aliasArry) {
           let alias = field.trim().split(" AS ");
           if (alias.length == 2) {
-            fieldAlias[ alias[0].trim() ] = alias[1].trim();
+            fieldAlias[alias[0].trim()] = alias[1].trim();
           }
         }
 
         for (let key in fields) {
-          if (fieldAlias[ fields[key] ] !== undefined) {
-            fields[key] = fieldAlias[ fields[key] ];
+          if (fieldAlias[fields[key]] !== undefined) {
+            fields[key] = fieldAlias[fields[key]];
           }
         }
       }
