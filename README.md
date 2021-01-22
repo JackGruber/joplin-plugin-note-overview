@@ -52,7 +52,7 @@ To update the plugin framework, run `npm run update`
 
 ### v1.2.0 (2021-01-22)
 
-- New: field alias
+- New: Field alias
 
 ### v1.1.1 (2021-01-19)
 
