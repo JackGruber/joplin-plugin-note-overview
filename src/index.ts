@@ -311,7 +311,7 @@ joplin.plugins.register({
       parameter: string,
       defval: string
     ): Promise<string> {
-      var regex = new RegExp("^" + parameter + ":\s?(.*)$", "im");
+      var regex = new RegExp("^" + parameter + ":\\s?(.*)$", "im");
       const match = settings.match(regex);
       if (match) {
         return match[1].trim();
