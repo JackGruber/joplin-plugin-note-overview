@@ -7,7 +7,9 @@ joplin.plugins.register({
   onStart: async function () {
     console.info("Note overview plugin started!");
 
-    const noteoverviewDialog = await joplin.views.dialogs.create("noteoverviewDialog");
+    const noteoverviewDialog = await joplin.views.dialogs.create(
+      "noteoverviewDialog"
+    );
 
     await joplin.commands.register({
       name: "createNoteOverview",
