@@ -28,10 +28,14 @@ Create one or more notes with the following content:
 <!-- note-overview-plugin
 search: -tag:*
 fields: updated_time, title
+alias: updated_time AS Last edit, title AS Title
 sort: title DESC
 -->
 ```
 
+- `search` Search filters like in Joplin [Documentation of search filters](https://joplinapp.org/#search-filters).
+- `fields` Which fields should be output in the table. [Documentation of the possible fields](https://joplinapp.org/api/references/rest_api/#properties), additionally the fields `tag` and `notebook` available.
+- `sort` By which field should be sorted (Optional). `<field> DESC/ASC`, Default: `title ASC`.
 - `alias` Rename fields (Optional). `<field> AS <new field name>`, multiple fields comma seperated.
 
 The note content is updated every 5 minutes or manualy by `Tools > Create Note overview`.
@@ -45,6 +49,8 @@ To build your one version of the plugin, install node.js and run the following c
 To update the plugin framework, run `npm run update`
 
 ## Changelog
+
+### v1.2.0 (2021-01-22)
 
 - New: field alias
 
