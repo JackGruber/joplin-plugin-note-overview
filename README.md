@@ -34,7 +34,7 @@ sort: title DESC
 ```
 
 - `search` Search filters like in Joplin [Documentation of search filters](https://joplinapp.org/#search-filters).
-- `fields` Which fields should be output in the table. [Documentation of the possible fields](https://joplinapp.org/api/references/rest_api/#properties), additionally the fields `tag` and `notebook` available.
+- `fields` Which fields should be output in the table (Optional). [Documentation of the possible fields](https://joplinapp.org/api/references/rest_api/#properties), additionally the fields `tag` and `notebook` available. Default: `updated_time, title`
 - `sort` By which field should be sorted (Optional). `<field> DESC/ASC`, Default: `title ASC`.
 - `alias` Rename fields (Optional). `<field> AS <new field name>`, multiple fields comma seperated.
 
