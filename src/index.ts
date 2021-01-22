@@ -79,7 +79,7 @@ joplin.plugins.register({
                   .replace(/\s/g, "")
                   .split(",");
               } else {
-                fieldsArray = ["update_time", "title"];
+                fieldsArray = ["updated_time", "title"];
               }
 
               // Remove virtual fields from dbFieldsArray
