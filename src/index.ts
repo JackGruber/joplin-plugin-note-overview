@@ -64,6 +64,12 @@ joplin.plugins.register({
               "sort",
               "title ASC"
             );
+            const alias: string = await getParameter(
+              settingsBlock,
+              "alias",
+              ""
+            );
+
             if (query) {
               // create array from fields
               let fieldsArray = [];
@@ -84,8 +90,11 @@ joplin.plugins.register({
               // field sorting information
               let sortArray = sort.toLowerCase().split(" ");
 
+              // Field alias for header
+              const headerFields = await getHeaderFields(alias, [...fieldsArray]);
+
               let newBody = [];
-              newBody.push("| " + fieldsArray.join(" | ") + " |");
+              newBody.push("| " + headerFields.join(" | ") + " |");
               newBody.push("|" + " --- |".repeat(fieldsArray.length));
 
               if (!sortArray[1]) {
@@ -195,6 +204,27 @@ joplin.plugins.register({
       } while (overviewNotes.has_more);
 
       window.setTimeout(runCreateNoteOverview, 1000 * 60 * 5);
+    }
+
+    // Replace fields for header with alias
+    async function getHeaderFields(aliasStr: string, fields: any): Promise<any> {
+      let fieldAlias = {};
+      if (aliasStr.trim() !== "") {
+        const aliasArry = aliasStr.trim().split(",");
+        for (let field of aliasArry) {
+          let alias = field.replace(/ AS /g, "=").trim().split("=");
+          if (alias.length == 2) {
+            fieldAlias[ alias[0].trim() ] = alias[1].trim();
+          }
+        }
+
+        for (let key in fields) {
+          if (fieldAlias[ fields[key] ] !== undefined) {
+            fields[key] = fieldAlias[ fields[key] ];
+          }
+        }
+      }
+      return fields;
     }
 
     // Get the notbook title froma notebook id
