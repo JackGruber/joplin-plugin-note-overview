@@ -53,7 +53,7 @@ To update the plugin framework, run `npm run update`
 ### v1.2.0 (2021-01-22)
 
 - New: Field alias
-- New: `size` as field f for output
+- New: `size` as field for output
 
 ### v1.1.1 (2021-01-19)
 
