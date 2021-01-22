@@ -221,6 +221,12 @@ joplin.plugins.register({
     // Calculate notes size including resources
     async function getNoteSize(noteId): Promise<string> {
       let size = 0;
+
+      var note = await joplin.data.get(["notes", noteId], {
+        fields: "id, body"
+      });      
+      size = note.body.length;
+
       let pageNum = 1;
       do {
         var resources = await joplin.data.get(["notes", noteId, "resources"], {
