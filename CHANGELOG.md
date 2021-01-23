@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- None
+- Fix: Escape text for markdown table
 
 ## v1.2.0 (2021-01-22)
 
