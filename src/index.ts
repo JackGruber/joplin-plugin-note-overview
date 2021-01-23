@@ -223,8 +223,8 @@ joplin.plugins.register({
       let size = 0;
 
       var note = await joplin.data.get(["notes", noteId], {
-        fields: "id, body"
-      });      
+        fields: "id, body",
+      });
       size = note.body.length;
 
       let pageNum = 1;
