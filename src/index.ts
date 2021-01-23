@@ -141,9 +141,12 @@ joplin.plugins.register({
                     let noteInfos = [];
                     for (let field in fieldsArray) {
                       if (fieldsArray[field] === "title") {
+                        let titelEscp: string = await escapeForTable(
+                          queryNotes.items[queryNotesKey][fieldsArray[field]]
+                        );
                         noteInfos.push(
                           "[" +
-                            queryNotes.items[queryNotesKey].title +
+                            titelEscp +
                             "](:/" +
                             queryNotes.items[queryNotesKey].id +
                             ")"
@@ -183,16 +186,23 @@ joplin.plugins.register({
                         let tags: any = await getTags(
                           queryNotes.items[queryNotesKey]["id"]
                         );
-                        noteInfos.push(tags.join(", "));
+                        let tagEscp: string = await escapeForTable(
+                          tags.join(", ")
+                        );
+                        noteInfos.push(tagEscp);
                       } else if (fieldsArray[field] === "notebook") {
-                        let notbook: string = await getNotebookName(
+                        let notebook: string = await getNotebookName(
                           queryNotes.items[queryNotesKey]["parent_id"]
                         );
-                        noteInfos.push(notbook);
+                        let notebookEscp: string = await escapeForTable(
+                          notebook
+                        );
+                        noteInfos.push(notebookEscp);
                       } else {
-                        noteInfos.push(
+                        let fieldEscp: string = await escapeForTable(
                           queryNotes.items[queryNotesKey][fieldsArray[field]]
                         );
+                        noteInfos.push(fieldEscp);
                       }
                     }
                     newBody.push("| " + noteInfos.join(" | ") + " |");
@@ -218,13 +228,25 @@ joplin.plugins.register({
       window.setTimeout(runCreateNoteOverview, 1000 * 60 * 5);
     }
 
+    // Escape string for markdown table
+    async function escapeForTable(str: string): Promise<string> {
+      if (str !== undefined) {
+        return str
+          .toString()
+          .replace(/(?:\|)/g, "\\|")
+          .replace(/(?:\r\n|\r|\n)/g, "");
+      } else {
+        return str;
+      }
+    }
+
     // Calculate notes size including resources
     async function getNoteSize(noteId): Promise<string> {
       let size = 0;
 
       var note = await joplin.data.get(["notes", noteId], {
-        fields: "id, body"
-      });      
+        fields: "id, body",
+      });
       size = note.body.length;
 
       let pageNum = 1;
