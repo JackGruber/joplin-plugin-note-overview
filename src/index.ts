@@ -214,9 +214,15 @@ joplin.plugins.register({
               let newBodyStr = settingsBlock + "\n" + newBody.join("\n");
               if (noteBody != newBodyStr) {
                 console.info("Update note " + noteTitle + " (" + noteId + ")");
-                await joplin.data.put(["notes", noteId], null, {
-                  body: newBodyStr,
-                });
+                let slectedNote = await joplin.workspace.selectedNote();
+                if(slectedNote.id == noteId) {
+                  await joplin.commands.execute('textSelectAll');
+                  await joplin.commands.execute('replaceSelection', newBodyStr);
+                } else {
+                  await joplin.data.put(["notes", noteId], null, {
+                    body: newBodyStr,
+                  });
+                }
               }
             } else {
               console.info("No search query");
