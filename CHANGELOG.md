@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.2.1 (2021-01-23)
 
 - Fix: Escape text for markdown table
 
