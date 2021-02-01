@@ -26,6 +26,7 @@ joplin.plugins.register({
     );
 
     async function runCreateNoteOverview() {
+      console.info("Run create note overview");
       const now = new Date();
       const dateFormat = await joplin.settings.globalValue("dateFormat");
       const timeFormat = await joplin.settings.globalValue("timeFormat");
