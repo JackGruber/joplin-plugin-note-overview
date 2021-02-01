@@ -4,6 +4,8 @@
 
 - Add: Setting for update intervall
 
+❗ Requires at least Joplin v1.7.1 ❗
+
 ## v1.3.0 (2021-01-29)
 
 - Optimize: Update the currently selected overview directly
