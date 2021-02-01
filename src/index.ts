@@ -1,11 +1,29 @@
 import joplin from "api";
-import { MenuItemLocation } from "api/types";
+import { MenuItemLocation, SettingItemType } from "api/types";
 
 const moment = require("moment");
+
+let timer = null;
 
 joplin.plugins.register({
   onStart: async function () {
     console.info("Note overview plugin started!");
+
+    await joplin.settings.registerSection("noteOverviewSection", {
+      label: "Note overview",
+      iconName: "fas fa-binoculars",
+    });
+
+    await joplin.settings.registerSetting("updateInterval", {
+      value: 5,
+      minimum: 0,
+      maximum: 2880,
+      type: SettingItemType.Int,
+      section: "noteOverviewSection",
+      public: true,
+      label: "Update interval in minutes",
+      description: "0 = disable automatic note overview creation",
+    });
 
     const noteoverviewDialog = await joplin.views.dialogs.create(
       "noteoverviewDialog"
@@ -25,7 +43,32 @@ joplin.plugins.register({
       MenuItemLocation.Tools
     );
 
+    joplin.settings.onChange(async (event: any) => {
+      console.log("Settings changed");
+      // Update timer
+      if (event.keys.indexOf != -1) {
+        if (timer != null) {
+          console.log("Clear timer");
+          clearTimeout(timer);
+        }
+        await runTimedNoteOverview();
+      }
+    });
+
+    // Update note and reset timer
+    async function runTimedNoteOverview() {
+      const updateInterval = await joplin.settings.value("updateInterval");
+      if(updateInterval > 0) {
+        console.info("Set timer");
+        await runCreateNoteOverview();
+        timer = window.setTimeout(runTimedNoteOverview, 1000 * 60 * updateInterval);
+      } else {
+        timer = null;
+      }
+    }
+
     async function runCreateNoteOverview() {
+      console.info("Run create note overview");
       const now = new Date();
       const dateFormat = await joplin.settings.globalValue("dateFormat");
       const timeFormat = await joplin.settings.globalValue("timeFormat");
@@ -230,8 +273,6 @@ joplin.plugins.register({
           }
         }
       } while (overviewNotes.has_more);
-
-      window.setTimeout(runCreateNoteOverview, 1000 * 60 * 5);
     }
 
     // Escape string for markdown table
@@ -354,6 +395,9 @@ joplin.plugins.register({
       }
     }
 
-    runCreateNoteOverview();
+    // Start timer
+    if (await joplin.settings.value("updateInterval") > 0) {
+      runTimedNoteOverview();
+    }
   },
 });

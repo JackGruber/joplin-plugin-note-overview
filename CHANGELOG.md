@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.3.1 (2021-02-01)
+
+- Add: Setting for update intervall
+
 ## v1.3.0 (2021-01-29)
 
 - Optimize: Update the currently selected overview directly
