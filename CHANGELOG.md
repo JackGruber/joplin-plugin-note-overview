@@ -1,6 +1,6 @@
 # Changelog
 
-## Not released
+## v1.3.1 (2021-02-01)
 
 - Add: Setting for update intervall
 
