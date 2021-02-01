@@ -40,6 +40,13 @@ sort: title DESC
 
 The note content is updated every 5 minutes or manualy by `Tools > Create Note overview`.
 
+
+## Keyboard Shortcus
+
+Under `Options > Keyboard Shortcus` you can assign a keyboard shortcut for the following commands:
+
+- `Create note overview`
+
 ## Build
 
 To build your one version of the plugin, install node.js and run the following command `npm run dist`
