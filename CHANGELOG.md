@@ -1,6 +1,6 @@
 # Changelog
 
-## Not released
+## v1.3.2 (2021-02-04)
 
 - Fix: Catch error on size, tag and notebook determination
 
