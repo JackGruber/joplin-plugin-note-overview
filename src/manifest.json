@@ -8,5 +8,5 @@
 	"author": "JackGruber",
 	"homepage_url": "https://github.com/JackGruber/joplin-plugin-note-overview/blob/master/README.md",
 	"repository_url": "https://github.com/JackGruber/joplin-plugin-note-overview",
-	"keywords": []
+	"keywords": ["search", "overview", "savedsearch", "saved", "query"]
 }
