@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.3.2 (2021-02-04)
+
+- Fix: Catch error on size, tag and notebook determination
+
 ## v1.3.1 (2021-02-01)
 
 - Add: Setting for update intervall

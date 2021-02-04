@@ -291,18 +291,29 @@ joplin.plugins.register({
     async function getNoteSize(noteId): Promise<string> {
       let size = 0;
 
-      var note = await joplin.data.get(["notes", noteId], {
-        fields: "id, body",
-      });
+      try {
+        var note = await joplin.data.get(["notes", noteId], {
+          fields: "id, body",
+        });
+      } catch (e) {
+        console.error("getNoteSize " + e);
+        return "n/a"
+      }
       size = note.body.length;
 
       let pageNum = 1;
       do {
-        var resources = await joplin.data.get(["notes", noteId, "resources"], {
-          fields: "id, size",
-          limit: 50,
-          page: pageNum++,
-        });
+        try {
+          var resources = await joplin.data.get(["notes", noteId, "resources"], {
+            fields: "id, size",
+            limit: 50,
+            page: pageNum++,
+          });
+        } catch (e) {
+          console.error("getNoteSize resources " + e);
+          return "n/a"
+        }
+
         for (const resource of resources.items) {
           size += Number.parseInt(resource.size);
         }
@@ -344,9 +355,14 @@ joplin.plugins.register({
 
     // Get the notbook title froma notebook id
     async function getNotebookName(id): Promise<string> {
-      var folder = await joplin.data.get(["folders", id], {
-        fields: "title",
-      });
+      try {
+        var folder = await joplin.data.get(["folders", id], {
+          fields: "title",
+        });
+      } catch (e) {
+        console.error("getNotebookName " + e);
+        return "n/a (" + id + ")"
+      }
       return folder.title;
     }
 
@@ -355,11 +371,17 @@ joplin.plugins.register({
       const tagNames = [];
       let pageNum = 1;
       do {
-        var tags = await joplin.data.get(["notes", noteId, "tags"], {
-          fields: "id, title, parent_id",
-          limit: 50,
-          page: pageNum++,
-        });
+        try {
+          var tags = await joplin.data.get(["notes", noteId, "tags"], {
+            fields: "id, title, parent_id",
+            limit: 50,
+            page: pageNum++,
+          });
+        } catch (e) {
+          console.error("getTags " + e);
+          tagNames.push("n/a");
+          return tagNames;
+        }
         for (const tag of tags.items) {
           tagNames.push(tag.title);
         }
