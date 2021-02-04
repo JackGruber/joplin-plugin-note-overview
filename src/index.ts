@@ -344,9 +344,14 @@ joplin.plugins.register({
 
     // Get the notbook title froma notebook id
     async function getNotebookName(id): Promise<string> {
-      var folder = await joplin.data.get(["folders", id], {
-        fields: "title",
-      });
+      try {
+        var folder = await joplin.data.get(["folders", id], {
+          fields: "title",
+        });
+      } catch (e) {
+        console.error("getNotebookName " + e);
+        return "n/a (" + id + ")"
+      }
       return folder.title;
     }
 
