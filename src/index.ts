@@ -360,11 +360,17 @@ joplin.plugins.register({
       const tagNames = [];
       let pageNum = 1;
       do {
-        var tags = await joplin.data.get(["notes", noteId, "tags"], {
-          fields: "id, title, parent_id",
-          limit: 50,
-          page: pageNum++,
-        });
+        try {
+          var tags = await joplin.data.get(["notes", noteId, "tags"], {
+            fields: "id, title, parent_id",
+            limit: 50,
+            page: pageNum++,
+          });
+        } catch (e) {
+          console.error("getTags " + e);
+          tagNames.push("n/a");
+          return tagNames;
+        }
         for (const tag of tags.items) {
           tagNames.push(tag.title);
         }
