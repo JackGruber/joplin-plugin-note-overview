@@ -46,9 +46,9 @@ Go to `Tools > Options > Note overview`
 
 - `Update interval in minutes`: How often the overview notes should be updated. Default `5`
 
-## Keyboard Shortcus
+## Keyboard Shortcuts
 
-Under `Options > Keyboard Shortcus` you can assign a keyboard shortcut for the following commands:
+Under `Options > Keyboard Shortcuts` you can assign a keyboard shortcut for the following commands:
 
 - `Create note overview`
 
