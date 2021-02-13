@@ -58,10 +58,13 @@ joplin.plugins.register({
     // Update note and reset timer
     async function runTimedNoteOverview() {
       const updateInterval = await joplin.settings.value("updateInterval");
-      if(updateInterval > 0) {
+      if (updateInterval > 0) {
         console.info("Set timer");
         await runCreateNoteOverview();
-        timer = window.setTimeout(runTimedNoteOverview, 1000 * 60 * updateInterval);
+        timer = window.setTimeout(
+          runTimedNoteOverview,
+          1000 * 60 * updateInterval
+        );
       } else {
         timer = null;
       }
@@ -258,9 +261,9 @@ joplin.plugins.register({
               if (noteBody != newBodyStr) {
                 console.info("Update note " + noteTitle + " (" + noteId + ")");
                 let slectedNote = await joplin.workspace.selectedNote();
-                if(slectedNote.id == noteId) {
-                  await joplin.commands.execute('textSelectAll');
-                  await joplin.commands.execute('replaceSelection', newBodyStr);
+                if (slectedNote.id == noteId) {
+                  await joplin.commands.execute("textSelectAll");
+                  await joplin.commands.execute("replaceSelection", newBodyStr);
                 } else {
                   await joplin.data.put(["notes", noteId], null, {
                     body: newBodyStr,
@@ -297,21 +300,24 @@ joplin.plugins.register({
         });
       } catch (e) {
         console.error("getNoteSize " + e);
-        return "n/a"
+        return "n/a";
       }
       size = note.body.length;
 
       let pageNum = 1;
       do {
         try {
-          var resources = await joplin.data.get(["notes", noteId, "resources"], {
-            fields: "id, size",
-            limit: 50,
-            page: pageNum++,
-          });
+          var resources = await joplin.data.get(
+            ["notes", noteId, "resources"],
+            {
+              fields: "id, size",
+              limit: 50,
+              page: pageNum++,
+            }
+          );
         } catch (e) {
           console.error("getNoteSize resources " + e);
-          return "n/a"
+          return "n/a";
         }
 
         for (const resource of resources.items) {
@@ -361,7 +367,7 @@ joplin.plugins.register({
         });
       } catch (e) {
         console.error("getNotebookName " + e);
-        return "n/a (" + id + ")"
+        return "n/a (" + id + ")";
       }
       return folder.title;
     }
@@ -418,7 +424,7 @@ joplin.plugins.register({
     }
 
     // Start timer
-    if (await joplin.settings.value("updateInterval") > 0) {
+    if ((await joplin.settings.value("updateInterval")) > 0) {
       runTimedNoteOverview();
     }
   },
