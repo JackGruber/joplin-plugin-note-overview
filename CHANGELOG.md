@@ -1,6 +1,6 @@
 # Changelog
 
-## Not released
+## v1.3.3 (2021-02-13)
 
 - Add: #5 Show number of found notes
 
