@@ -25,6 +25,20 @@ joplin.plugins.register({
       description: "0 = disable automatic note overview creation",
     });
 
+    await joplin.settings.registerSetting("showNoteCount", {
+      value: "Off",
+      type: SettingItemType.String,
+      section: "noteOverviewSection",
+      isEnum: true,
+      public: true,
+      label: "Show note count",
+      options: {
+        false: "Off",
+        above: "Above",
+        below: "Below",
+      },
+    });
+
     const noteoverviewDialog = await joplin.views.dialogs.create(
       "noteoverviewDialog"
     );
@@ -154,6 +168,7 @@ joplin.plugins.register({
               let pageQueryNotes = 1;
 
               // Search notes from query and add info to new body
+              let noteCount = 0;
               do {
                 try {
                   queryNotes = await joplin.data.get(["search"], {
@@ -184,6 +199,7 @@ joplin.plugins.register({
                 }
                 for (let queryNotesKey in queryNotes.items) {
                   if (queryNotes.items[queryNotesKey].id != noteId) {
+                    noteCount++;
                     let noteInfos = [];
                     for (let field in fieldsArray) {
                       if (fieldsArray[field] === "title") {
@@ -255,6 +271,16 @@ joplin.plugins.register({
                   }
                 }
               } while (queryNotes.has_more);
+
+              // Add note count
+              const showNoteCount = await joplin.settings.value(
+                "showNoteCount"
+              );
+              if (showNoteCount == "below") {
+                newBody.push("Note count: " + noteCount);
+              } else if (showNoteCount == "above") {
+                newBody.unshift("Note count: " + noteCount);
+              }
 
               // Note update needed?
               let newBodyStr = settingsBlock + "\n" + newBody.join("\n");
