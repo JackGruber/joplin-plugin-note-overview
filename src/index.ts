@@ -25,6 +25,20 @@ joplin.plugins.register({
       description: "0 = disable automatic note overview creation",
     });
 
+    await joplin.settings.registerSetting("showNoteCount", {
+      value: "Off",
+      type: SettingItemType.String,
+      section: "noteOverviewSection",
+      isEnum: true,
+      public: true,
+      label: "Show note count",
+      options: {
+        false: "Off",
+        above: "Above",
+        below: "Below",
+      },
+    });
+
     const noteoverviewDialog = await joplin.views.dialogs.create(
       "noteoverviewDialog"
     );
@@ -58,10 +72,13 @@ joplin.plugins.register({
     // Update note and reset timer
     async function runTimedNoteOverview() {
       const updateInterval = await joplin.settings.value("updateInterval");
-      if(updateInterval > 0) {
+      if (updateInterval > 0) {
         console.info("Set timer");
         await runCreateNoteOverview();
-        timer = window.setTimeout(runTimedNoteOverview, 1000 * 60 * updateInterval);
+        timer = window.setTimeout(
+          runTimedNoteOverview,
+          1000 * 60 * updateInterval
+        );
       } else {
         timer = null;
       }
@@ -151,6 +168,7 @@ joplin.plugins.register({
               let pageQueryNotes = 1;
 
               // Search notes from query and add info to new body
+              let noteCount = 0;
               do {
                 try {
                   queryNotes = await joplin.data.get(["search"], {
@@ -181,6 +199,7 @@ joplin.plugins.register({
                 }
                 for (let queryNotesKey in queryNotes.items) {
                   if (queryNotes.items[queryNotesKey].id != noteId) {
+                    noteCount++;
                     let noteInfos = [];
                     for (let field in fieldsArray) {
                       if (fieldsArray[field] === "title") {
@@ -253,14 +272,24 @@ joplin.plugins.register({
                 }
               } while (queryNotes.has_more);
 
+              // Add note count
+              const showNoteCount = await joplin.settings.value(
+                "showNoteCount"
+              );
+              if (showNoteCount == "below") {
+                newBody.push("Note count: " + noteCount);
+              } else if (showNoteCount == "above") {
+                newBody.unshift("Note count: " + noteCount);
+              }
+
               // Note update needed?
               let newBodyStr = settingsBlock + "\n" + newBody.join("\n");
               if (noteBody != newBodyStr) {
                 console.info("Update note " + noteTitle + " (" + noteId + ")");
                 let slectedNote = await joplin.workspace.selectedNote();
-                if(slectedNote.id == noteId) {
-                  await joplin.commands.execute('textSelectAll');
-                  await joplin.commands.execute('replaceSelection', newBodyStr);
+                if (slectedNote.id == noteId) {
+                  await joplin.commands.execute("textSelectAll");
+                  await joplin.commands.execute("replaceSelection", newBodyStr);
                 } else {
                   await joplin.data.put(["notes", noteId], null, {
                     body: newBodyStr,
@@ -297,21 +326,24 @@ joplin.plugins.register({
         });
       } catch (e) {
         console.error("getNoteSize " + e);
-        return "n/a"
+        return "n/a";
       }
       size = note.body.length;
 
       let pageNum = 1;
       do {
         try {
-          var resources = await joplin.data.get(["notes", noteId, "resources"], {
-            fields: "id, size",
-            limit: 50,
-            page: pageNum++,
-          });
+          var resources = await joplin.data.get(
+            ["notes", noteId, "resources"],
+            {
+              fields: "id, size",
+              limit: 50,
+              page: pageNum++,
+            }
+          );
         } catch (e) {
           console.error("getNoteSize resources " + e);
-          return "n/a"
+          return "n/a";
         }
 
         for (const resource of resources.items) {
@@ -361,7 +393,7 @@ joplin.plugins.register({
         });
       } catch (e) {
         console.error("getNotebookName " + e);
-        return "n/a (" + id + ")"
+        return "n/a (" + id + ")";
       }
       return folder.title;
     }
@@ -418,7 +450,7 @@ joplin.plugins.register({
     }
 
     // Start timer
-    if (await joplin.settings.value("updateInterval") > 0) {
+    if ((await joplin.settings.value("updateInterval")) > 0) {
       runTimedNoteOverview();
     }
   },

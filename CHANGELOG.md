@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.3.3 (2021-02-13)
+
+- Add: #5 Show number of found notes
+
 ## v1.3.2 (2021-02-04)
 
 - Fix: Catch error on size, tag and notebook determination
