@@ -41,6 +41,46 @@ sort: title DESC
 
 The note content is updated every 5 minutes or manualy by `Tools > Create Note overview`.
 
+### Examples
+
+#### ToDo Overview
+
+```
+<!-- note-overview-plugin
+search: type:todo iscompleted:0
+fields: todo_due, title, tags, notebook
+sort: todo_due ASC
+-->
+```
+
+#### Rename Fields
+
+```
+<!-- note-overview-plugin
+search: *
+fields: updated_time AS Modified, title
+-->
+```
+
+#### Notes without a tag
+
+```
+<!-- note-overview-plugin
+search: -tag:*
+fields: updated_time, title
+-->
+```
+
+### Notes createt last 7 days
+
+```
+<!-- note-overview-plugin
+search: created:day-7
+fields: title, updated_time
+sort: title DESC
+-->
+```
+
 ## Options
 
 Go to `Tools > Options > Note overview`
