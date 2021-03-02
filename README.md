@@ -53,7 +53,7 @@ sort: todo_due ASC
 -->
 ```
 
-#### Rename Fields
+#### Rename fields
 
 ```
 <!-- note-overview-plugin
@@ -71,7 +71,7 @@ fields: updated_time, title
 -->
 ```
 
-### Notes createt last 7 days
+#### Notes createt last 7 days
 
 ```
 <!-- note-overview-plugin
