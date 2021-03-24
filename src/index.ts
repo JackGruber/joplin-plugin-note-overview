@@ -220,6 +220,7 @@ joplin.plugins.register({
                           "todo_due",
                           "user_created_time",
                           "user_updated_time",
+                          "todo_completed",
                         ].indexOf(fieldsArray[field]) > -1
                       ) {
                         let dateObject = new Date(

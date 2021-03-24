@@ -1,5 +1,9 @@
 # Changelog
 
+## Not released
+
+- Fix: todo_completed not outputed as date/time field
+
 ## v1.3.3 (2021-02-13)
 
 - Add: #5 Show number of found notes
