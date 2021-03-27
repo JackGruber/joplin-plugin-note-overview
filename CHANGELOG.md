@@ -1,6 +1,6 @@
 # Changelog
 
-## Not released
+## v1.3.4 (2021-03-27)
 
 - Fix: todo_completed not outputed as date/time field
 
