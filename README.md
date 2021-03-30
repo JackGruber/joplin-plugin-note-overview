@@ -33,6 +33,8 @@ sort: title DESC
 -->
 ```
 
+Several of these blocks can be included in one note, also between text.
+
 - `search` Search filters like in Joplin [Documentation of search filters](https://joplinapp.org/#search-filters).
 - `fields` Which fields should be output in the table (Optional). [Documentation of the possible fields](https://joplinapp.org/api/references/rest_api/#properties), additionally the fields `size`, `tag` and `notebook` available. Default: `updated_time, title`
 - `sort` By which field should be sorted, the `size`, `tag` and `notebook` fields can't be sorted (Optional). `<field> DESC/ASC`, Default: `title ASC`.

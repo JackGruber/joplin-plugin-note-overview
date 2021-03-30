@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.4.0 (2021-03-30)
+
+- Add: Multiple note overview definitions in one note
+- Add: The note overview can now be embedded in existing text
+- Improved: Use registerSettings instead of deprecated registerSetting
+
+❗ Requires at least Joplin v1.8.1 ❗
+
 ## v1.3.4 (2021-03-27)
 
 - Fix: todo_completed not outputed as date/time field
