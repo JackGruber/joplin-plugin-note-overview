@@ -1,6 +1,6 @@
 # Changelog
 
-## not release
+## v1.4.0 (2021-03-30)
 
 - Add: Multiple note overview definitions in one note
 - Add: The note overview can now be embedded in existing text
