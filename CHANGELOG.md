@@ -1,5 +1,10 @@
 # Changelog
 
+## not release
+
+- Add: Multiple note overview definitions in one note
+- Add: The note overview can now be embedded in existing text
+
 ## v1.3.4 (2021-03-27)
 
 - Fix: todo_completed not outputed as date/time field
