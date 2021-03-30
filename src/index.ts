@@ -86,10 +86,6 @@ joplin.plugins.register({
 
     async function runCreateNoteOverview() {
       console.info("Run create note overview");
-      const now = new Date();
-      const dateFormat = await joplin.settings.globalValue("dateFormat");
-      const timeFormat = await joplin.settings.globalValue("timeFormat");
-
       // search all notes
       let pageNum = 1;
       let overviewNotes = null;
@@ -107,202 +103,249 @@ joplin.plugins.register({
           let noteBody = overviewNotes.items[overviewNotesKey].body;
           let noteId = overviewNotes.items[overviewNotesKey].id;
           let noteTitle = overviewNotes.items[overviewNotesKey].title;
-          let settingsBlock = noteBody.match(/^(<!--(?:.|\n)*?-->)/);
-          if (settingsBlock) {
-            console.info("Check note " + noteTitle + " (" + noteId + ")");
-            settingsBlock = settingsBlock[1];
-            let query: string = await getParameter(
-              settingsBlock,
-              "search",
-              null
-            );
-            let fields: string = await getParameter(
-              settingsBlock,
-              "fields",
-              null
-            );
-            let sort: string = await getParameter(
-              settingsBlock,
-              "sort",
-              "title ASC"
-            );
-            const alias: string = await getParameter(
-              settingsBlock,
-              "alias",
-              ""
-            );
+          let newBody = [];
+          let orgContent = null;
+          console.info("Check note " + noteTitle + " (" + noteId + ")");
+          
+          // Search all note-overview blocks in note
+          const noteOverviewRegEx = /(<!--\s?note-overview-plugin(?:[\w\W]*?)-->)([\w\W]*?)(<!--endoverview-->|(?=<!--\s?note-overview-plugin)|$)/gi;
+          let regExMatch = null;
+          let startOrgTextIndex = 0;
+          let startIndex = 0;
+          let endIndex = 0;
+          while ((regExMatch = noteOverviewRegEx.exec(noteBody)) != null) {
+            let settingsBlock = regExMatch[1];
+            startIndex = regExMatch.index;
+            endIndex = startIndex + regExMatch[0].length;
 
-            if (query) {
-              // create array from fields
-              let fieldsArray = [];
-              if (fields) {
-                fieldsArray = fields
-                  .toLowerCase()
-                  .replace(/\s/g, "")
-                  .split(",");
+            // add original conten before the settings block
+            if (startOrgTextIndex != startIndex) {
+              orgContent = noteBody.substring(startOrgTextIndex, startIndex);
+              if(startOrgTextIndex == 0) {
+                orgContent = await removeNewLineAt(orgContent, false, true);
               } else {
-                fieldsArray = ["updated_time", "title"];
+                orgContent = await removeNewLineAt(orgContent, true, true);
               }
 
-              // Remove virtual fields from dbFieldsArray
-              let dbFieldsArray = [...fieldsArray];
-              dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "notebook");
-              dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "tags");
-              dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "size");
-
-              // field sorting information
-              let sortArray = sort.toLowerCase().split(" ");
-
-              // Field alias for header
-              const headerFields = await getHeaderFields(alias, [
-                ...fieldsArray,
-              ]);
-
-              let newBody = [];
-              newBody.push("| " + headerFields.join(" | ") + " |");
-              newBody.push("|" + " --- |".repeat(fieldsArray.length));
-
-              if (!sortArray[1]) {
-                sortArray[1] = "ASC";
-              }
-              let pageQueryNotes = 1;
-
-              // Search notes from query and add info to new body
-              let noteCount = 0;
-              do {
-                try {
-                  queryNotes = await joplin.data.get(["search"], {
-                    query: query,
-                    fields: "id, parent_id, " + dbFieldsArray.join(","),
-                    order_by: sortArray[0],
-                    order_dir: sortArray[1].toUpperCase(),
-                    limit: 50,
-                    page: pageQueryNotes++,
-                  });
-                } catch (e) {
-                  await joplin.views.dialogs.setButtons(noteoverviewDialog, [
-                    { id: "ok" },
-                  ]);
-                  await joplin.views.dialogs.setHtml(
-                    noteoverviewDialog,
-                    `
-                    <div style="overflow-wrap: break-word;">
-                      <h3>Noteoverview error</h3>
-                      <p>Note: ${noteTitle}</p>
-                      <p>Fields: ${fieldsArray.join(", ")}</p>
-                      <p>Sort: ${sortArray.join(", ")}</p>
-                    </div>
-                    `
-                  );
-                  await joplin.views.dialogs.open(noteoverviewDialog);
-                  throw e;
-                }
-                for (let queryNotesKey in queryNotes.items) {
-                  if (queryNotes.items[queryNotesKey].id != noteId) {
-                    noteCount++;
-                    let noteInfos = [];
-                    for (let field in fieldsArray) {
-                      if (fieldsArray[field] === "title") {
-                        let titelEscp: string = await escapeForTable(
-                          queryNotes.items[queryNotesKey][fieldsArray[field]]
-                        );
-                        noteInfos.push(
-                          "[" +
-                            titelEscp +
-                            "](:/" +
-                            queryNotes.items[queryNotesKey].id +
-                            ")"
-                        );
-                      } else if (
-                        [
-                          "created_time",
-                          "updated_time",
-                          "todo_due",
-                          "user_created_time",
-                          "user_updated_time",
-                          "todo_completed",
-                        ].indexOf(fieldsArray[field]) > -1
-                      ) {
-                        let dateObject = new Date(
-                          queryNotes.items[queryNotesKey][fieldsArray[field]]
-                        );
-                        let dateString =
-                          moment(dateObject.getTime()).format(dateFormat) +
-                          " " +
-                          moment(dateObject.getTime()).format(timeFormat);
-                        if (
-                          fieldsArray[field] === "todo_due" &&
-                          dateObject.getTime() < now.getTime()
-                        ) {
-                          noteInfos.push(
-                            "<font color='red'>" + dateString + "</font>"
-                          );
-                        } else {
-                          noteInfos.push(dateString);
-                        }
-                      } else if (fieldsArray[field] === "size") {
-                        let size: string = await getNoteSize(
-                          queryNotes.items[queryNotesKey].id
-                        );
-                        noteInfos.push(size);
-                      } else if (fieldsArray[field] === "tags") {
-                        let tags: any = await getTags(
-                          queryNotes.items[queryNotesKey]["id"]
-                        );
-                        let tagEscp: string = await escapeForTable(
-                          tags.join(", ")
-                        );
-                        noteInfos.push(tagEscp);
-                      } else if (fieldsArray[field] === "notebook") {
-                        let notebook: string = await getNotebookName(
-                          queryNotes.items[queryNotesKey]["parent_id"]
-                        );
-                        let notebookEscp: string = await escapeForTable(
-                          notebook
-                        );
-                        noteInfos.push(notebookEscp);
-                      } else {
-                        let fieldEscp: string = await escapeForTable(
-                          queryNotes.items[queryNotesKey][fieldsArray[field]]
-                        );
-                        noteInfos.push(fieldEscp);
-                      }
-                    }
-                    newBody.push("| " + noteInfos.join(" | ") + " |");
-                  }
-                }
-              } while (queryNotes.has_more);
-
-              // Add note count
-              const showNoteCount = await joplin.settings.value(
-                "showNoteCount"
-              );
-              if (showNoteCount == "below") {
-                newBody.push("Note count: " + noteCount);
-              } else if (showNoteCount == "above") {
-                newBody.unshift("Note count: " + noteCount);
-              }
-
-              // Note update needed?
-              let newBodyStr = settingsBlock + "\n" + newBody.join("\n");
-              if (noteBody != newBodyStr) {
-                console.info("Update note " + noteTitle + " (" + noteId + ")");
-                let slectedNote = await joplin.workspace.selectedNote();
-                if (slectedNote.id == noteId) {
-                  await joplin.commands.execute("textSelectAll");
-                  await joplin.commands.execute("replaceSelection", newBodyStr);
-                } else {
-                  await joplin.data.put(["notes", noteId], null, {
-                    body: newBodyStr,
-                  });
-                }
-              }
-            } else {
-              console.info("No search query");
+              newBody.push(orgContent);
             }
+            startOrgTextIndex = endIndex;
+
+            let noteOverviewContent = await getNoteOverviewContent(noteId, noteTitle, settingsBlock);
+            newBody = [...newBody, ...noteOverviewContent];
+          }
+
+          // Add original content after last overview block
+          if (startOrgTextIndex !== noteBody.length) {
+            orgContent = noteBody.substring(startOrgTextIndex, noteBody.length);
+            orgContent = await removeNewLineAt(orgContent, true, false);
+            newBody.push(orgContent);
+          }
+
+          // Note update needed?
+          let newBodyStr = newBody.join("\n");
+          if (noteBody != newBodyStr) {
+            console.info("Update note " + noteTitle + " (" + noteId + ")");
+            await updateNote(newBodyStr, noteId);
           }
         }
       } while (overviewNotes.has_more);
+    }
+
+    async function removeNewLineAt(content: string, begin: boolean, end: boolean): Promise<string> {
+      if (end === true) {
+        if(content.charCodeAt(content.length-1) == 10) {
+          content = content.substring(0, content.length -1);
+        }
+        if(content.charCodeAt(content.length-1) == 13) {
+          content = content.substring(0, content.length -1);
+        }
+      }
+
+      if (begin === true) {
+        if (content.charCodeAt(0) == 10) {
+          content = content.substring(1, content.length);
+        }
+        if (content.charCodeAt(0) == 13) {
+          content = content.substring(1, content.length);
+        }
+      }
+      return content;
+    }
+
+    // Search notes from query and return content
+    async function getNoteOverviewContent(noteId: string, noteTitle: string, settingsBlock: string): Promise<any> {
+      const now = new Date();
+      const dateFormat = await joplin.settings.globalValue("dateFormat");
+      const timeFormat = await joplin.settings.globalValue("timeFormat");
+
+      let query: string = await getParameter(settingsBlock, "search", null);
+      let fields: string = await getParameter(settingsBlock, "fields", null);
+      let sort: string = await getParameter(settingsBlock, "sort", "title ASC");
+      const alias: string = await getParameter(settingsBlock, "alias", "");
+
+      // create array from fields
+      let fieldsArray = [];
+      if (fields) {
+        fieldsArray = fields.toLowerCase().replace(/\s/g, "").split(",");
+      } else {
+        fieldsArray = ["updated_time", "title"];
+      }
+
+      let newBody = [];
+
+      if (query) {
+        // field sorting information
+        let sortArray = sort.toLowerCase().split(" ");
+        if (!sortArray[1]) {
+          sortArray[1] = "ASC";
+        }
+
+        // Field alias for header
+        const headerFields = await getHeaderFields(alias, [...fieldsArray]);
+
+        // Remove virtual fields from dbFieldsArray
+        let dbFieldsArray = [...fieldsArray];
+        dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "notebook");
+        dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "tags");
+        dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "size");
+
+        let noteCount = 0;
+        let queryNotes = null;
+        let pageQueryNotes = 1;
+
+        newBody.push("| " + headerFields.join(" | ") + " |");
+        newBody.push("|" + " --- |".repeat(fieldsArray.length));
+
+        do {
+          try {
+            queryNotes = await joplin.data.get(["search"], {
+              query: query,
+              fields: "id, parent_id, " + dbFieldsArray.join(","),
+              order_by: sortArray[0],
+              order_dir: sortArray[1].toUpperCase(),
+              limit: 50,
+              page: pageQueryNotes++,
+            });
+          } catch (e) {
+            await joplin.views.dialogs.setButtons(noteoverviewDialog, [
+              { id: "ok" },
+            ]);
+            await joplin.views.dialogs.setHtml(
+              noteoverviewDialog,
+              `
+                      <div style="overflow-wrap: break-word;">
+                        <h3>Noteoverview error</h3>
+                        <p>Note: ${noteTitle}</p>
+                        <p>Fields: ${fieldsArray.join(", ")}</p>
+                        <p>Sort: ${sortArray.join(", ")}</p>
+                      </div>
+                      `
+            );
+            await joplin.views.dialogs.open(noteoverviewDialog);
+            
+            let settingsOnly = [];
+            settingsOnly.push(settingsBlock);
+            return settingsOnly;
+          }
+          for (let queryNotesKey in queryNotes.items) {
+            if (queryNotes.items[queryNotesKey].id != noteId) {
+              noteCount++;
+              let noteInfos = [];
+              for (let field in fieldsArray) {
+                if (fieldsArray[field] === "title") {
+                  let titelEscp: string = await escapeForTable(
+                    queryNotes.items[queryNotesKey][fieldsArray[field]]
+                  );
+                  noteInfos.push(
+                    "[" +
+                      titelEscp +
+                      "](:/" +
+                      queryNotes.items[queryNotesKey].id +
+                      ")"
+                  );
+                } else if (
+                  [
+                    "created_time",
+                    "updated_time",
+                    "todo_due",
+                    "user_created_time",
+                    "user_updated_time",
+                    "todo_completed",
+                  ].indexOf(fieldsArray[field]) > -1
+                ) {
+                  let dateObject = new Date(
+                    queryNotes.items[queryNotesKey][fieldsArray[field]]
+                  );
+                  let dateString =
+                    moment(dateObject.getTime()).format(dateFormat) +
+                    " " +
+                    moment(dateObject.getTime()).format(timeFormat);
+                  if (
+                    fieldsArray[field] === "todo_due" &&
+                    dateObject.getTime() < now.getTime()
+                  ) {
+                    noteInfos.push(
+                      "<font color='red'>" + dateString + "</font>"
+                    );
+                  } else {
+                    noteInfos.push(dateString);
+                  }
+                } else if (fieldsArray[field] === "size") {
+                  let size: string = await getNoteSize(
+                    queryNotes.items[queryNotesKey].id
+                  );
+                  noteInfos.push(size);
+                } else if (fieldsArray[field] === "tags") {
+                  let tags: any = await getTags(
+                    queryNotes.items[queryNotesKey]["id"]
+                  );
+                  let tagEscp: string = await escapeForTable(tags.join(", "));
+                  noteInfos.push(tagEscp);
+                } else if (fieldsArray[field] === "notebook") {
+                  let notebook: string = await getNotebookName(
+                    queryNotes.items[queryNotesKey]["parent_id"]
+                  );
+                  let notebookEscp: string = await escapeForTable(notebook);
+                  noteInfos.push(notebookEscp);
+                } else {
+                  let fieldEscp: string = await escapeForTable(
+                    queryNotes.items[queryNotesKey][fieldsArray[field]]
+                  );
+                  noteInfos.push(fieldEscp);
+                }
+              }
+              newBody.push("| " + noteInfos.join(" | ") + " |");
+            }
+          }
+        } while (queryNotes.has_more);
+
+        // Add note count
+        const showNoteCount = await joplin.settings.value("showNoteCount");
+        if (showNoteCount == "below") {
+          newBody.push("Note count: " + noteCount);
+        } else if (showNoteCount == "above") {
+          newBody.unshift("Note count: " + noteCount);
+        }
+      } else {
+        console.info("No search query");
+      }
+
+      newBody.unshift(settingsBlock);
+      newBody.push("<!--endoverview-->");
+      return newBody;
+    }
+
+    async function updateNote(newBodyStr: string, noteId: string) {
+      let slectedNote = await joplin.workspace.selectedNote();
+      if (slectedNote.id == noteId) {
+        await joplin.commands.execute("textSelectAll");
+        await joplin.commands.execute("replaceSelection", newBodyStr);
+      } else {
+        await joplin.data.put(["notes", noteId], null, {
+          body: newBodyStr,
+        });
+      }
     }
 
     // Escape string for markdown table
