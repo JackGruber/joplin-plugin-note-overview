@@ -287,15 +287,7 @@ joplin.plugins.register({
               let newBodyStr = settingsBlock + "\n" + newBody.join("\n");
               if (noteBody != newBodyStr) {
                 console.info("Update note " + noteTitle + " (" + noteId + ")");
-                let slectedNote = await joplin.workspace.selectedNote();
-                if (slectedNote.id == noteId) {
-                  await joplin.commands.execute("textSelectAll");
-                  await joplin.commands.execute("replaceSelection", newBodyStr);
-                } else {
-                  await joplin.data.put(["notes", noteId], null, {
-                    body: newBodyStr,
-                  });
-                }
+                await updateNote(newBodyStr, noteId);
               }
             } else {
               console.info("No search query");
@@ -303,6 +295,18 @@ joplin.plugins.register({
           }
         }
       } while (overviewNotes.has_more);
+    }
+
+    async function updateNote(newBodyStr: string, noteId: string) {
+      let slectedNote = await joplin.workspace.selectedNote();
+      if (slectedNote.id == noteId) {
+        await joplin.commands.execute("textSelectAll");
+        await joplin.commands.execute("replaceSelection", newBodyStr);
+      } else {
+        await joplin.data.put(["notes", noteId], null, {
+          body: newBodyStr,
+        });
+      }
     }
 
     // Escape string for markdown table
