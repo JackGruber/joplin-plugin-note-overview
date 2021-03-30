@@ -144,7 +144,6 @@ joplin.plugins.register({
       }
 
       let newBody = [];
-      newBody.push(settingsBlock);
 
       if (query) {
         // field sorting information
@@ -282,6 +281,8 @@ joplin.plugins.register({
       } else {
         console.info("No search query");
       }
+
+      newBody.unshift(settingsBlock);
       return newBody;
     }
 
