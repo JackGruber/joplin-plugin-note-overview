@@ -103,25 +103,74 @@ joplin.plugins.register({
           let noteBody = overviewNotes.items[overviewNotesKey].body;
           let noteId = overviewNotes.items[overviewNotesKey].id;
           let noteTitle = overviewNotes.items[overviewNotesKey].title;
+          let newBody = [];
+          let orgContent = null;
           console.info("Check note " + noteTitle + " (" + noteId + ")");
           
-          let settingsBlock = noteBody.match(/^(<!--(?:.|\n)*?-->)/);
-          if (settingsBlock) {
-            settingsBlock = settingsBlock[1];
+          // Search all note-overview blocks in note
+          const noteOverviewRegEx = /(<!--\s?note-overview-plugin(?:[\w\W]*?)-->)([\w\W]*?)(<!--endoverview-->|(?=<!--\s?note-overview-plugin)|$)/gi;
+          let regExMatch = null;
+          let startOrgTextIndex = 0;
+          let startIndex = 0;
+          let endIndex = 0;
+          while ((regExMatch = noteOverviewRegEx.exec(noteBody)) != null) {
+            let settingsBlock = regExMatch[1];
+            startIndex = regExMatch.index;
+            endIndex = startIndex + regExMatch[0].length;
 
-            let newBody = [];
+            // add original conten before the settings block
+            if (startOrgTextIndex != startIndex) {
+              orgContent = noteBody.substring(startOrgTextIndex, startIndex);
+              if(startOrgTextIndex == 0) {
+                orgContent = await removeNewLineAt(orgContent, false, true);
+              } else {
+                orgContent = await removeNewLineAt(orgContent, true, true);
+              }
+
+              newBody.push(orgContent);
+            }
+            startOrgTextIndex = endIndex;
+
             let noteOverviewContent = await getNoteOverviewContent(noteId, noteTitle, settingsBlock);
             newBody = [...newBody, ...noteOverviewContent];
+          }
 
-            // Note update needed?
-            let newBodyStr = newBody.join("\n");
-            if (noteBody != newBodyStr) {
-              console.info("Update note " + noteTitle + " (" + noteId + ")");
-              await updateNote(newBodyStr, noteId);
-            }
+          // Add original content after last overview block
+          if (startOrgTextIndex !== noteBody.length) {
+            orgContent = noteBody.substring(startOrgTextIndex, noteBody.length);
+            orgContent = await removeNewLineAt(orgContent, true, false);
+            newBody.push(orgContent);
+          }
+
+          // Note update needed?
+          let newBodyStr = newBody.join("\n");
+          if (noteBody != newBodyStr) {
+            console.info("Update note " + noteTitle + " (" + noteId + ")");
+            await updateNote(newBodyStr, noteId);
           }
         }
       } while (overviewNotes.has_more);
+    }
+
+    async function removeNewLineAt(content: string, begin: boolean, end: boolean): Promise<string> {
+      if (end === true) {
+        if(content.charCodeAt(content.length-1) == 10) {
+          content = content.substring(0, content.length -1);
+        }
+        if(content.charCodeAt(content.length-1) == 13) {
+          content = content.substring(0, content.length -1);
+        }
+      }
+
+      if (begin === true) {
+        if (content.charCodeAt(0) == 10) {
+          content = content.substring(1, content.length);
+        }
+        if (content.charCodeAt(0) == 13) {
+          content = content.substring(1, content.length);
+        }
+      }
+      return content;
     }
 
     // Search notes from query and return content
@@ -283,6 +332,7 @@ joplin.plugins.register({
       }
 
       newBody.unshift(settingsBlock);
+      newBody.push("<!--endoverview-->");
       return newBody;
     }
 
