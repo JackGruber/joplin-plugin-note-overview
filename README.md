@@ -41,7 +41,7 @@ Several of these blocks can be included in one note, also between text.
 - `alias` Rename fields (Optional). `<field> AS <new field name>`, multiple fields comma seperated.
 - `Show note count` Show the number of notes found. Default: `off`.
 
-The note content is updated every 5 minutes or manualy by `Tools > Create Note overview`.
+The note content is updated every x minutes (depending on your setting) or manualy by `Tools > Create Note overview`.
 
 ### Examples
 
