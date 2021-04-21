@@ -61,7 +61,7 @@ sort: todo_due ASC
 <!-- note-overview-plugin
 search: *
 fields: updated_time, title
-alias: updated_time AS Modified, title
+alias: updated_time AS Modified
 -->
 ```
 
