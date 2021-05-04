@@ -55,6 +55,37 @@ sort: todo_due ASC
 -->
 ```
 
+#### Open ToDos for the next 7 days and overdue ToDos
+
+```
+<!-- note-overview-plugin
+search: -due:day+7 iscompleted:0
+fields: todo_due, title
+sort: todo_due ASC
+-->
+```
+
+#### Exclude ToDos with no due date
+
+```
+<!-- note-overview-plugin
+search: due:19700201 iscompleted:0
+fields: todo_due, title
+sort: todo_due ASC
+-->
+```
+
+#### Show all ToDos with no due date
+
+```
+<!-- note-overview-plugin
+search: -due:19700201 iscompleted:0
+fields: todo_due, title
+sort: todo_due ASC
+-->
+```
+
+
 #### Rename fields
 
 ```
