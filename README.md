@@ -35,13 +35,18 @@ sort: title DESC
 
 Several of these blocks can be included in one note, also between text.
 
-- `search` Search filters like in Joplin [Documentation of search filters](https://joplinapp.org/#search-filters).
-- `fields` Which fields should be output in the table (Optional). [Documentation of the possible fields](https://joplinapp.org/api/references/rest_api/#properties), additionally the fields `size`, `tag` and `notebook` available. Default: `updated_time, title`
-- `sort` By which field should be sorted, the `size`, `tag` and `notebook` fields can't be sorted (Optional). `<field> DESC/ASC`, Default: `title ASC`.
-- `alias` Rename fields (Optional). `<field> AS <new field name>`, multiple fields comma seperated.
-- `Show note count` Show the number of notes found. Default: `off`.
-
 The note content is updated every x minutes (depending on your setting) or manualy by `Tools > Create Note overview`.
+
+### Codeblock options
+
+Options which can be specified in the codeblock.
+
+| Option | Required | Description | Default |
+| --- | --- | --- | --- |
+| `search` | Yes | Search filters like in Joplin [Documentation of search filters](https://joplinapp.org/#search-filters). | |
+| `fields` | No | Which fields should be output in the table.<br>[Documentation of the possible fields](https://joplinapp.org/api/references/rest_api/#properties)<br>Additionally the fields `size`, `tag` and `notebook` is available. | `updated_time, title` |
+|`sort`|No|By which field should be sorted, the `size`, `tag` and `notebook` fields can't be sorted.<br>`<field> DESC/ASC`| `title ASC`|
+| `alias` | No | Rename fields `<field> AS <new field name>`, multiple fields comma seperated. ||
 
 ### Examples
 
@@ -117,9 +122,13 @@ sort: title DESC
 
 ## Options
 
-Go to `Tools > Options > Note overview`
+Settings for the plugin, accessible at `Tools > Options > Note overview`.
 
-- `Update interval in minutes`: How often the overview notes should be updated. Default `5`
+| Option  | Description | Default |
+| --- | --- | --- |
+| `Show note count` | Show the number of notes found. | `off`| 
+| `Update interval in minutes` | How often the overview notes should be updated. | `5` |
+
 
 ## Keyboard Shortcuts
 
