@@ -249,8 +249,8 @@ joplin.plugins.register({
                   let dateObject = new Date(
                     queryNotes.items[queryNotesKey][fieldsArray[field]]
                   );
-                  let dateString = noteoverview.getDateFormated(dateObject.getTime(), dateFormat, timeFormat);
-
+                  let dateString = await noteoverview.getDateFormated(dateObject.getTime(), dateFormat, timeFormat);
+                  
                   if (
                     fieldsArray[field] === "todo_due" &&
                     dateObject.getTime() < now.getTime()
