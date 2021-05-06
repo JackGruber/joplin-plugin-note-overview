@@ -1,5 +1,6 @@
 import joplin from "api";
 import { MenuItemLocation, SettingItemType } from "api/types";
+import { settings } from "./settings";
 
 const moment = require("moment");
 
@@ -9,36 +10,7 @@ joplin.plugins.register({
   onStart: async function () {
     console.info("Note overview plugin started!");
 
-    await joplin.settings.registerSection("noteOverviewSection", {
-      label: "Note overview",
-      iconName: "fas fa-binoculars",
-    });
-
-    await joplin.settings.registerSettings({
-      updateInterval: {
-        value: 5,
-        minimum: 0,
-        maximum: 2880,
-        type: SettingItemType.Int,
-        section: "noteOverviewSection",
-        public: true,
-        label: "Update interval in minutes",
-        description: "0 = disable automatic note overview creation",
-      },
-      showNoteCount: {
-        value: "Off",
-        type: SettingItemType.String,
-        section: "noteOverviewSection",
-        isEnum: true,
-        public: true,
-        label: "Show note count",
-        options: {
-          false: "Off",
-          above: "Above",
-          below: "Below",
-        },
-      },
-    });
+    await settings.register();
 
     const noteoverviewDialog = await joplin.views.dialogs.create(
       "noteoverviewDialog"
