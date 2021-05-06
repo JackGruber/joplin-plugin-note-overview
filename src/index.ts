@@ -3,8 +3,6 @@ import { MenuItemLocation, SettingItemType } from "api/types";
 import { settings } from "./settings";
 import { noteoverview } from "./noteoverview";
 
-const moment = require("moment");
-
 let timer = null;
 
 joplin.plugins.register({
@@ -251,10 +249,8 @@ joplin.plugins.register({
                   let dateObject = new Date(
                     queryNotes.items[queryNotesKey][fieldsArray[field]]
                   );
-                  let dateString =
-                    moment(dateObject.getTime()).format(dateFormat) +
-                    " " +
-                    moment(dateObject.getTime()).format(timeFormat);
+                  let dateString = noteoverview.getDateFormated(dateObject.getTime(), dateFormat, timeFormat);
+
                   if (
                     fieldsArray[field] === "todo_due" &&
                     dateObject.getTime() < now.getTime()
