@@ -32,6 +32,9 @@ export default class JoplinSettings {
      * Registers a new setting section. Like for registerSetting, it is dynamic and needs to be done every time the plugin starts.
      */
     registerSection(name: string, section: SettingSection): Promise<void>;
+
+    registerSettings(settings: Record<string, SettingItem>): Promise<void>;
+
     /**
      * Gets a setting value (only applies to setting you registered from your plugin)
      */
