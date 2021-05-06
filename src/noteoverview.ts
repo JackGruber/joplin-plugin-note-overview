@@ -19,7 +19,6 @@ export namespace noteoverview {
     timeFormat: string
   ): Promise<String> {
     if (epoch !== 0) {
-      const now = new Date();
       const dateObject = new Date(epoch);
       const dateString =
         moment(dateObject.getTime()).format(dateFormat) +
