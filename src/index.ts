@@ -1,6 +1,7 @@
 import joplin from "api";
 import { MenuItemLocation, SettingItemType } from "api/types";
 import { settings } from "./settings";
+import { noteoverview } from "./noteoverview";
 
 const moment = require("moment");
 
@@ -227,7 +228,7 @@ joplin.plugins.register({
               let noteInfos = [];
               for (let field in fieldsArray) {
                 if (fieldsArray[field] === "title") {
-                  let titelEscp: string = await escapeForTable(
+                  let titelEscp: string = await noteoverview.escapeForTable(
                     queryNotes.items[queryNotesKey][fieldsArray[field]]
                   );
                   noteInfos.push(
@@ -273,16 +274,16 @@ joplin.plugins.register({
                   let tags: any = await getTags(
                     queryNotes.items[queryNotesKey]["id"]
                   );
-                  let tagEscp: string = await escapeForTable(tags.join(", "));
+                  let tagEscp: string = await noteoverview.escapeForTable(tags.join(", "));
                   noteInfos.push(tagEscp);
                 } else if (fieldsArray[field] === "notebook") {
                   let notebook: string = await getNotebookName(
                     queryNotes.items[queryNotesKey]["parent_id"]
                   );
-                  let notebookEscp: string = await escapeForTable(notebook);
+                  let notebookEscp: string = await noteoverview.escapeForTable(notebook);
                   noteInfos.push(notebookEscp);
                 } else {
-                  let fieldEscp: string = await escapeForTable(
+                  let fieldEscp: string = await noteoverview.escapeForTable(
                     queryNotes.items[queryNotesKey][fieldsArray[field]]
                   );
                   noteInfos.push(fieldEscp);
@@ -318,18 +319,6 @@ joplin.plugins.register({
         await joplin.data.put(["notes", noteId], null, {
           body: newBodyStr,
         });
-      }
-    }
-
-    // Escape string for markdown table
-    async function escapeForTable(str: string): Promise<string> {
-      if (str !== undefined) {
-        return str
-          .toString()
-          .replace(/(?:\|)/g, "\\|")
-          .replace(/(?:\r\n|\r|\n)/g, "");
-      } else {
-        return str;
       }
     }
 
