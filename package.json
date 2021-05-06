@@ -3,7 +3,7 @@
   "version": "1.4.0",
   "scripts": {
     "dist": "webpack --joplin-plugin-config buildMain && webpack --joplin-plugin-config buildExtraScripts && webpack --joplin-plugin-config createArchive",
-    "prepare": "npm run dist",
+    "prepare": "npm run test && npm run dist",
     "update": "npm install -g generator-joplin && yo joplin --update",
     "test": "jest"
   },
