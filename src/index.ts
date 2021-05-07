@@ -150,11 +150,17 @@ joplin.plugins.register({
       const now = new Date();
       const dateFormat = await joplin.settings.globalValue("dateFormat");
       const timeFormat = await joplin.settings.globalValue("timeFormat");
+      const defaultTodoColoring = await noteoverview.getDefaultToDoColors();
 
       let query: string = await getParameter(settingsBlock, "search", null);
       let fields: string = await getParameter(settingsBlock, "fields", null);
       let sort: string = await getParameter(settingsBlock, "sort", "title ASC");
       const alias: string = await getParameter(settingsBlock, "alias", "");
+      const todoColoring: string = await getParameter(settingsBlock, "todocolor", "");
+      console.log(defaultTodoColoring + "," + todoColoring)
+      const todoColoringObject: object = await noteoverview.getToDoColorObject(defaultTodoColoring + "," + todoColoring);
+
+      
 
       // create array from fields
       let fieldsArray = [];
@@ -181,6 +187,14 @@ joplin.plugins.register({
         dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "notebook");
         dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "tags");
         dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "size");
+
+        // if a todo field is selected, add the other one to
+        if (fieldsArray.includes("todo_due")) {
+          dbFieldsArray.push("todo_completed");
+        }
+        if (fieldsArray.includes("todo_completed")) {
+          dbFieldsArray.push("todo_due");
+        }
 
         let noteCount = 0;
         let queryNotes = null;
@@ -252,12 +266,26 @@ joplin.plugins.register({
                   let dateString = await noteoverview.getDateFormated(dateObject.getTime(), dateFormat, timeFormat);
                   
                   if (
-                    fieldsArray[field] === "todo_due" &&
-                    dateObject.getTime() < now.getTime()
+                    fieldsArray[field] === "todo_due" ||
+                    fieldsArray[field] === "todo_completed"
                   ) {
-                    noteInfos.push(
-                      "<font color='red'>" + dateString + "</font>"
+                    let todoDue = queryNotes.items[queryNotesKey]["todo_due"];
+                    let todocompleted =
+                      queryNotes.items[queryNotesKey]["todo_completed"];
+                    let color = await noteoverview.getToDoDateColor(
+                      todoColoringObject,
+                      todoDue,
+                      todocompleted,
+                      fieldsArray[field]
                     );
+
+                    if(color !== "") {
+                      noteInfos.push(
+                        "<font color='" + color + "'>" + dateString + "</font>"
+                      );
+                    } else {
+                      noteInfos.push(dateString);
+                    }
                   } else {
                     noteInfos.push(dateString);
                   }
