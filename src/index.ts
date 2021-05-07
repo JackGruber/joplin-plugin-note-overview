@@ -202,7 +202,8 @@ joplin.plugins.register({
         dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "notebook");
         dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "tags");
         dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "size");
-        dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "filename");
+        dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "file");
+        dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "file_size");
 
         // if a todo field is selected, add the other one to
         if (fieldsArray.includes("todo_due")) {
@@ -309,6 +310,16 @@ joplin.plugins.register({
                   } else {
                     noteInfos.push(dateString);
                   }
+                } else if (fieldsArray[field] === "file") {
+                  let filename: string[] = await noteoverview.getFileNames(
+                    queryNotes.items[queryNotesKey].id, false
+                  );
+                  noteInfos.push(filename.join("<br>"));
+                } else if (fieldsArray[field] === "file_size") {
+                  let filenamesize: string[] = await noteoverview.getFileNames(
+                    queryNotes.items[queryNotesKey].id, true
+                  );
+                  noteInfos.push(filenamesize.join("<br>"));
                 } else if (fieldsArray[field] === "size") {
                   let size: string = await getNoteSize(
                     queryNotes.items[queryNotesKey].id

@@ -124,5 +124,33 @@ export namespace noteoverview {
       return (size / 1024 / 1024 / 1024).toFixed(2) + " GiB";
     }
   }
-  
+
+  export async function getFileNames(
+    noteId: string,
+    getSize: boolean
+  ): Promise<Array<string>> {
+    let pageNum = 1;
+    let files = [];
+
+    do {
+      try {
+        var resources = await joplin.data.get(["notes", noteId, "resources"], {
+          fields: "id, size, title",
+          limit: 50,
+          page: pageNum++,
+          sort: "title ASC",
+        });
+      } catch (e) {
+        console.error("getFileNames " + e);
+        return files;
+      }
+      console.log(resources);
+      for (const resource of resources.items) {
+        let size = await noteoverview.humanFrendlyStorageSize(resource.size);
+        files.push(resource.title + (getSize === true ? " - " + size : ""));
+      }
+    } while (resources.has_more);
+    console.log(files)
+    return files;
+  }
 }
