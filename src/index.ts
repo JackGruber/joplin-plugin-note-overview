@@ -78,7 +78,7 @@ joplin.plugins.register({
           let newBody = [];
           let orgContent = null;
           console.info("Check note " + noteTitle + " (" + noteId + ")");
-          
+
           // Search all note-overview blocks in note
           const noteOverviewRegEx = /(<!--\s?note-overview-plugin(?:[\w\W]*?)-->)([\w\W]*?)(<!--endoverview-->|(?=<!--\s?note-overview-plugin)|$)/gi;
           let regExMatch = null;
@@ -93,7 +93,7 @@ joplin.plugins.register({
             // add original conten before the settings block
             if (startOrgTextIndex != startIndex) {
               orgContent = noteBody.substring(startOrgTextIndex, startIndex);
-              if(startOrgTextIndex == 0) {
+              if (startOrgTextIndex == 0) {
                 orgContent = await removeNewLineAt(orgContent, false, true);
               } else {
                 orgContent = await removeNewLineAt(orgContent, true, true);
@@ -103,7 +103,11 @@ joplin.plugins.register({
             }
             startOrgTextIndex = endIndex;
 
-            let noteOverviewContent = await getNoteOverviewContent(noteId, noteTitle, settingsBlock);
+            let noteOverviewContent = await getNoteOverviewContent(
+              noteId,
+              noteTitle,
+              settingsBlock
+            );
             newBody = [...newBody, ...noteOverviewContent];
           }
 
@@ -124,13 +128,17 @@ joplin.plugins.register({
       } while (overviewNotes.has_more);
     }
 
-    async function removeNewLineAt(content: string, begin: boolean, end: boolean): Promise<string> {
+    async function removeNewLineAt(
+      content: string,
+      begin: boolean,
+      end: boolean
+    ): Promise<string> {
       if (end === true) {
-        if(content.charCodeAt(content.length-1) == 10) {
-          content = content.substring(0, content.length -1);
+        if (content.charCodeAt(content.length - 1) == 10) {
+          content = content.substring(0, content.length - 1);
         }
-        if(content.charCodeAt(content.length-1) == 13) {
-          content = content.substring(0, content.length -1);
+        if (content.charCodeAt(content.length - 1) == 13) {
+          content = content.substring(0, content.length - 1);
         }
       }
 
@@ -146,7 +154,11 @@ joplin.plugins.register({
     }
 
     // Search notes from query and return content
-    async function getNoteOverviewContent(noteId: string, noteTitle: string, settingsBlock: string): Promise<any> {
+    async function getNoteOverviewContent(
+      noteId: string,
+      noteTitle: string,
+      settingsBlock: string
+    ): Promise<any> {
       const now = new Date();
       const dateFormat = await joplin.settings.globalValue("dateFormat");
       const timeFormat = await joplin.settings.globalValue("timeFormat");
@@ -156,11 +168,15 @@ joplin.plugins.register({
       let fields: string = await getParameter(settingsBlock, "fields", null);
       let sort: string = await getParameter(settingsBlock, "sort", "title ASC");
       const alias: string = await getParameter(settingsBlock, "alias", "");
-      const todoColoring: string = await getParameter(settingsBlock, "todocolor", "");
-      console.log(defaultTodoColoring + "," + todoColoring)
-      const todoColoringObject: object = await noteoverview.getToDoColorObject(defaultTodoColoring + "," + todoColoring);
-
-      
+      const todoColoring: string = await getParameter(
+        settingsBlock,
+        "todocolor",
+        ""
+      );
+      console.log(defaultTodoColoring + "," + todoColoring);
+      const todoColoringObject: object = await noteoverview.getToDoColorObject(
+        defaultTodoColoring + "," + todoColoring
+      );
 
       // create array from fields
       let fieldsArray = [];
@@ -187,6 +203,7 @@ joplin.plugins.register({
         dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "notebook");
         dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "tags");
         dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "size");
+        dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "filename");
 
         // if a todo field is selected, add the other one to
         if (fieldsArray.includes("todo_due")) {
@@ -229,7 +246,7 @@ joplin.plugins.register({
                       `
             );
             await joplin.views.dialogs.open(noteoverviewDialog);
-            
+
             let settingsOnly = [];
             settingsOnly.push(settingsBlock);
             return settingsOnly;
@@ -263,8 +280,12 @@ joplin.plugins.register({
                   let dateObject = new Date(
                     queryNotes.items[queryNotesKey][fieldsArray[field]]
                   );
-                  let dateString = await noteoverview.getDateFormated(dateObject.getTime(), dateFormat, timeFormat);
-                  
+                  let dateString = await noteoverview.getDateFormated(
+                    dateObject.getTime(),
+                    dateFormat,
+                    timeFormat
+                  );
+
                   if (
                     fieldsArray[field] === "todo_due" ||
                     fieldsArray[field] === "todo_completed"
@@ -279,7 +300,7 @@ joplin.plugins.register({
                       fieldsArray[field]
                     );
 
-                    if(color !== "") {
+                    if (color !== "") {
                       noteInfos.push(
                         "<font color='" + color + "'>" + dateString + "</font>"
                       );
@@ -298,13 +319,17 @@ joplin.plugins.register({
                   let tags: any = await getTags(
                     queryNotes.items[queryNotesKey]["id"]
                   );
-                  let tagEscp: string = await noteoverview.escapeForTable(tags.join(", "));
+                  let tagEscp: string = await noteoverview.escapeForTable(
+                    tags.join(", ")
+                  );
                   noteInfos.push(tagEscp);
                 } else if (fieldsArray[field] === "notebook") {
                   let notebook: string = await getNotebookName(
                     queryNotes.items[queryNotesKey]["parent_id"]
                   );
-                  let notebookEscp: string = await noteoverview.escapeForTable(notebook);
+                  let notebookEscp: string = await noteoverview.escapeForTable(
+                    notebook
+                  );
                   noteInfos.push(notebookEscp);
                 } else {
                   let fieldEscp: string = await noteoverview.escapeForTable(

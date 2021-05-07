@@ -25,7 +25,9 @@ describe("Date formating", function () {
     const epoch = 0;
     const dateFormat = "DD/MM/YYYY";
     const timeFormat = "hh:mm";
-    expect(await noteoverview.getDateFormated(epoch, dateFormat, timeFormat)).toBe("");
+    expect(
+      await noteoverview.getDateFormated(epoch, dateFormat, timeFormat)
+    ).toBe("");
   });
 
   it(`Get time string`, async () => {
@@ -33,7 +35,9 @@ describe("Date formating", function () {
     const epoch = testDate.getTime();
     const dateFormat = "DD/MM/YYYY";
     const timeFormat = "HH:mm";
-    expect(await noteoverview.getDateFormated(epoch, dateFormat, timeFormat)).toBe("21/06/2021 15:30");
+    expect(
+      await noteoverview.getDateFormated(epoch, dateFormat, timeFormat)
+    ).toBe("21/06/2021 15:30");
   });
 });
 
