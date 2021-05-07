@@ -41,8 +41,8 @@
 
 ## v1.2.0 (2021-01-22)
 
-- New: Field alias
-- New: `size` as field f for output
+- Add: Field alias
+- Add: `size` as field for output
 
 ## v1.1.1 (2021-01-19)
 
@@ -51,7 +51,7 @@
 ## v1.1.0 (2021-01-19)
 
 - Optimization: Use Joplin Date and Time settings
-- New: `tags` and `notebook` as fields for output
+- New: `tag` and `notebook` as fields for output
 
 ## v1.0.0 (2021-01-16)
 
