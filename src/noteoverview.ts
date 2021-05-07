@@ -112,4 +112,17 @@ export namespace noteoverview {
 
     return colors.join(",");
   }
+
+  export async function humanFrendlyStorageSize(size: number): Promise<string> {
+    if (size < 1024) {
+      return size + " Byte";
+    } else if (size < 1024 * 500) {
+      return (size / 1024).toFixed(2) + " KiB";
+    } else if (size < 1024 * 1024 * 500) {
+      return (size / 1024 / 1024).toFixed(2) + " MiB";
+    } else {
+      return (size / 1024 / 1024 / 1024).toFixed(2) + " GiB";
+    }
+  }
+  
 }

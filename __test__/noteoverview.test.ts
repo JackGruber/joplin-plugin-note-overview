@@ -310,3 +310,23 @@ describe("ToDo coloring", function () {
     ).toBe("12");
   });
 });
+
+describe("Singel tests", function () {
+  it(`humanFrendlyStorageSize`, async () => {
+    const testCases = [
+      [50, "50 Byte"],
+      [1024, "1.00 KiB"],
+      [1024 * 1024, "1.00 MiB"],
+      [1024 * 1024 * 10, "10.00 MiB"],
+      [1024 * 1024 * 1024 * 3, "3.00 GiB"],
+      [1024 * 1024 * 1000 * 3, "2.93 GiB"],
+    ];
+
+    for (const t of testCases) {
+      const input = Number(t[0]);
+      const expected = t[1];
+      const actual = await noteoverview.humanFrendlyStorageSize(input);
+      expect(actual).toBe(expected);
+    }
+  });
+});
