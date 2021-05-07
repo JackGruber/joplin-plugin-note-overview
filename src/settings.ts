@@ -39,8 +39,9 @@ export namespace settings {
         type: SettingItemType.String,
         section: "noteOverviewSection",
         public: true,
-        label: "Color: ToDo",
-        description: "HTML color for due_date, when the todo is not completed.",
+        label: "Color: todo [open]",
+        description:
+          "HTML color for the due_date, when the todo is not completed.",
       },
       colorTodoOpenOverdue: {
         value: "red",
@@ -48,9 +49,9 @@ export namespace settings {
         type: SettingItemType.String,
         section: "noteOverviewSection",
         public: true,
-        label: "Color: ToDo, over due date",
+        label: "Color: todo [open_overdue]",
         description:
-          "HTML color for due_date, when the ToDo is over the due date.",
+          "HTML color for the due_date, when the todo is over the due date.",
       },
       colorTodoDone: {
         value: "green;green",
@@ -58,9 +59,9 @@ export namespace settings {
         type: SettingItemType.String,
         section: "noteOverviewSection",
         public: true,
-        label: "Color: ToDo done",
+        label: "Color: todo [done]",
         description:
-          "HTML color for due_date and todo_completed (Seperated by a ;), when the todo is completed.",
+          "HTML color for the due_date and todo_completed, when the todo is completed. Seperate the color for due_date and todo_completed by a ;",
       },
       colorTodoDoneOverdue: {
         value: "orange;orange",
@@ -68,9 +69,9 @@ export namespace settings {
         type: SettingItemType.String,
         section: "noteOverviewSection",
         public: true,
-        label: "Color: ToDo done, over due",
+        label: "Color: todo [done_overdue]",
         description:
-          "HTML color for due_date and todo_completed (Seperated by a ;), was completed after the due date.",
+          "HTML color for the due_date and todo_completed, when the todo was completed after the due date. Seperate the color for due_date and todo_completed by a ;",
       },
       colorTodoDoneNodue: {
         value: "",
@@ -78,9 +79,9 @@ export namespace settings {
         type: SettingItemType.String,
         section: "noteOverviewSection",
         public: true,
-        label: "Color: ToDo, done, no due date",
+        label: "Color: todo [done_nodue]",
         description:
-          "HTML color for todo_completed, when the ToDo was completed but no due date set.",
+          "HTML color for the todo_completed, when the todo was completed but no due date was set.",
       },
     });
   }
