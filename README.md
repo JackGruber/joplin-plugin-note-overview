@@ -47,7 +47,7 @@ Options which can be specified in the codeblock.
 | `fields` | No | Which fields should be output in the table.<br>[Documentation of the possible fields](https://joplinapp.org/api/references/rest_api/#properties)<br>Additionally the fields `size`, `tag` and `notebook` is available. | `updated_time, title` |
 |`sort`|No|By which field should be sorted, the `size`, `tag` and `notebook` fields can't be sorted.<br>`<field> DESC/ASC`| `title ASC`|
 | `alias` | No | Rename fields `<field> AS <new field name>`, multiple fields comma seperated. ||
-| `todocolor` | No | Coloring rule for `todo_due` and `todo_completed` [More infos](#codeblock_option_for_todocolor). | Defaults from settings |
+| `todocolor` | No | Coloring rule for `todo_due` and `todo_completed` [More infos](#codeblock-option-for-todocolor). | Defaults from settings |
 
 #### Codeblock option for todocolor
 
