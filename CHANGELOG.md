@@ -1,5 +1,10 @@
 # Changelog
 
+## not released
+
+- Optimize: An empty date is output instead of `01/01/1970`
+- Add: Option to set the color for `todo_due` and `todo_completed`
+
 ## v1.4.0 (2021-03-30)
 
 - Add: Multiple note overview definitions in one note
