@@ -61,7 +61,7 @@ export namespace settings {
         public: true,
         label: "Color: todo [done]",
         description:
-          "HTML color for the due_date and todo_completed, when the todo is completed. Seperate the color for due_date and todo_completed by a ;",
+          "HTML color for the due_date and todo_completed, when the todo is completed. Seperate the color for due_date and todo_completed by a semicolon.",
       },
       colorTodoDoneOverdue: {
         value: "orange;orange",
@@ -71,7 +71,7 @@ export namespace settings {
         public: true,
         label: "Color: todo [done_overdue]",
         description:
-          "HTML color for the due_date and todo_completed, when the todo was completed after the due date. Seperate the color for due_date and todo_completed by a ;",
+          "HTML color for the due_date and todo_completed, when the todo was completed after the due date. Seperate the color for due_date and todo_completed by a semicolon.",
       },
       colorTodoDoneNodue: {
         value: "",
