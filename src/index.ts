@@ -173,7 +173,6 @@ joplin.plugins.register({
         "todocolor",
         ""
       );
-      console.log(defaultTodoColoring + "," + todoColoring);
       const todoColoringObject: object = await noteoverview.getToDoColorObject(
         defaultTodoColoring + "," + todoColoring
       );
