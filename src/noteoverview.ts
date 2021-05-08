@@ -144,13 +144,11 @@ export namespace noteoverview {
         console.error("getFileNames " + e);
         return files;
       }
-      console.log(resources);
       for (const resource of resources.items) {
         let size = await noteoverview.humanFrendlyStorageSize(resource.size);
         files.push(resource.title + (getSize === true ? " - " + size : ""));
       }
     } while (resources.has_more);
-    console.log(files)
     return files;
   }
 }
