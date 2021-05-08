@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.4.1 (2021-05-08)
+
+- Optimize: An empty date is output instead of `01/01/1970`
+- Add: Option to set the color for `todo_due` and `todo_completed`
+- Add: `file` and `file_size` as fields for output
+- Add: `status` as fields for todo status output
+
 ## v1.4.0 (2021-03-30)
 
 - Add: Multiple note overview definitions in one note
@@ -36,8 +43,8 @@
 
 ## v1.2.0 (2021-01-22)
 
-- New: Field alias
-- New: `size` as field f for output
+- Add: Field alias
+- Add: `size` as field for output
 
 ## v1.1.1 (2021-01-19)
 
@@ -46,7 +53,7 @@
 ## v1.1.0 (2021-01-19)
 
 - Optimization: Use Joplin Date and Time settings
-- New: `tags` and `notebook` as fields for output
+- New: `tag` and `notebook` as fields for output
 
 ## v1.0.0 (2021-01-16)
 

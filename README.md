@@ -44,8 +44,8 @@ Options which can be specified in the codeblock.
 | Option | Required | Description | Default |
 | --- | --- | --- | --- |
 | `search` | Yes | Search filters like in Joplin [Documentation of search filters](https://joplinapp.org/#search-filters). | |
-| `fields` | No | Which fields should be output in the table.<br>[Documentation of the possible fields](https://joplinapp.org/api/references/rest_api/#properties)<br>Additionally the fields `size`, `tag` and `notebook` is available. | `updated_time, title` |
-|`sort`|No|By which field should be sorted, the `size`, `tag` and `notebook` fields can't be sorted.<br>`<field> DESC/ASC`| `title ASC`|
+| `fields` | No | Which fields should be output in the table.<br>[Documentation of the possible fields](https://joplinapp.org/api/references/rest_api/#properties)<br>Additionally the fields `status` (for todos), `file`, `file_size`, `size`, `tag` and `notebook` is available. | `updated_time, title` |
+|`sort`|No|By which field should be sorted, the `status`, `file`, `file_size`, `size`, `tag` and `notebook` fields can't be sorted.<br>`<field> DESC/ASC`| `title ASC`|
 | `alias` | No | Rename fields `<field> AS <new field name>`, multiple fields comma seperated. ||
 
 ### Examples
@@ -57,6 +57,16 @@ Options which can be specified in the codeblock.
 search: type:todo iscompleted:0
 fields: todo_due, title, tags, notebook
 sort: todo_due ASC
+-->
+```
+
+#### Show all ToDos with status
+
+```
+<!-- note-overview-plugin
+search: type:todo
+fields: status, todo_due, title
+sort: todo_completed ASC
 -->
 ```
 
@@ -89,7 +99,6 @@ fields: todo_due, title
 sort: todo_due ASC
 -->
 ```
-
 
 #### Rename fields
 
@@ -128,7 +137,16 @@ Settings for the plugin, accessible at `Tools > Options > Note overview`.
 | --- | --- | --- |
 | `Show note count` | Show the number of notes found. | `off`| 
 | `Update interval in minutes` | How often the overview notes should be updated. | `5` |
+| `Field status: open todo` | Text for the `status` field, when the todo is not completed. |  |
+| `Field status: todo completed` | Text for the `status` field, when the todo is completed. |  |
+| `Field status: todo over due` | Text for the `status` field, when the due date of the todo is exceeded. |  |
 
+
+| `Color: todo [open]` | HTML color for the `due_date`, when the todo is not completed. |  |
+| `Color: todo [open_overdue]` | HTML color for the `due_date`, when the todo is over the due date. | `red` |
+| `Color: todo [done]` | HTML color for the `due_date` and `todo_completed`, when the todo is completed. Seperate the color for due_date and todo_completed by a `;`. | `limegreen;limegreen` |
+| `Color: todo [done_overdue]` | HTML color for the `due_date` and `todo_completed`, when the todo was completed after the due date. Seperate the color for due_date and todo_completed by a `;`. | `orange;orange` |
+| `Color: todo [done_nodue]` | HTML color for the `todo_completed`, when the todo was completed but no due date was set. |  |
 
 ## Keyboard Shortcuts
 
