@@ -54,7 +54,7 @@ export namespace settings {
           "HTML color for the due_date, when the todo is over the due date.",
       },
       colorTodoDone: {
-        value: "green;green",
+        value: "limegreen;limegreen",
         advanced: true,
         type: SettingItemType.String,
         section: "noteOverviewSection",

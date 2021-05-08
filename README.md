@@ -129,7 +129,7 @@ Settings for the plugin, accessible at `Tools > Options > Note overview`.
 | `Update interval in minutes` | How often the overview notes should be updated. | `5` |
 | `Color: todo [open]` | HTML color for the `due_date`, when the todo is not completed. |  |
 | `Color: todo [open_overdue]` | HTML color for the `due_date`, when the todo is over the due date. | `red` |
-| `Color: todo [done]` | HTML color for the `due_date` and `todo_completed`, when the todo is completed. Seperate the color for due_date and todo_completed by a `;`. | `green` |
+| `Color: todo [done]` | HTML color for the `due_date` and `todo_completed`, when the todo is completed. Seperate the color for due_date and todo_completed by a `;`. | `limegreen;limegreen` |
 | `Color: todo [done_overdue]` | HTML color for the `due_date` and `todo_completed`, when the todo was completed after the due date. Seperate the color for due_date and todo_completed by a `;`. | `orange;orange` |
 | `Color: todo [done_nodue]` | HTML color for the `todo_completed`, when the todo was completed but no due date was set. |  |
 
