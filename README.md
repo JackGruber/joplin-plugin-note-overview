@@ -47,26 +47,6 @@ Options which can be specified in the codeblock.
 | `fields` | No | Which fields should be output in the table.<br>[Documentation of the possible fields](https://joplinapp.org/api/references/rest_api/#properties)<br>Additionally the fields `file`, `file_size`, `size`, `tag` and `notebook` is available. | `updated_time, title` |
 |`sort`|No|By which field should be sorted, the `file`, `file_size`, `size`, `tag` and `notebook` fields can't be sorted.<br>`<field> DESC/ASC`| `title ASC`|
 | `alias` | No | Rename fields `<field> AS <new field name>`, multiple fields comma seperated. ||
-| `todocolor` | No | Coloring rule for `todo_due` and `todo_completed` [More infos](#codeblock-option-for-todocolor). | Defaults from settings |
-
-#### Codeblock option for todocolor
-
-The color options can be combined freely and are separated from each other by `,`. The colors are specified as html color code.
-If an option is not set, the color is taken from the plugin settings.
-The following color options are available:
-
-| Option | Description |
-| --- | --- |
-| `open` | HTML color for the `due_date`, when the todo is not completed. |
-| `open_overdue` | HTML color for the `due_date`, when the todo is over the due date. |
-| `done` | HTML color for the `due_date` and `todo_completed`, when the todo is completed. Seperate the color for due_date and todo_completed by a `;`. |
-| `done_overdue` | HTML color for the `due_date` and `todo_completed`, when the todo was completed after the due date. Seperate the color for due_date and todo_completed by a `;`. |
-| `done_nodue` | HTML color for the `todo_completed`, when the todo was completed but no due date was set. |
-
-Examples:
-
-- `todocolor: open_overdue:#FF0000`
-- `todocolor: open_overdue:#FF0000,done:#00FF00;#00FF00`
 
 ### Examples
 
@@ -107,17 +87,6 @@ sort: todo_due ASC
 search: -due:19700201 iscompleted:0
 fields: todo_due, title
 sort: todo_due ASC
--->
-```
-
-#### Set colors for ToDo
-
-```
-<!-- note-overview-plugin
-search: type:todo
-fields: todo_due, todo_completed, title
-sort: todo_due ASC
-todocolor: open_overdue:#FF0000,done:#00FF00;#00FF00,done_overdue:#FFBF00;#FFBF00
 -->
 ```
 
