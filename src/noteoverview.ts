@@ -151,4 +151,29 @@ export namespace noteoverview {
     } while (resources.has_more);
     return files;
   }
+
+  export async function getToDoStatus(
+    todo_due: number,
+    todo_completed: number
+  ) {
+    const now = new Date();
+    if (todo_completed === 0 && todo_due !== 0 && todo_due < now.getTime())
+      return "todo_overdue";
+    else if (todo_completed !== 0) return "todo_done";
+    else if (todo_completed === 0) return "todo_open";
+    else return "";
+  }
+
+  export async function getDefaultToDoStatusText(): Promise<Object> {
+    let status = {
+      todo_overdue: "",
+      todo_open: "",
+      todo_done: "",
+    };
+    status["todo_overdue"] = await joplin.settings.value("todoStatusOverdue");
+    status["todo_open"] = await joplin.settings.value("todoStatusOpen");
+    status["todo_done"] = await joplin.settings.value("todoStatusDone");
+
+    return status;
+  }
 }

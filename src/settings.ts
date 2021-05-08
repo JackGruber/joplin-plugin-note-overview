@@ -33,6 +33,36 @@ export namespace settings {
         },
       },
 
+      todoStatusOpen: {
+        value: "",
+        advanced: true,
+        type: SettingItemType.String,
+        section: "noteOverviewSection",
+        public: true,
+        label: "Field status: open todo",
+        description:
+          "Text for the status field, when the todo is not completed.",
+      },
+      todoStatusDone: {
+        value: "✔",
+        advanced: true,
+        type: SettingItemType.String,
+        section: "noteOverviewSection",
+        public: true,
+        label: "Field status: todo completed",
+        description: "Text for the status field, when the todo is completed.",
+      },
+      todoStatusOverdue: {
+        value: "❗",
+        advanced: true,
+        type: SettingItemType.String,
+        section: "noteOverviewSection",
+        public: true,
+        label: "Field status: todo over due",
+        description:
+          "Text for the `status` field, when the due date of the todo is exceeded.",
+      },
+
       colorTodoOpen: {
         value: "",
         advanced: true,

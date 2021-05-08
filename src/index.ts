@@ -163,6 +163,7 @@ joplin.plugins.register({
       const dateFormat = await joplin.settings.globalValue("dateFormat");
       const timeFormat = await joplin.settings.globalValue("timeFormat");
       const defaultTodoColoring = await noteoverview.getDefaultToDoColors();
+      const defaultTodoStatusText = await noteoverview.getDefaultToDoStatusText();
 
       let query: string = await getParameter(settingsBlock, "search", null);
       let fields: string = await getParameter(settingsBlock, "fields", null);
@@ -204,6 +205,7 @@ joplin.plugins.register({
         dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "size");
         dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "file");
         dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "file_size");
+        dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "status");
 
         // if a todo field is selected, add the other one to
         if (fieldsArray.includes("todo_due")) {
@@ -211,6 +213,12 @@ joplin.plugins.register({
         }
         if (fieldsArray.includes("todo_completed")) {
           dbFieldsArray.push("todo_due");
+        }
+
+        // include todo fields for the status field calculation
+        if (fieldsArray.includes("status")) {
+          dbFieldsArray.push("todo_due");
+          dbFieldsArray.push("todo_completed");
         }
 
         let noteCount = 0;
@@ -310,6 +318,18 @@ joplin.plugins.register({
                   } else {
                     noteInfos.push(dateString);
                   }
+                } else if (fieldsArray[field] === "status") {
+                  let todoDue = queryNotes.items[queryNotesKey]["todo_due"];
+                  let todocompleted =
+                    queryNotes.items[queryNotesKey]["todo_completed"];
+                  let status: string = await noteoverview.getToDoStatus(
+                    todoDue,
+                    todocompleted
+                  );
+                  let statusText: string = await noteoverview.escapeForTable(
+                    defaultTodoStatusText[status]
+                  );
+                  noteInfos.push(statusText);
                 } else if (fieldsArray[field] === "file") {
                   let filename: string[] = await noteoverview.getFileNames(
                     queryNotes.items[queryNotesKey].id, false

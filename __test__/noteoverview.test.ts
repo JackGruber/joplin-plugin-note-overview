@@ -41,6 +41,28 @@ describe("Date formating", function () {
   });
 });
 
+describe("ToDo status text", function () {
+  it(`Status `, async () => {
+    const now = new Date().getTime();
+
+    const testCases = [
+      [0, 0, "todo_open"],
+      [0, now, "todo_done"],
+      [now - 86400, 0, "todo_overdue"],
+      [now + 86400, now - 86400, "todo_done"],
+      [now - 86400, now + 86400, "todo_done"],
+    ];
+
+    for (const t of testCases) {
+      const todo_due = Number(t[0]);
+      const todo_completed = Number(t[1]);
+      const expected = t[2];
+      const actual = await noteoverview.getToDoStatus(todo_due, todo_completed);
+      expect(actual).toBe(expected);
+    }
+  });
+});
+
 describe("ToDo coloring", function () {
   it(`Get coloring object`, async () => {
     const coloring = await noteoverview.getToDoColorObject(
