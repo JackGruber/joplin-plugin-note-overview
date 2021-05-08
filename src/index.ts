@@ -332,12 +332,14 @@ joplin.plugins.register({
                   noteInfos.push(statusText);
                 } else if (fieldsArray[field] === "file") {
                   let filename: string[] = await noteoverview.getFileNames(
-                    queryNotes.items[queryNotesKey].id, false
+                    queryNotes.items[queryNotesKey].id,
+                    false
                   );
                   noteInfos.push(filename.join("<br>"));
                 } else if (fieldsArray[field] === "file_size") {
                   let filenamesize: string[] = await noteoverview.getFileNames(
-                    queryNotes.items[queryNotesKey].id, true
+                    queryNotes.items[queryNotesKey].id,
+                    true
                   );
                   noteInfos.push(filenamesize.join("<br>"));
                 } else if (fieldsArray[field] === "size") {
