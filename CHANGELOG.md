@@ -1,6 +1,6 @@
 # Changelog
 
-## not released
+## v1.4.1 (2021-05-08)
 
 - Optimize: An empty date is output instead of `01/01/1970`
 - Add: Option to set the color for `todo_due` and `todo_completed`
