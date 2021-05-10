@@ -140,8 +140,6 @@ Settings for the plugin, accessible at `Tools > Options > Note overview`.
 | `Field status: open todo` | Text for the `status` field, when the todo is not completed. |  |
 | `Field status: todo completed` | Text for the `status` field, when the todo is completed. |  |
 | `Field status: todo over due` | Text for the `status` field, when the due date of the todo is exceeded. |  |
-
-
 | `Color: todo [open]` | HTML color for the `due_date`, when the todo is not completed. |  |
 | `Color: todo [open_overdue]` | HTML color for the `due_date`, when the todo is over the due date. | `red` |
 | `Color: todo [done]` | HTML color for the `due_date` and `todo_completed`, when the todo is completed. Seperate the color for due_date and todo_completed by a `;`. | `limegreen;limegreen` |
