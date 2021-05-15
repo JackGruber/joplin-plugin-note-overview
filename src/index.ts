@@ -348,7 +348,7 @@ joplin.plugins.register({
                   );
                   noteInfos.push(size);
                 } else if (fieldsArray[field] === "tags") {
-                  let tags: any = await getTags(
+                  let tags: any = await noteoverview.getTags(
                     queryNotes.items[queryNotesKey]["id"]
                   );
                   let tagEscp: string = await noteoverview.escapeForTable(
@@ -476,29 +476,6 @@ joplin.plugins.register({
         return "n/a (" + id + ")";
       }
       return folder.title;
-    }
-
-    // Get all tags title as array for a note id
-    async function getTags(noteId): Promise<any> {
-      const tagNames = [];
-      let pageNum = 1;
-      do {
-        try {
-          var tags = await joplin.data.get(["notes", noteId, "tags"], {
-            fields: "id, title, parent_id",
-            limit: 50,
-            page: pageNum++,
-          });
-        } catch (e) {
-          console.error("getTags " + e);
-          tagNames.push("n/a");
-          return tagNames;
-        }
-        for (const tag of tags.items) {
-          tagNames.push(tag.title);
-        }
-      } while (tags.has_more);
-      return tagNames;
     }
 
     // Remove all occurens of value from array

@@ -2,6 +2,30 @@ import * as moment from "moment";
 import joplin from "api";
 
 export namespace noteoverview {
+    // Get all tags title as array for a note id
+    export async function getTags(noteId): Promise<any> {
+      const tagNames = [];
+      let pageNum = 1;
+      do {
+        try {
+          var tags = await joplin.data.get(["notes", noteId, "tags"], {
+            fields: "id, title, parent_id",
+            limit: 50,
+            page: pageNum++,
+          });
+        } catch (e) {
+          console.error("getTags " + e);
+          tagNames.push("n/a");
+          return tagNames;
+        }
+        for (const tag of tags.items) {
+          tagNames.push(tag.title);
+        }
+      } while (tags.has_more);
+      return tagNames;
+    }
+
+
   // Escape string for markdown table
   export async function escapeForTable(str: string): Promise<string> {
     if (str !== undefined) {
