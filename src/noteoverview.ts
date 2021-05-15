@@ -199,10 +199,10 @@ export namespace noteoverview {
     let color = coloring["todo"][colorType];
     if (color.indexOf(";") !== -1) {
       color = color.split(";");
-    } else if(color.indexOf(",") !== -1) {
+    } else if (color.indexOf(",") !== -1) {
       color = color.split(",");
     } else {
-      color = [ color, color ];
+      color = [color, color];
     }
 
     if (type === "todo_due") return color[0];
