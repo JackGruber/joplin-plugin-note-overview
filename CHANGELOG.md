@@ -1,5 +1,9 @@
 # Changelog
 
+## Not released
+
+- Improved: Sort the tags in the field `tags`
+
 ## v1.4.1 (2021-05-08)
 
 - Optimize: An empty date is output instead of `01/01/1970`
