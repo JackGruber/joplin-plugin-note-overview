@@ -15,6 +15,7 @@ joplin.plugins.register({
     const noteoverviewDialog = await joplin.views.dialogs.create(
       "noteoverviewDialog"
     );
+    await noteoverview.setDialog(noteoverviewDialog);
 
     await joplin.commands.register({
       name: "createNoteOverview",
@@ -97,6 +98,7 @@ joplin.plugins.register({
             } catch (error) {
               console.error("YAML parse error")
               console.error(error)
+              await noteoverview.showError(noteTitle, error.message, settingsBlock);
               return;
             }
 
@@ -244,23 +246,8 @@ joplin.plugins.register({
               limit: 50,
               page: pageQueryNotes++,
             });
-          } catch (e) {
-            await joplin.views.dialogs.setButtons(noteoverviewDialog, [
-              { id: "ok" },
-            ]);
-            await joplin.views.dialogs.setHtml(
-              noteoverviewDialog,
-              `
-                      <div style="overflow-wrap: break-word;">
-                        <h3>Noteoverview error</h3>
-                        <p>Note: ${noteTitle}</p>
-                        <p>Fields: ${fieldsArray.join(", ")}</p>
-                        <p>Sort: ${sortArray.join(", ")}</p>
-                      </div>
-                      `
-            );
-            await joplin.views.dialogs.open(noteoverviewDialog);
-
+          } catch (error) {
+            await noteoverview.showError(noteTitle, error.message, "");
             let settingsOnly = [];
             settingsOnly.unshift (await noteoverview.createSettingsBlock(noteoverviewSettings));
             return settingsOnly;

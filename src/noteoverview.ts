@@ -1,10 +1,13 @@
 import * as moment from "moment";
 import joplin from "api";
 //import * as naturalCompare from 'string-natural-compare';
-const naturalCompare = require('string-natural-compare');
-import * as YAML from 'yaml'
+let noteoverviewDialog = null;
 
 export namespace noteoverview {
+  export async function setDialog(dialog) {
+    noteoverviewDialog = dialog;
+  }
+
     // Get all tags title as array for a note id
     export async function getTags(noteId): Promise<any> {
       const tagNames = [];
@@ -41,6 +44,37 @@ export namespace noteoverview {
     return settingsBlock.join("\n");
   }
 
+  export async function showError(
+    noteTitle: string,
+    info: string = null,
+    noteoverviewSettings: string = null
+  ) {
+    await joplin.views.dialogs.setButtons(noteoverviewDialog, [{ id: "ok" }]);
+    let msg = [];
+
+    msg.push('<div style="overflow-wrap: break-word;">')
+    msg.push('<h3>Noteoverview error</h3>')
+    msg.push('<p><b>Note:</b>')
+    msg.push(noteTitle)
+    msg.push('</p>')
+    
+    if(info) {
+      msg.push('<p>')
+      msg.push( info)
+      msg.push('</p>')
+    }
+
+    if(noteoverviewSettings) {
+      msg.push('<div>')
+      msg.push( noteoverviewSettings.replace(/\n/g,"<br/>").replace(/\s/g,"&nbsp;"))
+      msg.push('</div>')
+    }
+
+    msg.push('</div>')
+
+    await joplin.views.dialogs.setHtml(noteoverviewDialog, msg.join("\n"));
+    await joplin.views.dialogs.open(noteoverviewDialog);
+  }
 
   // Escape string for markdown table
   export async function escapeForTable(str: string): Promise<string> {
