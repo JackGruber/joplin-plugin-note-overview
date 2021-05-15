@@ -29,7 +29,8 @@
     "yargs": "^16.2.0"
   },
   "dependencies": {
-    "moment": "^2.29.1"
+    "moment": "^2.29.1",
+    "string-natural-compare": "^3.0.1"
   },
   "jest": {
     "transform": {
