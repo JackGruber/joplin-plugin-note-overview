@@ -129,6 +129,105 @@ describe("ToDo coloring", function () {
     ).toBe("2");
   });
 
+  it(`ToDo coloring with ;`, async () => {
+    const now = new Date().getTime();
+    const todo_due = new Date(now + 60 * 60 * 24).getTime();
+    const todo_completed = 0;
+    const coloring = {
+      todo: {
+        done_nodue: "1;2",
+        open_nodue: "3;4",
+        open: "5;6",
+        open_overdue: "7;8",
+        done: "9;10",
+        done_overdue: "11;12",
+      },
+    };
+
+    expect(
+      await noteoverview.getToDoDateColor(
+        coloring,
+        todo_due,
+        todo_completed,
+        "todo_due"
+      )
+    ).toBe("5");
+    expect(
+      await noteoverview.getToDoDateColor(
+        coloring,
+        todo_due,
+        todo_completed,
+        "todo_completed"
+      )
+    ).toBe("6");
+  });
+
+  it(`ToDo coloring only one color`, async () => {
+    const now = new Date().getTime();
+    const todo_due = new Date(now + 60 * 60 * 24).getTime();
+    const todo_completed = 0;
+    const coloring = {
+      todo: {
+        done_nodue: "1;2",
+        open_nodue: "3;4",
+        open: "5",
+        open_overdue: "7;8",
+        done: "9;10",
+        done_overdue: "11;12",
+      },
+    };
+
+    expect(
+      await noteoverview.getToDoDateColor(
+        coloring,
+        todo_due,
+        todo_completed,
+        "todo_due"
+      )
+    ).toBe("5");
+    expect(
+      await noteoverview.getToDoDateColor(
+        coloring,
+        todo_due,
+        todo_completed,
+        "todo_completed"
+      )
+    ).toBe("5");
+  });
+
+  it(`ToDo coloring with ,`, async () => {
+    const now = new Date().getTime();
+    const todo_due = new Date(now + 60 * 60 * 24).getTime();
+    const todo_completed = 0;
+    const coloring = {
+      todo: {
+        done_nodue: "1;2",
+        open_nodue: "3;4",
+        open: "5,6",
+        open_overdue: "7;8",
+        done: "9;10",
+        done_overdue: "11;12",
+      },
+    };
+
+    expect(
+      await noteoverview.getToDoDateColor(
+        coloring,
+        todo_due,
+        todo_completed,
+        "todo_due"
+      )
+    ).toBe("5");
+    expect(
+      await noteoverview.getToDoDateColor(
+        coloring,
+        todo_due,
+        todo_completed,
+        "todo_completed"
+      )
+    ).toBe("6");
+  });
+
   it(`ToDo open in due date`, async () => {
     const now = new Date().getTime();
     const todo_due = new Date(now + 60 * 60 * 24).getTime();
@@ -242,7 +341,7 @@ describe("ToDo coloring", function () {
         done_overdue: "11;12",
       },
     };
-    
+
     expect(
       await noteoverview.getToDoDateColor(
         coloring,
