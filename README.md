@@ -37,20 +37,57 @@ Several of these blocks can be included in one note, also between text.
 
 The note content is updated every x minutes (depending on your setting) or manualy by `Tools > Create Note overview`.
 
-### Codeblock options
+## Codeblock options
 
-Options which can be specified in the codeblock.
+Options that can be specified in the in the code block using YAML syntax.
 
-| Option | Required | Description | Default |
-| --- | --- | --- | --- |
-| `search` | Yes | Search filters like in Joplin [Documentation of search filters](https://joplinapp.org/#search-filters). | |
-| `fields` | No | Which fields should be output in the table.<br>[Documentation of the possible fields](https://joplinapp.org/api/references/rest_api/#properties)<br>Additionally the fields `status` (for todos), `file`, `file_size`, `size`, `tag` and `notebook` is available. | `updated_time, title` |
-|`sort`|No|By which field should be sorted, the `status`, `file`, `file_size`, `size`, `tag` and `notebook` fields can't be sorted.<br>`<field> DESC/ASC`| `title ASC`|
-| `alias` | No | Rename fields `<field> AS <new field name>`, multiple fields comma seperated. ||
+### search
 
-### Examples
+The search filter which will be used to create the overview.
+[Documentation of search filters](https://joplinapp.org/#search-filters).
 
-#### ToDo Overview
+```
+search: type:todo
+```
+
+### fields
+
+Which fields should be output in the table.<br>
+All fields of the note are available, a complete list of all field can be found [here](https://joplinapp.org/api/references/rest_api/#properties).
+
+In addition to the Joplin fields, there are the following virtual fields:
+
+- `status`: for todo status
+- `file`: List of all attachments
+- `file_size`: List of all attachments including their size
+- `size`: Size of the note, including attachments
+- `tag`: Assigned tags of the note
+- `notebook`: Folder in which the note is stored
+
+```
+fields: todo_due, title, tags, notebook
+```
+
+### sort
+
+By which field the output should be sorted. It can be only sorted by one field and it's not possible to sort by a virtual field!
+
+```
+sort: todo_due ASC
+```
+
+### alias
+
+This allows renaming the fields in the output.
+
+Syntax: `<field> AS <new field name>`, multiple fields comma seperated.
+```
+alias: todo_due AS Due Date, notebook AS Folder
+```
+
+## Examples
+
+### ToDo Overview
 
 ```
 <!-- note-overview-plugin
@@ -60,7 +97,7 @@ sort: todo_due ASC
 -->
 ```
 
-#### Show all ToDos with status
+### Show all ToDos with status
 
 ```
 <!-- note-overview-plugin
@@ -70,7 +107,7 @@ sort: todo_completed ASC
 -->
 ```
 
-#### Open ToDos for the next 7 days and overdue ToDos
+### Open ToDos for the next 7 days and overdue ToDos
 
 ```
 <!-- note-overview-plugin
@@ -80,7 +117,7 @@ sort: todo_due ASC
 -->
 ```
 
-#### Exclude ToDos with no due date
+### Exclude ToDos with no due date
 
 ```
 <!-- note-overview-plugin
@@ -90,7 +127,7 @@ sort: todo_due ASC
 -->
 ```
 
-#### Show all ToDos with no due date
+### Show all ToDos with no due date
 
 ```
 <!-- note-overview-plugin
@@ -100,7 +137,7 @@ sort: todo_due ASC
 -->
 ```
 
-#### Rename fields
+### Rename fields
 
 ```
 <!-- note-overview-plugin
@@ -110,7 +147,7 @@ alias: updated_time AS Modified
 -->
 ```
 
-#### Notes without a tag
+### Notes without a tag
 
 ```
 <!-- note-overview-plugin
@@ -119,7 +156,7 @@ fields: updated_time, title
 -->
 ```
 
-#### Notes createt last 7 days
+### Notes createt last 7 days
 
 ```
 <!-- note-overview-plugin
@@ -129,7 +166,7 @@ sort: title DESC
 -->
 ```
 
-## Options
+## Plugin options
 
 Settings for the plugin, accessible at `Tools > Options > Note overview`.
 
