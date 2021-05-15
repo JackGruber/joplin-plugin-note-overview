@@ -30,7 +30,8 @@
   },
   "dependencies": {
     "moment": "^2.29.1",
-    "string-natural-compare": "^3.0.1"
+    "string-natural-compare": "^3.0.1",
+    "yaml": "^1.10.2"
   },
   "jest": {
     "transform": {
