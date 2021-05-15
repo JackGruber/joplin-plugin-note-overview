@@ -1,7 +1,7 @@
 import * as moment from "moment";
 import joplin from "api";
-//import * as naturalCompare from 'string-natural-compare';
-const naturalCompare = require('string-natural-compare');
+import * as naturalCompare from 'string-natural-compare';
+
 export namespace noteoverview {
     // Get all tags title as array for a note id
     export async function getTags(noteId): Promise<any> {
