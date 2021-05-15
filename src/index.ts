@@ -180,9 +180,14 @@ joplin.plugins.register({
       const now = new Date();
       const dateFormat = await joplin.settings.globalValue("dateFormat");
       const timeFormat = await joplin.settings.globalValue("timeFormat");
-      const defaultTodoColoring = await noteoverview.getDefaultColors();
-      const defaultTodoStatusText =
-        await noteoverview.getDefaultToDoStatusText();
+
+      // Status text
+      const defaultStatusText =
+        await noteoverview.getDefaultStatusText();
+      let statusTextsNote: Object = noteoverviewSettings["status"]
+        ? noteoverviewSettings["status"]
+        : null;
+        const statusTexts = await mergeObject(defaultStatusText, statusTextsNote);
 
       const query: string = noteoverviewSettings["search"];
       const fields: string = noteoverviewSettings["fields"]
@@ -349,7 +354,7 @@ joplin.plugins.register({
                     todocompleted
                   );
                   let statusText: string = await noteoverview.escapeForTable(
-                    defaultTodoStatusText[status]
+                    statusTexts['todo'][status]
                   );
                   noteInfos.push(statusText);
                 } else if (fieldsArray[field] === "file") {
