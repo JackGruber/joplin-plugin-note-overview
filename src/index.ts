@@ -3,6 +3,7 @@ import { MenuItemLocation, SettingItemType } from "api/types";
 import { settings } from "./settings";
 import { noteoverview } from "./noteoverview";
 import * as YAML from "yaml";
+import { mergeObject } from "./helper";
 
 let timer = null;
 
@@ -204,13 +205,12 @@ joplin.plugins.register({
         : null;
 
       // Coloring for overview
-      let coloringSettings: Object = noteoverviewSettings["coloring"]
+      const defaultTodoColoring = await noteoverview.getDefaultColors();
+      const coloringSettingsNote = noteoverviewSettings.coloring
         ? noteoverviewSettings["coloring"]
         : null;
-      coloringSettings = {
-        ...defaultTodoColoring,
-        ...coloringSettings
-      };
+
+      const coloringSettings = await mergeObject(defaultTodoColoring, coloringSettingsNote);
 
       // create array from fields
       let fieldsArray = [];
