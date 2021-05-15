@@ -211,16 +211,16 @@ export namespace noteoverview {
   }
 
   export async function getDefaultColors(): Promise<Object> {
-    let todoColor = {
-      open_nodue: "",
-      open: await joplin.settings.value("colorTodoOpen"),
-      open_overdue: await joplin.settings.value("colorTodoOpenOverdue"),
-      done: await joplin.settings.value("colorTodoOpenOverdue"),
-      done_overdue: await joplin.settings.value("colorTodoDoneOverdue"),
-      done_nodue: await joplin.settings.value("colorTodoDoneNodue"),
+    let coloring = {
+      todo: {
+        open_nodue: "",
+        open: await joplin.settings.value("colorTodoOpen"),
+        open_overdue: await joplin.settings.value("colorTodoOpenOverdue"),
+        done: await joplin.settings.value("colorTodoOpenOverdue"),
+        done_overdue: await joplin.settings.value("colorTodoDoneOverdue"),
+        done_nodue: await joplin.settings.value("colorTodoDoneNodue"),
+      },
     };
-
-    const coloring = { todo: todoColor };
 
     return coloring;
   }
