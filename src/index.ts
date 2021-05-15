@@ -106,6 +106,7 @@ joplin.plugins.register({
               );
               return;
             }
+            console.log("Search: " + noteovervieSettings['search'])
 
             // add original conten before the settings block
             if (startOrgTextIndex != startIndex) {
