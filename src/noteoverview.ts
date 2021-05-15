@@ -10,35 +10,56 @@ export namespace noteoverview {
     noteoverviewDialog = dialog;
   }
 
-  export async function getImageNr(body:string, imagrNr: number, imageSettings: Object): Promise<string> {
-    const regExresourceId = /!\[([^\]]+|)\]\(:\/(?<resourceId>[\da-z]{32})\)/g
+  export async function getImageNr(
+    body: string,
+    imagrNr: number,
+    imageSettings: Object
+  ): Promise<string> {
+    const regExresourceId = /!\[([^\]]+|)\]\(:\/(?<resourceId>[\da-z]{32})\)/g;
     let ids = [];
     let imageId = null;
     let regExMatch = null;
     while ((regExMatch = regExresourceId.exec(body)) != null) {
-        ids.push(regExMatch['groups']['resourceId'])
+      ids.push(regExMatch["groups"]["resourceId"]);
     }
 
-    const exactnr = imageSettings && imageSettings.hasOwnProperty('exactnr') ? imageSettings['exactnr'] : true;
-    const width = imageSettings && imageSettings.hasOwnProperty('width') ? imageSettings['width'] : "200";
-    const height = imageSettings && imageSettings.hasOwnProperty('height') ? imageSettings['height'] : "200";
+    const exactnr =
+      imageSettings && imageSettings.hasOwnProperty("exactnr")
+        ? imageSettings["exactnr"]
+        : true;
+    const width =
+      imageSettings && imageSettings.hasOwnProperty("width")
+        ? imageSettings["width"]
+        : "200";
+    const height =
+      imageSettings && imageSettings.hasOwnProperty("height")
+        ? imageSettings["height"]
+        : "200";
 
-    if(ids) {
-      if(ids.length >= imagrNr) {
-        imageId = ids[imagrNr -1]
-      } else if(exactnr === false) {
-        imageId = ids[ids.length -1]
+    if (ids) {
+      if (ids.length >= imagrNr) {
+        imageId = ids[imagrNr - 1];
+      } else if (exactnr === false) {
+        imageId = ids[ids.length - 1];
       }
 
-      if(imageId) {
-        if(width != "" || height != "") {
-          return "<img src=':/" + imageId + "' width='" + width + "' height='" + height + "'>"
+      if (imageId) {
+        if (width != "" || height != "") {
+          return (
+            "<img src=':/" +
+            imageId +
+            "' width='" +
+            width +
+            "' height='" +
+            height +
+            "'>"
+          );
         } else {
-          return "![](:/" + imageId + ")"
+          return "![](:/" + imageId + ")";
         }
       }
-    } 
-    
+    }
+
     return "";
   }
 
