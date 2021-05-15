@@ -270,21 +270,20 @@ export namespace noteoverview {
   ) {
     const now = new Date();
     if (todo_completed === 0 && todo_due !== 0 && todo_due < now.getTime())
-      return "todo_overdue";
-    else if (todo_completed !== 0) return "todo_done";
-    else if (todo_completed === 0) return "todo_open";
+      return "overdue";
+    else if (todo_completed !== 0) return "done";
+    else if (todo_completed === 0) return "open";
     else return "";
   }
 
-  export async function getDefaultToDoStatusText(): Promise<Object> {
+  export async function getDefaultStatusText(): Promise<Object> {
     let status = {
-      todo_overdue: "",
-      todo_open: "",
-      todo_done: "",
+      todo: {
+        overdue: await joplin.settings.value("todoStatusOverdue"),
+        open: await joplin.settings.value("todoStatusOpen"),
+        done: await joplin.settings.value("todoStatusDone"),
+      },
     };
-    status["todo_overdue"] = await joplin.settings.value("todoStatusOverdue");
-    status["todo_open"] = await joplin.settings.value("todoStatusOpen");
-    status["todo_done"] = await joplin.settings.value("todoStatusDone");
 
     return status;
   }

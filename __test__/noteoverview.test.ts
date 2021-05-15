@@ -46,11 +46,11 @@ describe("ToDo status text", function () {
     const now = new Date().getTime();
 
     const testCases = [
-      [0, 0, "todo_open"],
-      [0, now, "todo_done"],
-      [now - 86400, 0, "todo_overdue"],
-      [now + 86400, now - 86400, "todo_done"],
-      [now - 86400, now + 86400, "todo_done"],
+      [0, 0, "open"],
+      [0, now, "done"],
+      [now - 86400, 0, "overdue"],
+      [now + 86400, now - 86400, "done"],
+      [now - 86400, now + 86400, "done"],
     ];
 
     for (const t of testCases) {
