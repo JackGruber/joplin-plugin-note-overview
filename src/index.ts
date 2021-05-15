@@ -98,7 +98,7 @@ joplin.plugins.register({
               noteovervieSettings = YAML.parse(settingsBlock);
             } catch (error) {
               console.error("YAML parse error");
-              console.error(error);
+              console.error(error.message);
               await noteoverview.showError(
                 noteTitle,
                 error.message,
