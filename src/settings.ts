@@ -84,24 +84,24 @@ export namespace settings {
           "HTML color for the due_date, when the todo is over the due date.",
       },
       colorTodoDone: {
-        value: "limegreen;limegreen",
+        value: "limegreen,limegreen",
         advanced: true,
         type: SettingItemType.String,
         section: "noteOverviewSection",
         public: true,
         label: "Color: todo [done]",
         description:
-          "HTML color for the due_date and todo_completed, when the todo is completed. Seperate the color for due_date and todo_completed by a semicolon.",
+          "HTML color for the due_date and todo_completed, when the todo is completed. Seperate the color for due_date and todo_completed by a comma.",
       },
       colorTodoDoneOverdue: {
-        value: "orange;orange",
+        value: "orange,orange",
         advanced: true,
         type: SettingItemType.String,
         section: "noteOverviewSection",
         public: true,
         label: "Color: todo [done_overdue]",
         description:
-          "HTML color for the due_date and todo_completed, when the todo was completed after the due date. Seperate the color for due_date and todo_completed by a semicolon.",
+          "HTML color for the due_date and todo_completed, when the todo was completed after the due date. Seperate the color for due_date and todo_completed by a comma.",
       },
       colorTodoDoneNodue: {
         value: "",
