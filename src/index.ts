@@ -497,21 +497,6 @@ joplin.plugins.register({
       return arr;
     }
 
-    // extract settings from block
-    async function getParameter(
-      settings: string,
-      parameter: string,
-      defval: string
-    ): Promise<string> {
-      var regex = new RegExp("^" + parameter + ":\\s?(.*)$", "im");
-      const match = settings.match(regex);
-      if (match) {
-        return match[1].trim();
-      } else {
-        return defval;
-      }
-    }
-
     // Start timer
     if ((await joplin.settings.value("updateInterval")) > 0) {
       runTimedNoteOverview();
