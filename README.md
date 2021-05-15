@@ -63,6 +63,7 @@ In addition to the Joplin fields, there are the following virtual fields:
 - `size`: Size of the note, including attachments
 - `tag`: Assigned tags of the note
 - `notebook`: Folder in which the note is stored
+- `image`: In this field a image resource from the note will be displayed. This field can be configured using the `image` option
 
 ```
 fields: todo_due, title, tags, notebook
@@ -84,6 +85,28 @@ Syntax: `<field> AS <new field name>`, multiple fields comma seperated.
 ```
 alias: todo_due AS Due Date, notebook AS Folder
 ```
+
+### image
+
+This allows you to control the image displayed in the `image` field.
+
+- `nr`: Which image should be displayed
+- `exactnr`:
+  `false` = If the image number is not found, the last available one is used.
+  `true` = Only this exact image number is used.
+- `width`: The image is reduced to this width.
+- `height`: The image is reduced to this height
+
+```
+image:
+    nr: 1
+    exactnr: true
+    width: 200
+    height: 200
+
+```
+
+
 
 ## Examples
 
@@ -165,6 +188,19 @@ fields: title, updated_time
 sort: title DESC
 -->
 ```
+
+### Cooking recipes overview
+
+```
+<!-- note-overview-plugin
+search: notebook:Cooking
+fields: title, image, tags
+image:
+  width: 200
+  height: 200
+-->
+```
+<img src="img/example_image.jpg">
 
 ## Plugin options
 
