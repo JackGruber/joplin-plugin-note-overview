@@ -4,6 +4,38 @@ A note overview is created based on the defined search and the specified fields.
 
 <img src=img/main.jpg>
 
+
+<!-- TOC depthfrom:2 orderedlist:false -->
+
+- [Installation](#installation)
+    - [Automatic](#automatic)
+    - [Manual](#manual)
+- [Usage](#usage)
+- [Codeblock options](#codeblock-options)
+    - [search](#search)
+    - [fields](#fields)
+    - [sort](#sort)
+    - [alias](#alias)
+    - [image](#image)
+- [Examples](#examples)
+    - [ToDo Overview](#todo-overview)
+    - [Show all ToDos with status](#show-all-todos-with-status)
+    - [Open ToDos for the next 7 days and overdue ToDos](#open-todos-for-the-next-7-days-and-overdue-todos)
+    - [Exclude ToDos with no due date](#exclude-todos-with-no-due-date)
+    - [Show all ToDos with no due date](#show-all-todos-with-no-due-date)
+    - [Rename fields](#rename-fields)
+    - [Notes without a tag](#notes-without-a-tag)
+    - [Notes createt last 7 days](#notes-createt-last-7-days)
+    - [Cooking recipes overview](#cooking-recipes-overview)
+- [Plugin options](#plugin-options)
+- [Keyboard Shortcuts](#keyboard-shortcuts)
+- [Build](#build)
+- [Updating the plugin framework](#updating-the-plugin-framework)
+- [Changelog](#changelog)
+- [Links](#links)
+
+<!-- /TOC -->
+
 ## Installation
 
 ### Automatic
