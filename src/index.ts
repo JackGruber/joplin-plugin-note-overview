@@ -193,7 +193,7 @@ joplin.plugins.register({
       const alias: string = noteoverviewSettings["alias"]
         ? noteoverviewSettings["alias"]
         : "";
-      const image: string = noteoverviewSettings["image"]
+      const imageSettings: Object = noteoverviewSettings["image"]
         ? noteoverviewSettings["image"]
         : null;
 
@@ -360,7 +360,7 @@ joplin.plugins.register({
                   noteInfos.push(filenamesize.join("<br>"));
                 } else if (fieldsArray[field] === "image") {
                   let size: string = await noteoverview.getImageNr(
-                    queryNotes.items[queryNotesKey]["body"], image
+                    queryNotes.items[queryNotesKey]["body"], imageSettings && imageSettings['nr'] ? imageSettings['nr'] : 1, imageSettings
                   );
                   noteInfos.push(size);
                 } else if (fieldsArray[field] === "size") {

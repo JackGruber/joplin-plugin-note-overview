@@ -10,7 +10,7 @@ export namespace noteoverview {
     noteoverviewDialog = dialog;
   }
 
-  export async function getImageNr(body:string, imageSettings: Object): Promise<string> {
+  export async function getImageNr(body:string, imagrNr: number, imageSettings: Object): Promise<string> {
     const regExresourceId = /!\[([^\]]+|)\]\(:\/(?<resourceId>[\da-z]{32})\)/g
     let ids = [];
     let imageId = null;
@@ -19,14 +19,13 @@ export namespace noteoverview {
         ids.push(regExMatch['groups']['resourceId'])
     }
 
-    const exactnr = imageSettings && imageSettings['exactnr'] ? imageSettings['exactnr'] : false;
-    const width = imageSettings && imageSettings['width'] ? imageSettings['width'] : 200;
-    const height = imageSettings && imageSettings['height'] ? imageSettings['height'] : 200;
-    const nr = imageSettings && imageSettings['nr'] ? imageSettings['nr'] : 1;
-    
+    const exactnr = imageSettings && imageSettings.hasOwnProperty('exactnr') ? imageSettings['exactnr'] : true;
+    const width = imageSettings && imageSettings.hasOwnProperty('width') ? imageSettings['width'] : "200";
+    const height = imageSettings && imageSettings.hasOwnProperty('height') ? imageSettings['height'] : "200";
+
     if(ids) {
-      if(ids.length >= nr) {
-        imageId = ids[nr -1]
+      if(ids.length >= imagrNr) {
+        imageId = ids[imagrNr -1]
       } else if(exactnr === false) {
         imageId = ids[ids.length -1]
       }
