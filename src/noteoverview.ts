@@ -126,7 +126,7 @@ export namespace noteoverview {
     return coloring;
   }
 
-  export async function getDefaultToDoColors(): Promise<String> {
+  export async function getDefaultToDoColors(): Promise<string> {
     let colors = [];
     colors.push("open:" + (await joplin.settings.value("colorTodoOpen")));
     colors.push(

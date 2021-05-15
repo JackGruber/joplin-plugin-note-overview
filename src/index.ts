@@ -165,17 +165,9 @@ joplin.plugins.register({
       const defaultTodoColoring = await noteoverview.getDefaultToDoColors();
       const defaultTodoStatusText = await noteoverview.getDefaultToDoStatusText();
 
-      let query: string = await getParameter(settingsBlock, "search", null);
-      let fields: string = await getParameter(settingsBlock, "fields", null);
-      let sort: string = await getParameter(settingsBlock, "sort", "title ASC");
-      const alias: string = await getParameter(settingsBlock, "alias", "");
-      const todoColoring: string = await getParameter(
-        settingsBlock,
-        "todocolor",
-        ""
-      );
+
       const todoColoringObject: object = await noteoverview.getToDoColorObject(
-        defaultTodoColoring + "," + todoColoring
+        defaultTodoColoring
       );
 
       // create array from fields
