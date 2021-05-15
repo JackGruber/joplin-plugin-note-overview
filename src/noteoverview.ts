@@ -1,6 +1,8 @@
 import * as moment from "moment";
 import joplin from "api";
 import * as naturalCompare from 'string-natural-compare';
+import * as YAML from 'yaml'
+
 let noteoverviewDialog = null;
 
 export namespace noteoverview {
