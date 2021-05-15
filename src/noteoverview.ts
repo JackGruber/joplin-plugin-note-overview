@@ -200,8 +200,7 @@ export namespace noteoverview {
     if (color.indexOf(";") !== -1) {
       color = color.split(";");
     } else {
-      color[0] = color;
-      color[1] = color;
+      color = [ color, color ];
     }
 
     if (type === "todo_due") return color[0];
