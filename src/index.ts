@@ -2,7 +2,7 @@ import joplin from "api";
 import { MenuItemLocation, SettingItemType } from "api/types";
 import { settings } from "./settings";
 import { noteoverview } from "./noteoverview";
-import * as YAML from 'yaml'
+import * as YAML from "yaml";
 
 let timer = null;
 
@@ -82,13 +82,14 @@ joplin.plugins.register({
           console.info("Check note " + noteTitle + " (" + noteId + ")");
 
           // Search all note-overview blocks in note
-          const noteOverviewRegEx = /(<!--\s?note-overview-plugin(?<settings>[\w\W]*?)-->)([\w\W]*?)(<!--endoverview-->|(?=<!--\s?note-overview-plugin)|$)/gi;
+          const noteOverviewRegEx =
+            /(<!--\s?note-overview-plugin(?<settings>[\w\W]*?)-->)([\w\W]*?)(<!--endoverview-->|(?=<!--\s?note-overview-plugin)|$)/gi;
           let regExMatch = null;
           let startOrgTextIndex = 0;
           let startIndex = 0;
           let endIndex = 0;
           while ((regExMatch = noteOverviewRegEx.exec(noteBody)) != null) {
-            let settingsBlock = regExMatch['groups']['settings'];
+            let settingsBlock = regExMatch["groups"]["settings"];
             startIndex = regExMatch.index;
             endIndex = startIndex + regExMatch[0].length;
 
@@ -96,9 +97,13 @@ joplin.plugins.register({
             try {
               noteovervieSettings = YAML.parse(settingsBlock);
             } catch (error) {
-              console.error("YAML parse error")
-              console.error(error)
-              await noteoverview.showError(noteTitle, error.message, settingsBlock);
+              console.error("YAML parse error");
+              console.error(error);
+              await noteoverview.showError(
+                noteTitle,
+                error.message,
+                settingsBlock
+              );
               return;
             }
 
@@ -175,12 +180,19 @@ joplin.plugins.register({
       const dateFormat = await joplin.settings.globalValue("dateFormat");
       const timeFormat = await joplin.settings.globalValue("timeFormat");
       const defaultTodoColoring = await noteoverview.getDefaultToDoColors();
-      const defaultTodoStatusText = await noteoverview.getDefaultToDoStatusText();
+      const defaultTodoStatusText =
+        await noteoverview.getDefaultToDoStatusText();
 
-      const query: string = noteoverviewSettings['search'];
-      const fields: string = noteoverviewSettings['fields'] ? noteoverviewSettings['fields']: null;
-      const sort: string = noteoverviewSettings['sort'] ? noteoverviewSettings['sort']: 'title ASC';
-      const alias: string = noteoverviewSettings['alias'] ? noteoverviewSettings['alias']: '';
+      const query: string = noteoverviewSettings["search"];
+      const fields: string = noteoverviewSettings["fields"]
+        ? noteoverviewSettings["fields"]
+        : null;
+      const sort: string = noteoverviewSettings["sort"]
+        ? noteoverviewSettings["sort"]
+        : "title ASC";
+      const alias: string = noteoverviewSettings["alias"]
+        ? noteoverviewSettings["alias"]
+        : "";
 
       const todoColoringObject: object = await noteoverview.getToDoColorObject(
         defaultTodoColoring
@@ -249,7 +261,9 @@ joplin.plugins.register({
           } catch (error) {
             await noteoverview.showError(noteTitle, error.message, "");
             let settingsOnly = [];
-            settingsOnly.unshift (await noteoverview.createSettingsBlock(noteoverviewSettings));
+            settingsOnly.unshift(
+              await noteoverview.createSettingsBlock(noteoverviewSettings)
+            );
             return settingsOnly;
           }
           for (let queryNotesKey in queryNotes.items) {
@@ -379,7 +393,9 @@ joplin.plugins.register({
         console.info("No search query");
       }
 
-      newBody.unshift (await noteoverview.createSettingsBlock(noteoverviewSettings));
+      newBody.unshift(
+        await noteoverview.createSettingsBlock(noteoverviewSettings)
+      );
       newBody.push("<!--endoverview-->");
       return newBody;
     }

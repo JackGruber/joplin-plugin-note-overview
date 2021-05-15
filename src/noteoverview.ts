@@ -1,7 +1,7 @@
 import * as moment from "moment";
 import joplin from "api";
-import * as naturalCompare from 'string-natural-compare';
-import * as YAML from 'yaml'
+import * as naturalCompare from "string-natural-compare";
+import * as YAML from "yaml";
 
 let noteoverviewDialog = null;
 
@@ -10,39 +10,41 @@ export namespace noteoverview {
     noteoverviewDialog = dialog;
   }
 
-    // Get all tags title as array for a note id
-    export async function getTags(noteId): Promise<any> {
-      const tagNames = [];
-      let pageNum = 1;
-      do {
-        try {
-          var tags = await joplin.data.get(["notes", noteId, "tags"], {
-            fields: "id, title, parent_id",
-            limit: 50,
-            page: pageNum++,
-          });
-        } catch (e) {
-          console.error("getTags " + e);
-          tagNames.push("n/a");
-          return tagNames;
-        }
-        for (const tag of tags.items) {
-          tagNames.push(tag.title);
-        }
-      } while (tags.has_more);
+  // Get all tags title as array for a note id
+  export async function getTags(noteId): Promise<any> {
+    const tagNames = [];
+    let pageNum = 1;
+    do {
+      try {
+        var tags = await joplin.data.get(["notes", noteId, "tags"], {
+          fields: "id, title, parent_id",
+          limit: 50,
+          page: pageNum++,
+        });
+      } catch (e) {
+        console.error("getTags " + e);
+        tagNames.push("n/a");
+        return tagNames;
+      }
+      for (const tag of tags.items) {
+        tagNames.push(tag.title);
+      }
+    } while (tags.has_more);
 
-      tagNames.sort((a, b) => {
-        return naturalCompare(a, b, {caseInsensitive: true});
-      });
+    tagNames.sort((a, b) => {
+      return naturalCompare(a, b, { caseInsensitive: true });
+    });
 
-      return tagNames;
-    }
+    return tagNames;
+  }
 
-  export async function createSettingsBlock(noteoverviewSettings: object): Promise<string> {
+  export async function createSettingsBlock(
+    noteoverviewSettings: object
+  ): Promise<string> {
     let settingsBlock = [];
-    settingsBlock.push("<!-- note-overview-plugin")
+    settingsBlock.push("<!-- note-overview-plugin");
     settingsBlock.push(YAML.stringify(noteoverviewSettings));
-    settingsBlock.push("-->")
+    settingsBlock.push("-->");
     return settingsBlock.join("\n");
   }
 
@@ -54,25 +56,27 @@ export namespace noteoverview {
     await joplin.views.dialogs.setButtons(noteoverviewDialog, [{ id: "ok" }]);
     let msg = [];
 
-    msg.push('<div style="overflow-wrap: break-word;">')
-    msg.push('<h3>Noteoverview error</h3>')
-    msg.push('<p><b>Note:</b>')
-    msg.push(noteTitle)
-    msg.push('</p>')
-    
-    if(info) {
-      msg.push('<p>')
-      msg.push( info)
-      msg.push('</p>')
+    msg.push('<div style="overflow-wrap: break-word;">');
+    msg.push("<h3>Noteoverview error</h3>");
+    msg.push("<p><b>Note:</b>");
+    msg.push(noteTitle);
+    msg.push("</p>");
+
+    if (info) {
+      msg.push("<p>");
+      msg.push(info);
+      msg.push("</p>");
     }
 
-    if(noteoverviewSettings) {
-      msg.push('<div>')
-      msg.push( noteoverviewSettings.replace(/\n/g,"<br/>").replace(/\s/g,"&nbsp;"))
-      msg.push('</div>')
+    if (noteoverviewSettings) {
+      msg.push("<div>");
+      msg.push(
+        noteoverviewSettings.replace(/\n/g, "<br/>").replace(/\s/g, "&nbsp;")
+      );
+      msg.push("</div>");
     }
 
-    msg.push('</div>')
+    msg.push("</div>");
 
     await joplin.views.dialogs.setHtml(noteoverviewDialog, msg.join("\n"));
     await joplin.views.dialogs.open(noteoverviewDialog);
