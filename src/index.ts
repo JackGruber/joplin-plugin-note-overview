@@ -206,7 +206,7 @@ joplin.plugins.register({
 
       // Coloring for overview
       const defaultTodoColoring = await noteoverview.getDefaultColors();
-      const coloringSettingsNote = noteoverviewSettings.coloring
+      const coloringSettingsNote = noteoverviewSettings['coloring']
         ? noteoverviewSettings["coloring"]
         : null;
 
