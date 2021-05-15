@@ -2,6 +2,8 @@ import * as moment from "moment";
 import joplin from "api";
 //import * as naturalCompare from 'string-natural-compare';
 const naturalCompare = require('string-natural-compare');
+import * as YAML from 'yaml'
+
 export namespace noteoverview {
     // Get all tags title as array for a note id
     export async function getTags(noteId): Promise<any> {
@@ -30,6 +32,14 @@ export namespace noteoverview {
 
       return tagNames;
     }
+
+  export async function createSettingsBlock(noteoverviewSettings: object): Promise<string> {
+    let settingsBlock = [];
+    settingsBlock.push("<!-- note-overview-plugin")
+    settingsBlock.push(YAML.stringify(noteoverviewSettings));
+    settingsBlock.push("-->")
+    return settingsBlock.join("\n");
+  }
 
 
   // Escape string for markdown table
