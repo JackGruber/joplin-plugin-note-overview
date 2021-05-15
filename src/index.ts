@@ -193,6 +193,9 @@ joplin.plugins.register({
       const alias: string = noteoverviewSettings["alias"]
         ? noteoverviewSettings["alias"]
         : "";
+      const image: string = noteoverviewSettings["image"]
+        ? noteoverviewSettings["image"]
+        : null;
 
       const todoColoringObject: object = await noteoverview.getToDoColorObject(
         defaultTodoColoring
@@ -226,6 +229,7 @@ joplin.plugins.register({
         dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "file");
         dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "file_size");
         dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "status");
+        dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "image");
 
         // if a todo field is selected, add the other one to
         if (fieldsArray.includes("todo_due")) {
@@ -241,6 +245,11 @@ joplin.plugins.register({
           dbFieldsArray.push("todo_completed");
         }
 
+        // include body 
+        if (fieldsArray.includes("image")) {
+          dbFieldsArray.push("body");
+        }
+        
         let noteCount = 0;
         let queryNotes = null;
         let pageQueryNotes = 1;
@@ -349,6 +358,11 @@ joplin.plugins.register({
                     true
                   );
                   noteInfos.push(filenamesize.join("<br>"));
+                } else if (fieldsArray[field] === "image") {
+                  let size: string = await noteoverview.getImageNr(
+                    queryNotes.items[queryNotesKey]["body"], image
+                  );
+                  noteInfos.push(size);
                 } else if (fieldsArray[field] === "size") {
                   let size: string = await getNoteSize(
                     queryNotes.items[queryNotesKey].id

@@ -10,6 +10,39 @@ export namespace noteoverview {
     noteoverviewDialog = dialog;
   }
 
+  export async function getImageNr(body:string, imageSettings: Object): Promise<string> {
+    const regExresourceId = /!\[([^\]]+|)\]\(:\/(?<resourceId>[\da-z]{32})\)/g
+    let ids = [];
+    let imageId = null;
+    let regExMatch = null;
+    while ((regExMatch = regExresourceId.exec(body)) != null) {
+        ids.push(regExMatch['groups']['resourceId'])
+    }
+
+    const exactnr = imageSettings && imageSettings['exactnr'] ? imageSettings['exactnr'] : false;
+    const width = imageSettings && imageSettings['width'] ? imageSettings['width'] : 200;
+    const height = imageSettings && imageSettings['height'] ? imageSettings['height'] : 200;
+    const nr = imageSettings && imageSettings['nr'] ? imageSettings['nr'] : 1;
+    
+    if(ids) {
+      if(ids.length >= nr) {
+        imageId = ids[nr -1]
+      } else if(exactnr === false) {
+        imageId = ids[ids.length -1]
+      }
+
+      if(imageId) {
+        if(width != "" || height != "") {
+          return "<img src=':/" + imageId + "' width='" + width + "' height='" + height + "'>"
+        } else {
+          return "![](:/" + imageId + ")"
+        }
+      }
+    } 
+    
+    return "";
+  }
+
   // Get all tags title as array for a note id
   export async function getTags(noteId): Promise<any> {
     const tagNames = [];
