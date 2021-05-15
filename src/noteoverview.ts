@@ -175,54 +175,32 @@ export namespace noteoverview {
       return "";
     }
 
-    if (type === "todo_due") return coloring[colorType][0];
-    else if (type === "todo_completed") return coloring[colorType][1];
+    let color = coloring["todo"][colorType];
+    if (color.indexOf(";") !== -1) {
+      color = color.split(";");
+    } else {
+      color[0] = color;
+      color[1] = color;
+    }
+
+    if (type === "todo_due") return color[0];
+    else if (type === "todo_completed") return color[1];
     else return "";
   }
 
-  export async function getToDoColorObject(color: string): Promise<Object> {
-    let coloring = {
-      done_nodue: ["", ""],
-      open_nodue: ["", ""],
-      open: ["", ""],
-      open_overdue: ["", ""],
-      done: ["", ""],
-      done_overdue: ["", ""],
+  export async function getDefaultColors(): Promise<Object> {
+    let todoColor = {
+      open_nodue: "",
+      open: await joplin.settings.value("colorTodoOpen"),
+      open_overdue: await joplin.settings.value("colorTodoOpenOverdue"),
+      done: await joplin.settings.value("colorTodoOpenOverdue"),
+      done_overdue: await joplin.settings.value("colorTodoDoneOverdue"),
+      done_nodue: await joplin.settings.value("colorTodoDoneNodue"),
     };
 
-    try {
-      const set = color.toLowerCase().split(/\s*,\s*/);
-      for (const pair of set) {
-        if (pair.indexOf(":") !== -1) {
-          let key = pair.split(/\s*:\s*/)[0].trim();
-          let color = pair.split(/\s*:\s*/)[1].trim();
-          if (color.indexOf(";") !== -1) coloring[key] = color.split(/\s*;\s*/);
-          else {
-            coloring[key][0] = color.trim();
-            coloring[key][1] = "";
-          }
-        }
-      }
-    } catch (error) {}
+    const coloring = { todo: todoColor };
 
     return coloring;
-  }
-
-  export async function getDefaultToDoColors(): Promise<string> {
-    let colors = [];
-    colors.push("open:" + (await joplin.settings.value("colorTodoOpen")));
-    colors.push(
-      "open_overdue:" + (await joplin.settings.value("colorTodoOpenOverdue"))
-    );
-    colors.push("done:" + (await joplin.settings.value("colorTodoDone")));
-    colors.push(
-      "done_overdue:" + (await joplin.settings.value("colorTodoDoneOverdue"))
-    );
-    colors.push(
-      "done_nodue:" + (await joplin.settings.value("colorTodoDoneNodue"))
-    );
-
-    return colors.join(",");
   }
 
   export async function humanFrendlyStorageSize(size: number): Promise<string> {

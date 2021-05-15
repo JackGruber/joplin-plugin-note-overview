@@ -179,7 +179,7 @@ joplin.plugins.register({
       const now = new Date();
       const dateFormat = await joplin.settings.globalValue("dateFormat");
       const timeFormat = await joplin.settings.globalValue("timeFormat");
-      const defaultTodoColoring = await noteoverview.getDefaultToDoColors();
+      const defaultTodoColoring = await noteoverview.getDefaultColors();
       const defaultTodoStatusText =
         await noteoverview.getDefaultToDoStatusText();
 
@@ -197,9 +197,14 @@ joplin.plugins.register({
         ? noteoverviewSettings["image"]
         : null;
 
-      const todoColoringObject: object = await noteoverview.getToDoColorObject(
-        defaultTodoColoring
-      );
+      // Coloring for overview
+      let coloringSettings: Object = noteoverviewSettings["coloring"]
+        ? noteoverviewSettings["coloring"]
+        : null;
+      coloringSettings = {
+        ...defaultTodoColoring,
+        ...coloringSettings
+      };
 
       // create array from fields
       let fieldsArray = [];
@@ -318,7 +323,7 @@ joplin.plugins.register({
                     let todocompleted =
                       queryNotes.items[queryNotesKey]["todo_completed"];
                     let color = await noteoverview.getToDoDateColor(
-                      todoColoringObject,
+                      coloringSettings,
                       todoDue,
                       todocompleted,
                       fieldsArray[field]
