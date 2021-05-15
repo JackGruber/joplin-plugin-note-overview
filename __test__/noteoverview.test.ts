@@ -352,3 +352,57 @@ describe("Singel tests", function () {
     }
   });
 });
+
+describe("Get image nr X from body", function () {
+  it(`with default settings`, async () => {
+    let imageSettings = null;
+    let imgStr = null;
+    let body = `
+        ![sda äö.png](:/f16103b064d9410384732ec27cd06efb)
+        text
+        ![ad762c6793d46b521cea4b2bf3f01b5e.png](:/a7f9ed618c6d427395d1ef1db2ee2000)
+        text
+        ![](:/766bf08661e51d3897e6314b56f4d113)  
+        `;
+
+    imgStr = await noteoverview.getImageNr(body, 1, imageSettings);
+    expect(imgStr).toBe(
+      `<img src=':/f16103b064d9410384732ec27cd06efb' width='200' height='200'>`
+    );
+
+    imgStr = await noteoverview.getImageNr(body, 3, imageSettings);
+    expect(imgStr).toBe(
+      `<img src=':/766bf08661e51d3897e6314b56f4d113' width='200' height='200'>`
+    );
+
+    imgStr = await noteoverview.getImageNr(body, 4, imageSettings);
+    expect(imgStr).toBe(``);
+  });
+
+  it(`with settings`, async () => {
+    let imageSettings = { width: 100, height: 300, exactnr: false };
+    let imgStr = null;
+    let body = `
+        ![sda äö.png](:/f16103b064d9410384732ec27cd06efb)
+        text
+        ![ad762c6793d46b521cea4b2bf3f01b5e.png](:/a7f9ed618c6d427395d1ef1db2ee2000)
+        text
+        ![](:/766bf08661e51d3897e6314b56f4d113)  
+        `;
+
+    imgStr = await noteoverview.getImageNr(body, 1, imageSettings);
+    expect(imgStr).toBe(
+      `<img src=':/f16103b064d9410384732ec27cd06efb' width='100' height='300'>`
+    );
+
+    imgStr = await noteoverview.getImageNr(body, 3, imageSettings);
+    expect(imgStr).toBe(
+      `<img src=':/766bf08661e51d3897e6314b56f4d113' width='100' height='300'>`
+    );
+
+    imgStr = await noteoverview.getImageNr(body, 4, imageSettings);
+    expect(imgStr).toBe(
+      `<img src=':/766bf08661e51d3897e6314b56f4d113' width='100' height='300'>`
+    );
+  });
+});
