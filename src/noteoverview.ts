@@ -307,7 +307,7 @@ export namespace noteoverview {
     let contentText = markdown;
 
     if (removeMd === true) {
-      let processedMd = remark().use(strip).processSync(markdown);
+      let processedMd = remark().use(strip).processSync(contentText);
       contentText = String(processedMd["contents"]);
       contentText = contentText.replace(/(\s\\?~~|~~\s)/g, " ");
       contentText = contentText.replace(/(\s\\?==|==\s)/g, " ");
