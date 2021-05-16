@@ -1,4 +1,5 @@
 import { noteoverview } from "../src/noteoverview";
+import * as YAML from "yaml";
 
 describe("String escaping for md tables", function () {
   it(`Escape |`, async () => {
@@ -378,6 +379,15 @@ describe("Singel tests", function () {
       const actual = await noteoverview.humanFrendlyStorageSize(input);
       expect(actual).toBe(expected);
     }
+  });
+
+
+  it(`remove last \\n from YAML block`, async () => {
+    const settingsBlock = 'search: tag:task\nfields: status, todo_due\nsort: todo_due ASC'
+    const expected = '<!-- note-overview-plugin\n' + settingsBlock + '\n-->'
+    const settings = YAML.parse(settingsBlock);
+    const actual = await noteoverview.createSettingsBlock(settings);
+    expect(actual).toBe(expected);
   });
 });
 

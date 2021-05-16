@@ -95,8 +95,9 @@ export namespace noteoverview {
     noteoverviewSettings: object
   ): Promise<string> {
     let settingsBlock = [];
+    const yamlBlock = YAML.stringify(noteoverviewSettings);
     settingsBlock.push("<!-- note-overview-plugin");
-    settingsBlock.push(YAML.stringify(noteoverviewSettings));
+    settingsBlock.push(yamlBlock.substring(0, yamlBlock.length - 1));
     settingsBlock.push("-->");
     return settingsBlock.join("\n");
   }
