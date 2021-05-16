@@ -17,6 +17,7 @@ A note overview is created based on the defined search and the specified fields.
     - [sort](#sort)
     - [alias](#alias)
     - [image](#image)
+    - [excerpt](#excerpt)
 - [Examples](#examples)
     - [ToDo Overview](#todo-overview)
     - [Show all ToDos with status](#show-all-todos-with-status)
@@ -96,6 +97,7 @@ In addition to the Joplin fields, there are the following virtual fields:
 - `tag`: Assigned tags of the note
 - `notebook`: Folder in which the note is stored
 - `image`: In this field a image resource from the note will be displayed. This field can be configured using the `image` option
+- `excerpt`: Displays an excerpt of the note body
 
 ```
 fields: todo_due, title, tags, notebook
@@ -135,10 +137,16 @@ image:
     exactnr: true
     width: 200
     height: 200
-
 ```
 
+### excerpt
 
+Displays an excerpt of the note body, the length of the excerpt can be configured using `maxlength`.
+
+```
+excerpt:
+    maxlength: 200
+```
 
 ## Examples
 
