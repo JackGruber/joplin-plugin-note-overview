@@ -303,8 +303,15 @@ export namespace noteoverview {
       excerptSettings && excerptSettings.hasOwnProperty("removemd")
         ? excerptSettings["removemd"]
         : true;
-
+    const imageName =
+        excerptSettings && excerptSettings.hasOwnProperty("imagename")
+          ? excerptSettings["imagename"]
+          : false;
     let contentText = markdown;
+
+    if(imageName === false) {
+      contentText = contentText.replace(/(!\[)([^\]]+)(\]\([^\)]+\))/g, "$1$3")
+    }
 
     if (removeMd === true) {
       let processedMd = remark().use(strip).processSync(contentText);

@@ -466,6 +466,22 @@ describe("get MD excerpt", function () {
     const settings = {maxlength: 20}
     const md = '# h1\nsadkj<br>dsak![](:/asdasdasd)\nkfdsj **dsa** asd\n ## h2'
     const actual = await noteoverview.getMarkdownExcerpt(md, settings);
-    expect(actual.length).toBe(settings.maxLength + 3);
+    expect(actual.length).toBe(settings.maxlength + 3);
+  });
+
+  it(`remove image name`, async () => {
+    const settings = {maxlength: 200, imagename: false}
+    const md = 'some text with a ![Python.svg](:/775dab2e3e234a9a89975db92a365688) image ![test dsa.png](:/775dab2e3e234a9a89975db92a365688)'
+    const expected = 'some text with a image'
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual).toBe(expected);
+  });
+
+  it(`don't remove image name`, async () => {
+    const settings = {maxlength: 200, imagename: true}
+    const md = 'some text with a ![Python.svg](:/775dab2e3e234a9a89975db92a365688) image ![test dsa.png](:/775dab2e3e234a9a89975db92a365688)'
+    const expected = 'some text with a Python.svg image test dsa.png'
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual).toBe(expected);
   });
 });
