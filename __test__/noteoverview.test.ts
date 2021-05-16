@@ -444,3 +444,28 @@ describe("Get image nr X from body", function () {
     );
   });
 });
+
+describe("get MD excerpt", function () {
+  it(`remove ~~ ++ ==`, async () => {
+    const settings = {maxLength: 100}
+    const md = 'test ~~test~~ test ==test== test ++test++ test'
+    const expected = 'test test test test test test test'
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual).toBe(expected);
+  });
+  
+  it(`stripe`, async () => {
+    const settings = {maxLength: 100}
+    const md = '# h1\nsadkj<br>dsak![](:/asdasdasd)\nkfdsj **dsa** asd\n ## h2'
+    const expected = 'h1 sadkjdsak kfdsj dsa asd h2'
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual).toBe(expected);
+  });
+
+  it(`max length`, async () => {
+    const settings = {maxLength: 20}
+    const md = '# h1\nsadkj<br>dsak![](:/asdasdasd)\nkfdsj **dsa** asd\n ## h2'
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual.length).toBe(settings.maxLength + 3);
+  });
+});
