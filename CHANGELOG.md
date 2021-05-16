@@ -3,8 +3,8 @@
 ## Not released
 
 - Improved: Sort the tags in the field `tags`
-- Add: `image` as fields, to display a image resource from the note
-- Add: `excerpt` as fields
+- Add: `image` as field, to display a image resource from the note
+- Add: `excerpt` as field
 
 ## v1.4.1 (2021-05-08)
 
