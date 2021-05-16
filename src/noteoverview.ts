@@ -2,6 +2,8 @@ import * as moment from "moment";
 import joplin from "api";
 import * as naturalCompare from "string-natural-compare";
 import * as YAML from "yaml";
+import * as remark from "remark";
+import * as strip from "strip-markdown";
 
 let noteoverviewDialog = null;
 
@@ -287,5 +289,39 @@ export namespace noteoverview {
     };
 
     return status;
+  }
+
+  export async function getMarkdownExcerpt(
+    markdown: string,
+    excerptSettings: Object
+  ): Promise<string> {
+    const maxExcerptLength =
+      excerptSettings && excerptSettings.hasOwnProperty("maxLength")
+        ? excerptSettings["maxLength"]
+        : 50;
+    const removeMd =
+      excerptSettings && excerptSettings.hasOwnProperty("removeMd")
+        ? excerptSettings["removeMd"]
+        : true;
+
+    let contentText = markdown;
+
+    if (removeMd === true) {
+      let processedMd = remark().use(strip).processSync(markdown);
+      contentText = String(processedMd["contents"]);
+      contentText = contentText.replace(/(\s\\~~|~~\s)/g, "");
+      contentText = contentText.replace(/(\s\\==|==\s)/g, "");
+      contentText = contentText.replace(/(\s\\\+\+|\+\+\s)/g, "");
+    }
+
+    // Trim and normalize whitespace in content text
+    contentText = contentText.trim().replace(/\s+/g, " ");
+    const excerpt = contentText.slice(0, maxExcerptLength);
+
+    if (contentText.length > maxExcerptLength) {
+      return excerpt + "...";
+    }
+
+    return excerpt;
   }
 }

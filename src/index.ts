@@ -203,6 +203,9 @@ joplin.plugins.register({
       const imageSettings: Object = noteoverviewSettings["image"]
         ? noteoverviewSettings["image"]
         : null;
+      const excerptSettings: Object = noteoverviewSettings["excerpt"]
+        ? noteoverviewSettings["excerpt"]
+        : null;
 
       // Coloring for overview
       const defaultTodoColoring = await noteoverview.getDefaultColors();
@@ -241,6 +244,7 @@ joplin.plugins.register({
         dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "file_size");
         dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "status");
         dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "image");
+        dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "excerpt");
 
         // if a todo field is selected, add the other one to
         if (fieldsArray.includes("todo_due")) {
@@ -257,7 +261,7 @@ joplin.plugins.register({
         }
 
         // include body 
-        if (fieldsArray.includes("image")) {
+        if (fieldsArray.includes("image") || fieldsArray.includes("excerpt")) {
           dbFieldsArray.push("body");
         }
         
@@ -369,6 +373,12 @@ joplin.plugins.register({
                     true
                   );
                   noteInfos.push(filenamesize.join("<br>"));
+                } else if (fieldsArray[field] === "excerpt") {
+                  let excerpt = await noteoverview.getMarkdownExcerpt(
+                    queryNotes.items[queryNotesKey]["body"], excerptSettings
+                  );
+                  excerpt = await noteoverview.escapeForTable(excerpt);
+                  noteInfos.push(excerpt);
                 } else if (fieldsArray[field] === "image") {
                   let size: string = await noteoverview.getImageNr(
                     queryNotes.items[queryNotesKey]["body"], imageSettings && imageSettings['nr'] ? imageSettings['nr'] : 1, imageSettings
