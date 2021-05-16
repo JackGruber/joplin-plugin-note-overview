@@ -296,12 +296,12 @@ export namespace noteoverview {
     excerptSettings: Object
   ): Promise<string> {
     const maxExcerptLength =
-      excerptSettings && excerptSettings.hasOwnProperty("maxLength")
-        ? excerptSettings["maxLength"]
+      excerptSettings && excerptSettings.hasOwnProperty("maxlength")
+        ? excerptSettings["maxlength"]
         : 200;
     const removeMd =
-      excerptSettings && excerptSettings.hasOwnProperty("removeMd")
-        ? excerptSettings["removeMd"]
+      excerptSettings && excerptSettings.hasOwnProperty("removemd")
+        ? excerptSettings["removemd"]
         : true;
 
     let contentText = markdown;
