@@ -1,8 +1,14 @@
 # Changelog
 
+## v1.4.2 (2021-05-16)
+
+- Improved: Sort the tags in the field `tags`
+- Add: `image` as field, to display a image resource from the note
+- Add: `excerpt` as field
+
 ## v1.4.1 (2021-05-08)
 
-- Optimize: An empty date is output instead of `01/01/1970`
+- Improved: An empty date is output instead of `01/01/1970`
 - Add: Option to set the color for `todo_due` and `todo_completed`
 - Add: `file` and `file_size` as fields for output
 - Add: `status` as fields for todo status output
@@ -35,7 +41,7 @@
 
 ## v1.3.0 (2021-01-29)
 
-- Optimize: Update the currently selected overview directly
+- Improved: Update the currently selected overview directly
 
 ## v1.2.1 (2021-01-23)
 
@@ -48,11 +54,11 @@
 
 ## v1.1.1 (2021-01-19)
 
-- Optimization: Add more error handling
+- Improved: Add more error handling
 
 ## v1.1.0 (2021-01-19)
 
-- Optimization: Use Joplin Date and Time settings
+- Improved: Use Joplin Date and Time settings
 - New: `tag` and `notebook` as fields for output
 
 ## v1.0.0 (2021-01-16)

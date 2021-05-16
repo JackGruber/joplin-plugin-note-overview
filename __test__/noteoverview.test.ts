@@ -1,4 +1,5 @@
 import { noteoverview } from "../src/noteoverview";
+import * as YAML from "yaml";
 
 describe("String escaping for md tables", function () {
   it(`Escape |`, async () => {
@@ -46,11 +47,11 @@ describe("ToDo status text", function () {
     const now = new Date().getTime();
 
     const testCases = [
-      [0, 0, "todo_open"],
-      [0, now, "todo_done"],
-      [now - 86400, 0, "todo_overdue"],
-      [now + 86400, now - 86400, "todo_done"],
-      [now - 86400, now + 86400, "todo_done"],
+      [0, 0, "open"],
+      [0, now, "done"],
+      [now - 86400, 0, "overdue"],
+      [now + 86400, now - 86400, "done"],
+      [now - 86400, now + 86400, "done"],
     ];
 
     for (const t of testCases) {
@@ -64,131 +65,20 @@ describe("ToDo status text", function () {
 });
 
 describe("ToDo coloring", function () {
-  it(`Get coloring object`, async () => {
-    const coloring = await noteoverview.getToDoColorObject(
-      "done_nodue:1;2,open_nodue:3;4,open:5;6,open_overdue:7;8,done:9;10,done_overdue:11;12"
-    );
-    expect(coloring["done_nodue"][0]).toBe("1");
-    expect(coloring["done_nodue"][1]).toBe("2");
-    expect(coloring["open_nodue"][0]).toBe("3");
-    expect(coloring["open_nodue"][1]).toBe("4");
-    expect(coloring["open"][0]).toBe("5");
-    expect(coloring["open"][1]).toBe("6");
-    expect(coloring["open_overdue"][0]).toBe("7");
-    expect(coloring["open_overdue"][1]).toBe("8");
-    expect(coloring["done"][0]).toBe("9");
-    expect(coloring["done"][1]).toBe("10");
-    expect(coloring["done_overdue"][0]).toBe("11");
-    expect(coloring["done_overdue"][1]).toBe("12");
-  });
-
-  it(`Get coloring object (Empty) on error`, async () => {
-    const coloring = await noteoverview.getToDoColorObject(
-      "done _nodue:1;2;open_nodue:3;4,open:5;6open_overdue:7;8,done:9;10,done_overdue:11;12"
-    );
-    expect(coloring["done_nodue"].length).toBe(2);
-    expect(coloring["open_nodue"].length).toBe(2);
-    expect(coloring["open"].length).toBe(2);
-    expect(coloring["open_overdue"].length).toBe(2);
-    expect(coloring["done"].length).toBe(2);
-    expect(coloring["done_overdue"].length).toBe(2);
-  });
-
-  it(`Get coloring object string part`, async () => {
-    const coloring = await noteoverview.getToDoColorObject(
-      "open_nodue:1;2,open:3,open_overdue:,done:;4"
-    );
-    expect(coloring["done_nodue"].length).toBe(2);
-    expect(coloring["open_nodue"].length).toBe(2);
-    expect(coloring["open"].length).toBe(2);
-    expect(coloring["open_overdue"].length).toBe(2);
-    expect(coloring["done"].length).toBe(2);
-    expect(coloring["done_overdue"].length).toBe(2);
-
-    expect(coloring["done_nodue"][0]).toBe("");
-    expect(coloring["done_nodue"][1]).toBe("");
-    expect(coloring["open_nodue"][0]).toBe("1");
-    expect(coloring["open_nodue"][1]).toBe("2");
-    expect(coloring["open"][0]).toBe("3");
-    expect(coloring["open"][1]).toBe("");
-    expect(coloring["open_overdue"][0]).toBe("");
-    expect(coloring["open_overdue"][1]).toBe("");
-    expect(coloring["done"][0]).toBe("");
-    expect(coloring["done"][1]).toBe("4");
-    expect(coloring["done_overdue"][0]).toBe("");
-    expect(coloring["done_overdue"][1]).toBe("");
-  });
-
-  it(`Get coloring object (Empty)`, async () => {
-    const coloring = await noteoverview.getToDoColorObject("");
-    expect(coloring["done_nodue"].length).toBe(2);
-    expect(coloring["open_nodue"].length).toBe(2);
-    expect(coloring["open"].length).toBe(2);
-    expect(coloring["open_overdue"].length).toBe(2);
-    expect(coloring["done"].length).toBe(2);
-    expect(coloring["done_overdue"].length).toBe(2);
-  });
-
-  it(`Get coloring object (Spaces)`, async () => {
-    const coloring = await noteoverview.getToDoColorObject(
-      "done_nodue: 1; 2,open_nodue :3 ; 4,open:5;6 , open_overdue: 7 ;8,done:9;10,done_overdue:11;12"
-    );
-    expect(coloring["done_nodue"][0]).toBe("1");
-    expect(coloring["done_nodue"][1]).toBe("2");
-    expect(coloring["open_nodue"][0]).toBe("3");
-    expect(coloring["open_nodue"][1]).toBe("4");
-    expect(coloring["open"][0]).toBe("5");
-    expect(coloring["open"][1]).toBe("6");
-    expect(coloring["open_overdue"][0]).toBe("7");
-    expect(coloring["open_overdue"][1]).toBe("8");
-    expect(coloring["done"][0]).toBe("9");
-    expect(coloring["done"][1]).toBe("10");
-    expect(coloring["done_overdue"][0]).toBe("11");
-    expect(coloring["done_overdue"][1]).toBe("12");
-  });
-
-  it(`Get coloring object (multiple)`, async () => {
-    const coloring = await noteoverview.getToDoColorObject(
-      "done_nodue:99;99,open_nodue:3;4,open:5;6,open_overdue:7;8,done:9;10,done_overdue:11;12,done_nodue:1;2"
-    );
-    expect(coloring["done_nodue"][0]).toBe("1");
-    expect(coloring["done_nodue"][1]).toBe("2");
-    expect(coloring["open_nodue"][0]).toBe("3");
-    expect(coloring["open_nodue"][1]).toBe("4");
-    expect(coloring["open"][0]).toBe("5");
-    expect(coloring["open"][1]).toBe("6");
-    expect(coloring["open_overdue"][0]).toBe("7");
-    expect(coloring["open_overdue"][1]).toBe("8");
-    expect(coloring["done"][0]).toBe("9");
-    expect(coloring["done"][1]).toBe("10");
-    expect(coloring["done_overdue"][0]).toBe("11");
-    expect(coloring["done_overdue"][1]).toBe("12");
-  });
-
-  it(`Get coloring object (to much ,)`, async () => {
-    const coloring = await noteoverview.getToDoColorObject(
-      "done_nodue:99;99,open_,nodue:3;4,open:5;6,open_overdue:7;8,done:9;10,done_overdue:11;12,done_nodue:1;2,"
-    );
-    expect(coloring["done_nodue"][0]).toBe("1");
-    expect(coloring["done_nodue"][1]).toBe("2");
-    expect(coloring["open_nodue"][0]).toBe("");
-    expect(coloring["open_nodue"][1]).toBe("");
-    expect(coloring["open"][0]).toBe("5");
-    expect(coloring["open"][1]).toBe("6");
-    expect(coloring["open_overdue"][0]).toBe("7");
-    expect(coloring["open_overdue"][1]).toBe("8");
-    expect(coloring["done"][0]).toBe("9");
-    expect(coloring["done"][1]).toBe("10");
-    expect(coloring["done_overdue"][0]).toBe("11");
-    expect(coloring["done_overdue"][1]).toBe("12");
-  });
-
   it(`ToDo open no due date`, async () => {
     const todo_due = 0;
     const todo_completed = 0;
-    const coloring = await noteoverview.getToDoColorObject(
-      "done_nodue:1;2,open_nodue:3;4,open:5;6,open_overdue:7;8,done:9;10,done_overdue:11;12"
-    );
+    const coloring = {
+      todo: {
+        done_nodue: "1;2",
+        open_nodue: "3;4",
+        open: "5;6",
+        open_overdue: "7;8",
+        done: "9;10",
+        done_overdue: "11;12",
+      },
+    };
+
     expect(
       await noteoverview.getToDoDateColor(
         coloring,
@@ -211,9 +101,17 @@ describe("ToDo coloring", function () {
     const now = new Date().getTime();
     const todo_due = 0;
     const todo_completed = new Date(now - 60 * 60 * 24).getTime();
-    const coloring = await noteoverview.getToDoColorObject(
-      "done_nodue:1;2,open_nodue:3;4,open:5;6,open_overdue:7;8,done:9;10,done_overdue:11;12"
-    );
+    const coloring = {
+      todo: {
+        done_nodue: "1;2",
+        open_nodue: "3;4",
+        open: "5;6",
+        open_overdue: "7;8",
+        done: "9;10",
+        done_overdue: "11;12",
+      },
+    };
+
     expect(
       await noteoverview.getToDoDateColor(
         coloring,
@@ -232,13 +130,120 @@ describe("ToDo coloring", function () {
     ).toBe("2");
   });
 
+  it(`ToDo coloring with ;`, async () => {
+    const now = new Date().getTime();
+    const todo_due = new Date(now + 60 * 60 * 24).getTime();
+    const todo_completed = 0;
+    const coloring = {
+      todo: {
+        done_nodue: "1;2",
+        open_nodue: "3;4",
+        open: "5;6",
+        open_overdue: "7;8",
+        done: "9;10",
+        done_overdue: "11;12",
+      },
+    };
+
+    expect(
+      await noteoverview.getToDoDateColor(
+        coloring,
+        todo_due,
+        todo_completed,
+        "todo_due"
+      )
+    ).toBe("5");
+    expect(
+      await noteoverview.getToDoDateColor(
+        coloring,
+        todo_due,
+        todo_completed,
+        "todo_completed"
+      )
+    ).toBe("6");
+  });
+
+  it(`ToDo coloring only one color`, async () => {
+    const now = new Date().getTime();
+    const todo_due = new Date(now + 60 * 60 * 24).getTime();
+    const todo_completed = 0;
+    const coloring = {
+      todo: {
+        done_nodue: "1;2",
+        open_nodue: "3;4",
+        open: "5",
+        open_overdue: "7;8",
+        done: "9;10",
+        done_overdue: "11;12",
+      },
+    };
+
+    expect(
+      await noteoverview.getToDoDateColor(
+        coloring,
+        todo_due,
+        todo_completed,
+        "todo_due"
+      )
+    ).toBe("5");
+    expect(
+      await noteoverview.getToDoDateColor(
+        coloring,
+        todo_due,
+        todo_completed,
+        "todo_completed"
+      )
+    ).toBe("5");
+  });
+
+  it(`ToDo coloring with ,`, async () => {
+    const now = new Date().getTime();
+    const todo_due = new Date(now + 60 * 60 * 24).getTime();
+    const todo_completed = 0;
+    const coloring = {
+      todo: {
+        done_nodue: "1;2",
+        open_nodue: "3;4",
+        open: "5,6",
+        open_overdue: "7;8",
+        done: "9;10",
+        done_overdue: "11;12",
+      },
+    };
+
+    expect(
+      await noteoverview.getToDoDateColor(
+        coloring,
+        todo_due,
+        todo_completed,
+        "todo_due"
+      )
+    ).toBe("5");
+    expect(
+      await noteoverview.getToDoDateColor(
+        coloring,
+        todo_due,
+        todo_completed,
+        "todo_completed"
+      )
+    ).toBe("6");
+  });
+
   it(`ToDo open in due date`, async () => {
     const now = new Date().getTime();
     const todo_due = new Date(now + 60 * 60 * 24).getTime();
     const todo_completed = 0;
-    const coloring = await noteoverview.getToDoColorObject(
-      "done_nodue:1;2,open_nodue:3;4,open:5;6,open_overdue:7;8,done:9;10,done_overdue:11;12"
-    );
+    const coloring = {
+      todo: {
+        done_nodue: "1;2",
+        open_nodue: "3;4",
+        open: "5;6",
+        open_overdue: "7;8",
+        done: "9;10",
+        done_overdue: "11;12",
+      },
+    };
+
     expect(
       await noteoverview.getToDoDateColor(
         coloring,
@@ -261,9 +266,17 @@ describe("ToDo coloring", function () {
     const now = new Date().getTime();
     const todo_due = new Date(now - 60 * 60 * 24).getTime();
     const todo_completed = 0;
-    const coloring = await noteoverview.getToDoColorObject(
-      "done_nodue:1;2,open_nodue:3;4,open:5;6,open_overdue:7;8,done:9;10,done_overdue:11;12"
-    );
+    const coloring = {
+      todo: {
+        done_nodue: "1;2",
+        open_nodue: "3;4",
+        open: "5;6",
+        open_overdue: "7;8",
+        done: "9;10",
+        done_overdue: "11;12",
+      },
+    };
+
     expect(
       await noteoverview.getToDoDateColor(
         coloring,
@@ -286,9 +299,17 @@ describe("ToDo coloring", function () {
     const now = new Date().getTime();
     const todo_due = new Date(now + 60 * 60 * 24).getTime();
     const todo_completed = new Date(now - 60 * 60 * 24).getTime();
-    const coloring = await noteoverview.getToDoColorObject(
-      "done_nodue:1;2,open_nodue:3;4,open:5;6,open_overdue:7;8,done:9;10,done_overdue:11;12"
-    );
+    const coloring = {
+      todo: {
+        done_nodue: "1;2",
+        open_nodue: "3;4",
+        open: "5;6",
+        open_overdue: "7;8",
+        done: "9;10",
+        done_overdue: "11;12",
+      },
+    };
+
     expect(
       await noteoverview.getToDoDateColor(
         coloring,
@@ -311,9 +332,17 @@ describe("ToDo coloring", function () {
     const now = new Date().getTime();
     const todo_due = new Date(now - 60 * 60 * 24).getTime();
     const todo_completed = new Date(now + 60 * 60 * 24).getTime();
-    const coloring = await noteoverview.getToDoColorObject(
-      "done_nodue:1;2,open_nodue:3;4,open:5;6,open_overdue:7;8,done:9;10,done_overdue:11;12"
-    );
+    const coloring = {
+      todo: {
+        done_nodue: "1;2",
+        open_nodue: "3;4",
+        open: "5;6",
+        open_overdue: "7;8",
+        done: "9;10",
+        done_overdue: "11;12",
+      },
+    };
+
     expect(
       await noteoverview.getToDoDateColor(
         coloring,
@@ -350,5 +379,109 @@ describe("Singel tests", function () {
       const actual = await noteoverview.humanFrendlyStorageSize(input);
       expect(actual).toBe(expected);
     }
+  });
+
+
+  it(`remove last \\n from YAML block`, async () => {
+    const settingsBlock = 'search: tag:task\nfields: status, todo_due\nsort: todo_due ASC'
+    const expected = '<!-- note-overview-plugin\n' + settingsBlock + '\n-->'
+    const settings = YAML.parse(settingsBlock);
+    const actual = await noteoverview.createSettingsBlock(settings);
+    expect(actual).toBe(expected);
+  });
+});
+
+describe("Get image nr X from body", function () {
+  it(`with default settings`, async () => {
+    let imageSettings = null;
+    let imgStr = null;
+    let body = `
+        ![sda äö.png](:/f16103b064d9410384732ec27cd06efb)
+        text
+        ![ad762c6793d46b521cea4b2bf3f01b5e.png](:/a7f9ed618c6d427395d1ef1db2ee2000)
+        text
+        ![](:/766bf08661e51d3897e6314b56f4d113)  
+        `;
+
+    imgStr = await noteoverview.getImageNr(body, 1, imageSettings);
+    expect(imgStr).toBe(
+      `<img src=':/f16103b064d9410384732ec27cd06efb' width='200' height='200'>`
+    );
+
+    imgStr = await noteoverview.getImageNr(body, 3, imageSettings);
+    expect(imgStr).toBe(
+      `<img src=':/766bf08661e51d3897e6314b56f4d113' width='200' height='200'>`
+    );
+
+    imgStr = await noteoverview.getImageNr(body, 4, imageSettings);
+    expect(imgStr).toBe(``);
+  });
+
+  it(`with settings`, async () => {
+    let imageSettings = { width: 100, height: 300, exactnr: false };
+    let imgStr = null;
+    let body = `
+        ![sda äö.png](:/f16103b064d9410384732ec27cd06efb)
+        text
+        ![ad762c6793d46b521cea4b2bf3f01b5e.png](:/a7f9ed618c6d427395d1ef1db2ee2000)
+        text
+        ![](:/766bf08661e51d3897e6314b56f4d113)  
+        `;
+
+    imgStr = await noteoverview.getImageNr(body, 1, imageSettings);
+    expect(imgStr).toBe(
+      `<img src=':/f16103b064d9410384732ec27cd06efb' width='100' height='300'>`
+    );
+
+    imgStr = await noteoverview.getImageNr(body, 3, imageSettings);
+    expect(imgStr).toBe(
+      `<img src=':/766bf08661e51d3897e6314b56f4d113' width='100' height='300'>`
+    );
+
+    imgStr = await noteoverview.getImageNr(body, 4, imageSettings);
+    expect(imgStr).toBe(
+      `<img src=':/766bf08661e51d3897e6314b56f4d113' width='100' height='300'>`
+    );
+  });
+});
+
+describe("get MD excerpt", function () {
+  it(`remove ~~ ++ ==`, async () => {
+    const settings = {maxlength: 100}
+    const md = 'test ~~test~~ test ==test== test ++test++ test'
+    const expected = 'test test test test test test test'
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual).toBe(expected);
+  });
+  
+  it(`stripe`, async () => {
+    const settings = {maxlength: 100}
+    const md = '# h1\nsadkj<br>dsak![](:/asdasdasd)\nkfdsj **dsa** asd\n ## h2'
+    const expected = 'h1 sadkjdsak kfdsj dsa asd h2'
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual).toBe(expected);
+  });
+
+  it(`max length`, async () => {
+    const settings = {maxlength: 20}
+    const md = '# h1\nsadkj<br>dsak![](:/asdasdasd)\nkfdsj **dsa** asd\n ## h2'
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual.length).toBe(settings.maxlength + 3);
+  });
+
+  it(`remove image name`, async () => {
+    const settings = {maxlength: 200, imagename: false}
+    const md = 'some text with a ![Python.svg](:/775dab2e3e234a9a89975db92a365688) image ![test dsa.png](:/775dab2e3e234a9a89975db92a365688)'
+    const expected = 'some text with a image'
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual).toBe(expected);
+  });
+
+  it(`don't remove image name`, async () => {
+    const settings = {maxlength: 200, imagename: true}
+    const md = 'some text with a ![Python.svg](:/775dab2e3e234a9a89975db92a365688) image ![test dsa.png](:/775dab2e3e234a9a89975db92a365688)'
+    const expected = 'some text with a Python.svg image test dsa.png'
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual).toBe(expected);
   });
 });

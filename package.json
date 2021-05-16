@@ -1,6 +1,6 @@
 {
   "name": "joplin-plugin-note-overview",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "scripts": {
     "dist": "webpack --joplin-plugin-config buildMain && webpack --joplin-plugin-config buildExtraScripts && webpack --joplin-plugin-config createArchive",
     "prepare": "npm run test && npm run dist",
@@ -29,7 +29,11 @@
     "yargs": "^16.2.0"
   },
   "dependencies": {
-    "moment": "^2.29.1"
+    "moment": "^2.29.1",
+    "remark": "^13.0.0",
+    "string-natural-compare": "^3.0.1",
+    "strip-markdown": "^4.0.0",
+    "yaml": "^1.10.2"
   },
   "jest": {
     "transform": {
