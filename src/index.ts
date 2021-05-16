@@ -237,14 +237,19 @@ joplin.plugins.register({
 
         // Remove virtual fields from dbFieldsArray
         let dbFieldsArray = [...fieldsArray];
-        dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "notebook");
-        dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "tags");
-        dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "size");
-        dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "file");
-        dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "file_size");
-        dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "status");
-        dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "image");
-        dbFieldsArray = await arrayRemoveAll(dbFieldsArray, "excerpt");
+        dbFieldsArray = dbFieldsArray.filter(
+          (el) =>
+            [
+              "notebook",
+              "tags",
+              "size",
+              "file",
+              "file_size",
+              "status",
+              "image",
+              "excerpt",
+            ].indexOf(el) === -1
+        );
 
         // if a todo field is selected, add the other one to
         if (fieldsArray.includes("todo_due")) {
@@ -260,11 +265,11 @@ joplin.plugins.register({
           dbFieldsArray.push("todo_completed");
         }
 
-        // include body 
+        // include body
         if (fieldsArray.includes("image") || fieldsArray.includes("excerpt")) {
           dbFieldsArray.push("body");
         }
-        
+
         let noteCount = 0;
         let queryNotes = null;
         let pageQueryNotes = 1;
@@ -285,8 +290,8 @@ joplin.plugins.register({
           } catch (error) {
             console.error(error.message);
             let errorMsg = error.message;
-            errorMsg = errorMsg.replace(/(.*)(:\sSELECT.*)/g, "$1")
-            
+            errorMsg = errorMsg.replace(/(.*)(:\sSELECT.*)/g, "$1");
+
             await noteoverview.showError(noteTitle, errorMsg, "");
             let settingsOnly = [];
             settingsOnly.unshift(
@@ -362,7 +367,7 @@ joplin.plugins.register({
                     todocompleted
                   );
                   let statusText: string = await noteoverview.escapeForTable(
-                    statusTexts['todo'][status]
+                    statusTexts["todo"][status]
                   );
                   noteInfos.push(statusText);
                 } else if (fieldsArray[field] === "file") {
@@ -379,13 +384,18 @@ joplin.plugins.register({
                   noteInfos.push(filenamesize.join("<br>"));
                 } else if (fieldsArray[field] === "excerpt") {
                   let excerpt = await noteoverview.getMarkdownExcerpt(
-                    queryNotes.items[queryNotesKey]["body"], excerptSettings
+                    queryNotes.items[queryNotesKey]["body"],
+                    excerptSettings
                   );
                   excerpt = await noteoverview.escapeForTable(excerpt);
                   noteInfos.push(excerpt);
                 } else if (fieldsArray[field] === "image") {
                   let size: string = await noteoverview.getImageNr(
-                    queryNotes.items[queryNotesKey]["body"], imageSettings && imageSettings['nr'] ? imageSettings['nr'] : 1, imageSettings
+                    queryNotes.items[queryNotesKey]["body"],
+                    imageSettings && imageSettings["nr"]
+                      ? imageSettings["nr"]
+                      : 1,
+                    imageSettings
                   );
                   noteInfos.push(size);
                 } else if (fieldsArray[field] === "size") {
@@ -524,19 +534,6 @@ joplin.plugins.register({
         return "n/a (" + id + ")";
       }
       return folder.title;
-    }
-
-    // Remove all occurens of value from array
-    async function arrayRemoveAll(arr: any, value: any): Promise<any> {
-      var i = 0;
-      while (i < arr.length) {
-        if (arr[i] === value) {
-          arr.splice(i, 1);
-        } else {
-          ++i;
-        }
-      }
-      return arr;
     }
 
     // Start timer
