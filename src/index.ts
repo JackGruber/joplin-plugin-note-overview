@@ -283,7 +283,11 @@ joplin.plugins.register({
               page: pageQueryNotes++,
             });
           } catch (error) {
-            await noteoverview.showError(noteTitle, error.message, "");
+            console.error(error.message);
+            let errorMsg = error.message;
+            errorMsg = errorMsg.replace(/(.*)(:\sSELECT.*)/g, "$1")
+            
+            await noteoverview.showError(noteTitle, errorMsg, "");
             let settingsOnly = [];
             settingsOnly.unshift(
               await noteoverview.createSettingsBlock(noteoverviewSettings)
