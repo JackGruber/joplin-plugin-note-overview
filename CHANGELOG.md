@@ -1,6 +1,6 @@
 # Changelog
 
-## Not released
+## v1.4.2 (2021-05-16)
 
 - Improved: Sort the tags in the field `tags`
 - Add: `image` as field, to display a image resource from the note
