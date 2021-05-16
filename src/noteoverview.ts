@@ -298,7 +298,7 @@ export namespace noteoverview {
     const maxExcerptLength =
       excerptSettings && excerptSettings.hasOwnProperty("maxLength")
         ? excerptSettings["maxLength"]
-        : 50;
+        : 200;
     const removeMd =
       excerptSettings && excerptSettings.hasOwnProperty("removeMd")
         ? excerptSettings["removeMd"]
