@@ -125,7 +125,7 @@ This allows you to control the image displayed in the `image` field.
 - `nr`: Which image should be displayed
 - `exactnr`:
   `false` = If the image number is not found, the last available one is used.
-  `true` = Only this exact image number is used.
+  `true` = Only the exact image number is used.
 - `width`: The image is reduced to this width.
 - `height`: The image is reduced to this height
 
