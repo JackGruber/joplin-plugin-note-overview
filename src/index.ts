@@ -451,7 +451,9 @@ joplin.plugins.register({
 
     async function updateNote(newBodyStr: string, noteId: string) {
       let slectedNote = await joplin.workspace.selectedNote();
-      if (slectedNote.id == noteId) {
+      const codeView = await joplin.settings.globalValue('editor.codeView');
+      
+      if (slectedNote.id == noteId && codeView === true) {
         await joplin.commands.execute("textSelectAll");
         await joplin.commands.execute("replaceSelection", newBodyStr);
       } else {
