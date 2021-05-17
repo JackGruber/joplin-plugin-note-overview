@@ -72,6 +72,8 @@ Several of these blocks can be included in one note, also between text.
 
 The note content is updated every x minutes (depending on your setting) or manualy by `Tools > Create Note overview`.
 
+> ⚠ Adding and editing the code block does not work in the `Rich Text` (WYSIWYG) editor!
+
 ## Codeblock options
 
 Options that can be specified in the in the code block using YAML syntax.
