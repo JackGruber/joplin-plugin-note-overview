@@ -32,6 +32,7 @@ A note overview is created based on the defined search and the specified fields.
 - [Keyboard Shortcuts](#keyboard-shortcuts)
 - [FAQ](#faq)
     - [Error: Nested mappings are not allowed in compact mappings](#error-nested-mappings-are-not-allowed-in-compact-mappings)
+    - [Error: Implicit map keys need to be followed by map values](#error-implicit-map-keys-need-to-be-followed-by-map-values)
 - [Build](#build)
 - [Updating the plugin framework](#updating-the-plugin-framework)
 - [Changelog](#changelog)
@@ -73,6 +74,8 @@ Several of these blocks can be included in one note, also between text.
 The note content is updated every x minutes (depending on your setting) or manualy by `Tools > Create Note overview`.
 
 > ⚠ Adding and editing the code block does not work in the `Rich Text` (WYSIWYG) editor!
+
+> ❕ The refresh of the note ist not working in the `Rich Text` (WYSIWYG) editor, to update the note view please change the note and switch back.
 
 ## Codeblock options
 
@@ -274,6 +277,11 @@ Under `Options > Keyboard Shortcuts` you can assign a keyboard shortcut for the 
 ### Error: Nested mappings are not allowed in compact mappings
 
 This error message occurs when a colon is used in the option value and an space character follows the colon. Just enclose the value of the option in quotes like `alias: "title AS : Title :"`.
+
+### Error: Implicit map keys need to be followed by map values
+
+There is a space missing between the `<option>:` and the value. The option should looks like `<option>: <value>`.
+
 
 ## Build
 
