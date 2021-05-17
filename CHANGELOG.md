@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.4.3 (2021-05-17)
+
+- Fix: #12 Prevent note live update on Rich Text (WYSIWYG) editor
+
 ## v1.4.2 (2021-05-16)
 
 - Improved: Sort the tags in the field `tags`
