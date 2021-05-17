@@ -33,8 +33,9 @@ A note overview is created based on the defined search and the specified fields.
 - [FAQ](#faq)
     - [Error: Nested mappings are not allowed in compact mappings](#error-nested-mappings-are-not-allowed-in-compact-mappings)
     - [Error: Implicit map keys need to be followed by map values](#error-implicit-map-keys-need-to-be-followed-by-map-values)
-- [Build](#build)
-- [Updating the plugin framework](#updating-the-plugin-framework)
+- [Develop](#develop)
+    - [Build](#build)
+    - [Updating the plugin framework](#updating-the-plugin-framework)
 - [Changelog](#changelog)
 - [Links](#links)
 
@@ -73,9 +74,9 @@ Several of these blocks can be included in one note, also between text.
 
 The note content is updated every x minutes (depending on your setting) or manualy by `Tools > Create Note overview`.
 
-> ⚠ Adding and editing the code block does not work in the `Rich Text` (WYSIWYG) editor!
+> ⚠ Adding and editing the code block does not work in the **Rich Text (WYSIWYG)** editor!
 
-> ❕ The refresh of the note ist not working in the `Rich Text` (WYSIWYG) editor, to update the note view please change the note and switch back.
+> ❕ The refresh of the note ist not working in the **Rich Text (WYSIWYG)** editor, to update the note view please change the note and switch back.
 
 ## Codeblock options
 
