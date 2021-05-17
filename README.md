@@ -282,12 +282,13 @@ This error message occurs when a colon is used in the option value and an space 
 
 There is a space missing between the `<option>:` and the value. The option should looks like `<option>: <value>`.
 
+## Develop
 
-## Build
+### Build
 
 To build your one version of the plugin, install node.js and run the following command `npm run dist`
 
-## Updating the plugin framework
+### Updating the plugin framework
 
 To update the plugin framework, run `npm run update`
 
