@@ -30,6 +30,8 @@ A note overview is created based on the defined search and the specified fields.
     - [Cooking recipes overview](#cooking-recipes-overview)
 - [Plugin options](#plugin-options)
 - [Keyboard Shortcuts](#keyboard-shortcuts)
+- [FAQ](#faq)
+    - [Error: Nested mappings are not allowed in compact mappings](#error-nested-mappings-are-not-allowed-in-compact-mappings)
 - [Build](#build)
 - [Updating the plugin framework](#updating-the-plugin-framework)
 - [Changelog](#changelog)
@@ -264,6 +266,12 @@ Settings for the plugin, accessible at `Tools > Options > Note overview`.
 Under `Options > Keyboard Shortcuts` you can assign a keyboard shortcut for the following commands:
 
 - `Create note overview`
+
+## FAQ
+
+### Error: Nested mappings are not allowed in compact mappings
+
+This error message occurs when a colon is used in the option value and an space character follows the colon. Just enclose the value of the option in quotes like `alias: "title AS : Title :"`.
 
 ## Build
 
