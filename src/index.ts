@@ -107,7 +107,7 @@ joplin.plugins.register({
               );
               return;
             }
-            console.log("Search: " + noteovervieSettings['search'])
+            console.log("Search: " + noteovervieSettings["search"]);
 
             // add original conten before the settings block
             if (startOrgTextIndex != startIndex) {
@@ -183,12 +183,11 @@ joplin.plugins.register({
       const timeFormat = await joplin.settings.globalValue("timeFormat");
 
       // Status text
-      const defaultStatusText =
-        await noteoverview.getDefaultStatusText();
+      const defaultStatusText = await noteoverview.getDefaultStatusText();
       let statusTextsNote: Object = noteoverviewSettings["status"]
         ? noteoverviewSettings["status"]
         : null;
-        const statusTexts = await mergeObject(defaultStatusText, statusTextsNote);
+      const statusTexts = await mergeObject(defaultStatusText, statusTextsNote);
 
       const query: string = noteoverviewSettings["search"];
       const fields: string = noteoverviewSettings["fields"]
@@ -209,11 +208,14 @@ joplin.plugins.register({
 
       // Coloring for overview
       const defaultTodoColoring = await noteoverview.getDefaultColors();
-      const coloringSettingsNote = noteoverviewSettings['coloring']
+      const coloringSettingsNote = noteoverviewSettings["coloring"]
         ? noteoverviewSettings["coloring"]
         : null;
 
-      const coloringSettings = await mergeObject(defaultTodoColoring, coloringSettingsNote);
+      const coloringSettings = await mergeObject(
+        defaultTodoColoring,
+        coloringSettingsNote
+      );
 
       // create array from fields
       let fieldsArray = [];
@@ -451,8 +453,8 @@ joplin.plugins.register({
 
     async function updateNote(newBodyStr: string, noteId: string) {
       let slectedNote = await joplin.workspace.selectedNote();
-      const codeView = await joplin.settings.globalValue('editor.codeView');
-      
+      const codeView = await joplin.settings.globalValue("editor.codeView");
+
       if (slectedNote.id == noteId && codeView === true) {
         await joplin.commands.execute("textSelectAll");
         await joplin.commands.execute("replaceSelection", newBodyStr);

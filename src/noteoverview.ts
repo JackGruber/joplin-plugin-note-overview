@@ -304,13 +304,13 @@ export namespace noteoverview {
         ? excerptSettings["removemd"]
         : true;
     const imageName =
-        excerptSettings && excerptSettings.hasOwnProperty("imagename")
-          ? excerptSettings["imagename"]
-          : false;
+      excerptSettings && excerptSettings.hasOwnProperty("imagename")
+        ? excerptSettings["imagename"]
+        : false;
     let contentText = markdown;
 
-    if(imageName === false) {
-      contentText = contentText.replace(/(!\[)([^\]]+)(\]\([^\)]+\))/g, "$1$3")
+    if (imageName === false) {
+      contentText = contentText.replace(/(!\[)([^\]]+)(\]\([^\)]+\))/g, "$1$3");
     }
 
     if (removeMd === true) {

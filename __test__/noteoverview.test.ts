@@ -381,10 +381,10 @@ describe("Singel tests", function () {
     }
   });
 
-
   it(`remove last \\n from YAML block`, async () => {
-    const settingsBlock = 'search: tag:task\nfields: status, todo_due\nsort: todo_due ASC'
-    const expected = '<!-- note-overview-plugin\n' + settingsBlock + '\n-->'
+    const settingsBlock =
+      "search: tag:task\nfields: status, todo_due\nsort: todo_due ASC";
+    const expected = "<!-- note-overview-plugin\n" + settingsBlock + "\n-->";
     const settings = YAML.parse(settingsBlock);
     const actual = await noteoverview.createSettingsBlock(settings);
     expect(actual).toBe(expected);
@@ -447,40 +447,42 @@ describe("Get image nr X from body", function () {
 
 describe("get MD excerpt", function () {
   it(`remove ~~ ++ ==`, async () => {
-    const settings = {maxlength: 100}
-    const md = 'test ~~test~~ test ==test== test ++test++ test'
-    const expected = 'test test test test test test test'
+    const settings = { maxlength: 100 };
+    const md = "test ~~test~~ test ==test== test ++test++ test";
+    const expected = "test test test test test test test";
     const actual = await noteoverview.getMarkdownExcerpt(md, settings);
     expect(actual).toBe(expected);
   });
-  
+
   it(`stripe`, async () => {
-    const settings = {maxlength: 100}
-    const md = '# h1\nsadkj<br>dsak![](:/asdasdasd)\nkfdsj **dsa** asd\n ## h2'
-    const expected = 'h1 sadkjdsak kfdsj dsa asd h2'
+    const settings = { maxlength: 100 };
+    const md = "# h1\nsadkj<br>dsak![](:/asdasdasd)\nkfdsj **dsa** asd\n ## h2";
+    const expected = "h1 sadkjdsak kfdsj dsa asd h2";
     const actual = await noteoverview.getMarkdownExcerpt(md, settings);
     expect(actual).toBe(expected);
   });
 
   it(`max length`, async () => {
-    const settings = {maxlength: 20}
-    const md = '# h1\nsadkj<br>dsak![](:/asdasdasd)\nkfdsj **dsa** asd\n ## h2'
+    const settings = { maxlength: 20 };
+    const md = "# h1\nsadkj<br>dsak![](:/asdasdasd)\nkfdsj **dsa** asd\n ## h2";
     const actual = await noteoverview.getMarkdownExcerpt(md, settings);
     expect(actual.length).toBe(settings.maxlength + 3);
   });
 
   it(`remove image name`, async () => {
-    const settings = {maxlength: 200, imagename: false}
-    const md = 'some text with a ![Python.svg](:/775dab2e3e234a9a89975db92a365688) image ![test dsa.png](:/775dab2e3e234a9a89975db92a365688)'
-    const expected = 'some text with a image'
+    const settings = { maxlength: 200, imagename: false };
+    const md =
+      "some text with a ![Python.svg](:/775dab2e3e234a9a89975db92a365688) image ![test dsa.png](:/775dab2e3e234a9a89975db92a365688)";
+    const expected = "some text with a image";
     const actual = await noteoverview.getMarkdownExcerpt(md, settings);
     expect(actual).toBe(expected);
   });
 
   it(`don't remove image name`, async () => {
-    const settings = {maxlength: 200, imagename: true}
-    const md = 'some text with a ![Python.svg](:/775dab2e3e234a9a89975db92a365688) image ![test dsa.png](:/775dab2e3e234a9a89975db92a365688)'
-    const expected = 'some text with a Python.svg image test dsa.png'
+    const settings = { maxlength: 200, imagename: true };
+    const md =
+      "some text with a ![Python.svg](:/775dab2e3e234a9a89975db92a365688) image ![test dsa.png](:/775dab2e3e234a9a89975db92a365688)";
+    const expected = "some text with a Python.svg image test dsa.png";
     const actual = await noteoverview.getMarkdownExcerpt(md, settings);
     expect(actual).toBe(expected);
   });

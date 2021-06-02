@@ -4,38 +4,37 @@ A note overview is created based on the defined search and the specified fields.
 
 <img src=img/main.jpg>
 
-
 <!-- TOC depthfrom:2 orderedlist:false -->
 
 - [Installation](#installation)
-    - [Automatic](#automatic)
-    - [Manual](#manual)
+  - [Automatic](#automatic)
+  - [Manual](#manual)
 - [Usage](#usage)
 - [Codeblock options](#codeblock-options)
-    - [search](#search)
-    - [fields](#fields)
-    - [sort](#sort)
-    - [alias](#alias)
-    - [image](#image)
-    - [excerpt](#excerpt)
+  - [search](#search)
+  - [fields](#fields)
+  - [sort](#sort)
+  - [alias](#alias)
+  - [image](#image)
+  - [excerpt](#excerpt)
 - [Examples](#examples)
-    - [ToDo Overview](#todo-overview)
-    - [Show all ToDos with status](#show-all-todos-with-status)
-    - [Open ToDos for the next 7 days and overdue ToDos](#open-todos-for-the-next-7-days-and-overdue-todos)
-    - [Exclude ToDos with no due date](#exclude-todos-with-no-due-date)
-    - [Show all ToDos with no due date](#show-all-todos-with-no-due-date)
-    - [Rename fields](#rename-fields)
-    - [Notes without a tag](#notes-without-a-tag)
-    - [Notes createt last 7 days](#notes-createt-last-7-days)
-    - [Cooking recipes overview](#cooking-recipes-overview)
+  - [ToDo Overview](#todo-overview)
+  - [Show all ToDos with status](#show-all-todos-with-status)
+  - [Open ToDos for the next 7 days and overdue ToDos](#open-todos-for-the-next-7-days-and-overdue-todos)
+  - [Exclude ToDos with no due date](#exclude-todos-with-no-due-date)
+  - [Show all ToDos with no due date](#show-all-todos-with-no-due-date)
+  - [Rename fields](#rename-fields)
+  - [Notes without a tag](#notes-without-a-tag)
+  - [Notes createt last 7 days](#notes-createt-last-7-days)
+  - [Cooking recipes overview](#cooking-recipes-overview)
 - [Plugin options](#plugin-options)
 - [Keyboard Shortcuts](#keyboard-shortcuts)
 - [FAQ](#faq)
-    - [Error: Nested mappings are not allowed in compact mappings](#error-nested-mappings-are-not-allowed-in-compact-mappings)
-    - [Error: Implicit map keys need to be followed by map values](#error-implicit-map-keys-need-to-be-followed-by-map-values)
+  - [Error: Nested mappings are not allowed in compact mappings](#error-nested-mappings-are-not-allowed-in-compact-mappings)
+  - [Error: Implicit map keys need to be followed by map values](#error-implicit-map-keys-need-to-be-followed-by-map-values)
 - [Develop](#develop)
-    - [Build](#build)
-    - [Updating the plugin framework](#updating-the-plugin-framework)
+  - [Build](#build)
+  - [Updating the plugin framework](#updating-the-plugin-framework)
 - [Changelog](#changelog)
 - [Links](#links)
 
@@ -124,6 +123,7 @@ sort: todo_due ASC
 This allows renaming the fields in the output.
 
 Syntax: `<field> AS <new field name>`, multiple fields comma seperated.
+
 ```
 alias: todo_due AS Due Date, notebook AS Folder
 ```
@@ -248,24 +248,25 @@ image:
   height: 200
 -->
 ```
+
 <img src="img/example_image.jpg">
 
 ## Plugin options
 
 Settings for the plugin, accessible at `Tools > Options > Note overview`.
 
-| Option  | Description | Default |
-| --- | --- | --- |
-| `Show note count` | Show the number of notes found. | `off`| 
-| `Update interval in minutes` | How often the overview notes should be updated. | `5` |
-| `Field status: open todo` | Text for the `status` field, when the todo is not completed. |  |
-| `Field status: todo completed` | Text for the `status` field, when the todo is completed. |  |
-| `Field status: todo over due` | Text for the `status` field, when the due date of the todo is exceeded. |  |
-| `Color: todo [open]` | HTML color for the `due_date`, when the todo is not completed. |  |
-| `Color: todo [open_overdue]` | HTML color for the `due_date`, when the todo is over the due date. | `red` |
-| `Color: todo [done]` | HTML color for the `due_date` and `todo_completed`, when the todo is completed. Seperate the color for due_date and todo_completed by a `,`. | `limegreen,limegreen` |
-| `Color: todo [done_overdue]` | HTML color for the `due_date` and `todo_completed`, when the todo was completed after the due date. Seperate the color for due_date and todo_completed by a `,`. | `orange,orange` |
-| `Color: todo [done_nodue]` | HTML color for the `todo_completed`, when the todo was completed but no due date was set. |  |
+| Option                         | Description                                                                                                                                                      | Default               |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| `Show note count`              | Show the number of notes found.                                                                                                                                  | `off`                 |
+| `Update interval in minutes`   | How often the overview notes should be updated.                                                                                                                  | `5`                   |
+| `Field status: open todo`      | Text for the `status` field, when the todo is not completed.                                                                                                     |                       |
+| `Field status: todo completed` | Text for the `status` field, when the todo is completed.                                                                                                         |                       |
+| `Field status: todo over due`  | Text for the `status` field, when the due date of the todo is exceeded.                                                                                          |                       |
+| `Color: todo [open]`           | HTML color for the `due_date`, when the todo is not completed.                                                                                                   |                       |
+| `Color: todo [open_overdue]`   | HTML color for the `due_date`, when the todo is over the due date.                                                                                               | `red`                 |
+| `Color: todo [done]`           | HTML color for the `due_date` and `todo_completed`, when the todo is completed. Seperate the color for due_date and todo_completed by a `,`.                     | `limegreen,limegreen` |
+| `Color: todo [done_overdue]`   | HTML color for the `due_date` and `todo_completed`, when the todo was completed after the due date. Seperate the color for due_date and todo_completed by a `,`. | `orange,orange`       |
+| `Color: todo [done_nodue]`     | HTML color for the `todo_completed`, when the todo was completed but no due date was set.                                                                        |                       |
 
 ## Keyboard Shortcuts
 
