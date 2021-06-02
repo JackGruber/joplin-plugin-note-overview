@@ -133,7 +133,7 @@ export namespace noteoverview {
     }
 
     msg.push("</div>");
-    await joplin.views.dialogs.addScript(noteoverviewDialog, './webview.css')
+    await joplin.views.dialogs.addScript(noteoverviewDialog, "./webview.css");
     await joplin.views.dialogs.setHtml(noteoverviewDialog, msg.join("\n"));
     await joplin.views.dialogs.open(noteoverviewDialog);
   }
