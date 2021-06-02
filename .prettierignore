@@ -1,6 +1,5 @@
 api/
 dist/
-node_modules/
 publish/
 webpack.config.js
 tsconfig.json
