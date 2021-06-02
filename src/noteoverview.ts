@@ -112,7 +112,7 @@ export namespace noteoverview {
     await joplin.views.dialogs.setButtons(noteoverviewDialog, [{ id: "ok" }]);
     let msg = [];
 
-    msg.push('<div style="overflow-wrap: break-word;">');
+    msg.push('<div id="noteoverview">');
     msg.push("<h3>Noteoverview error</h3>");
     msg.push("<p><b>Note:</b>");
     msg.push(noteTitle);
@@ -133,7 +133,7 @@ export namespace noteoverview {
     }
 
     msg.push("</div>");
-
+    await joplin.views.dialogs.addScript(noteoverviewDialog, './webview.css')
     await joplin.views.dialogs.setHtml(noteoverviewDialog, msg.join("\n"));
     await joplin.views.dialogs.open(noteoverviewDialog);
   }
