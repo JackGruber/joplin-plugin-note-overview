@@ -102,7 +102,7 @@ joplin.plugins.register({
               console.error(error.message);
               await noteoverview.showError(
                 noteTitle,
-                error.message,
+                "YAML parse error</br>" + error.message,
                 settingsBlock
               );
               return;
