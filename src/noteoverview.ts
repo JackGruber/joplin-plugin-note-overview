@@ -403,4 +403,18 @@ export namespace noteoverview {
 
     return await noteoverview.humanFrendlyStorageSize(size);
   }
+
+  export async function updateNote(newBodyStr: string, noteId: string) {
+    let slectedNote = await joplin.workspace.selectedNote();
+    const codeView = await joplin.settings.globalValue("editor.codeView");
+
+    if (slectedNote.id == noteId && codeView === true) {
+      await joplin.commands.execute("textSelectAll");
+      await joplin.commands.execute("replaceSelection", newBodyStr);
+    } else {
+      await joplin.data.put(["notes", noteId], null, {
+        body: newBodyStr,
+      });
+    }
+  }
 }

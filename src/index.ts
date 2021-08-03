@@ -141,7 +141,7 @@ joplin.plugins.register({
           let newBodyStr = newBody.join("\n");
           if (noteBody != newBodyStr) {
             console.info("Update note " + noteTitle + " (" + noteId + ")");
-            await updateNote(newBodyStr, noteId);
+            await noteoverview.updateNote(newBodyStr, noteId);
           }
         }
       } while (overviewNotes.has_more);
@@ -451,20 +451,6 @@ joplin.plugins.register({
       );
       newBody.push("<!--endoverview-->");
       return newBody;
-    }
-
-    async function updateNote(newBodyStr: string, noteId: string) {
-      let slectedNote = await joplin.workspace.selectedNote();
-      const codeView = await joplin.settings.globalValue("editor.codeView");
-
-      if (slectedNote.id == noteId && codeView === true) {
-        await joplin.commands.execute("textSelectAll");
-        await joplin.commands.execute("replaceSelection", newBodyStr);
-      } else {
-        await joplin.data.put(["notes", noteId], null, {
-          body: newBodyStr,
-        });
-      }
     }
 
     // Start timer
