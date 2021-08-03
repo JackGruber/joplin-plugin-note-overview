@@ -403,7 +403,7 @@ joplin.plugins.register({
                   );
                   noteInfos.push(size);
                 } else if (fieldsArray[field] === "size") {
-                  let size: string = await getNoteSize(
+                  let size: string = await noteoverview.getNoteSize(
                     queryNotes.items[queryNotesKey].id
                   );
                   noteInfos.push(size);
@@ -465,44 +465,6 @@ joplin.plugins.register({
           body: newBodyStr,
         });
       }
-    }
-
-    // Calculate notes size including resources
-    async function getNoteSize(noteId): Promise<string> {
-      let size = 0;
-
-      try {
-        var note = await joplin.data.get(["notes", noteId], {
-          fields: "id, body",
-        });
-      } catch (e) {
-        console.error("getNoteSize " + e);
-        return "n/a";
-      }
-      size = note.body.length;
-
-      let pageNum = 1;
-      do {
-        try {
-          var resources = await joplin.data.get(
-            ["notes", noteId, "resources"],
-            {
-              fields: "id, size",
-              limit: 50,
-              page: pageNum++,
-            }
-          );
-        } catch (e) {
-          console.error("getNoteSize resources " + e);
-          return "n/a";
-        }
-
-        for (const resource of resources.items) {
-          size += Number.parseInt(resource.size);
-        }
-      } while (resources.has_more);
-
-      return await noteoverview.humanFrendlyStorageSize(size);
     }
 
     // Start timer
