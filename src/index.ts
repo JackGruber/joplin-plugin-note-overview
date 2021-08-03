@@ -1,63 +1,12 @@
 import joplin from "api";
-import { MenuItemLocation, SettingItemType } from "api/types";
-import { settings } from "./settings";
 import { noteoverview } from "./noteoverview";
 import * as YAML from "yaml";
 import { mergeObject } from "./helper";
 
-let timer = null;
-
 joplin.plugins.register({
   onStart: async function () {
     console.info("Note overview plugin started!");
-
-    await settings.register();
-
-    const noteoverviewDialog = await joplin.views.dialogs.create(
-      "noteoverviewDialog"
-    );
-    await noteoverview.setDialog(noteoverviewDialog);
-
-    await joplin.commands.register({
-      name: "createNoteOverview",
-      label: "Create note overview",
-      execute: async () => {
-        runCreateNoteOverview();
-      },
-    });
-
-    await joplin.views.menuItems.create(
-      "menuItemToolsCreateNoteOverview",
-      "createNoteOverview",
-      MenuItemLocation.Tools
-    );
-
-    joplin.settings.onChange(async (event: any) => {
-      console.log("Settings changed");
-      // Update timer
-      if (event.keys.indexOf != -1) {
-        if (timer != null) {
-          console.log("Clear timer");
-          clearTimeout(timer);
-        }
-        await runTimedNoteOverview();
-      }
-    });
-
-    // Update note and reset timer
-    async function runTimedNoteOverview() {
-      const updateInterval = await joplin.settings.value("updateInterval");
-      if (updateInterval > 0) {
-        console.info("Set timer");
-        await runCreateNoteOverview();
-        timer = window.setTimeout(
-          runTimedNoteOverview,
-          1000 * 60 * updateInterval
-        );
-      } else {
-        timer = null;
-      }
-    }
+    await noteoverview.init();
 
     async function runCreateNoteOverview() {
       console.info("Run create note overview");
@@ -438,11 +387,6 @@ joplin.plugins.register({
       );
       newBody.push("<!--endoverview-->");
       return newBody;
-    }
-
-    // Start timer
-    if ((await joplin.settings.value("updateInterval")) > 0) {
-      runTimedNoteOverview();
     }
   },
 });

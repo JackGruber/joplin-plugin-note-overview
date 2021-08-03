@@ -4,14 +4,13 @@ import * as naturalCompare from "string-natural-compare";
 import * as YAML from "yaml";
 import * as remark from "remark";
 import * as strip from "strip-markdown";
+import { settings } from "./settings";
+import { MenuItemLocation } from "api/types";
 
 let noteoverviewDialog = null;
+let timer = null;
 
 export namespace noteoverview {
-  export async function setDialog(dialog) {
-    noteoverviewDialog = dialog;
-  }
-
   export async function getImageNr(
     body: string,
     imagrNr: number,
@@ -441,5 +440,67 @@ export namespace noteoverview {
       }
     }
     return content;
+  }
+
+  export async function updateAll() {}
+
+  export async function init() {
+    await settings.register();
+
+    noteoverviewDialog = await joplin.views.dialogs.create(
+      "noteoverviewDialog"
+    );
+
+    await joplin.commands.register({
+      name: "createNoteOverview",
+      label: "Create note overview",
+      execute: async () => {
+        noteoverview.updateAll(); //runCreateNoteOverview();
+      },
+    });
+
+    await joplin.views.menuItems.create(
+      "menuItemToolsCreateNoteOverview",
+      "createNoteOverview",
+      MenuItemLocation.Tools
+    );
+
+    joplin.settings.onChange(async (event: any) => {
+      await noteoverview.settingsChanged(event);
+    });
+
+    await noteoverview.setTimer(await joplin.settings.value("updateInterval"));
+  }
+
+  export async function settingsChanged(event: any) {
+    console.log("Settings changed");
+    // Update timer
+    if (event.keys.indexOf("updateInterval") !== -1) {
+      await noteoverview.setTimer(
+        await joplin.settings.value("updateInterval")
+      );
+    }
+  }
+
+  export async function setTimer(updateInterval: number) {
+    clearTimeout(timer);
+    timer = null;
+    if (updateInterval > 0) {
+      console.log("set timer " + updateInterval);
+      timer = setTimeout(noteoverview.runTimed, 1000 * 60 * updateInterval);
+    } else {
+      console.log("timer cleared");
+    }
+  }
+
+  export async function runTimed() {
+    const updateInterval = await joplin.settings.value("updateInterval");
+    if (updateInterval > 0) {
+      console.log("run timed");
+      await noteoverview.updateAll();
+      await noteoverview.setTimer(updateInterval);
+    } else {
+      timer = null;
+    }
   }
 }
