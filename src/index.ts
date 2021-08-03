@@ -113,9 +113,17 @@ joplin.plugins.register({
             if (startOrgTextIndex != startIndex) {
               orgContent = noteBody.substring(startOrgTextIndex, startIndex);
               if (startOrgTextIndex == 0) {
-                orgContent = await removeNewLineAt(orgContent, false, true);
+                orgContent = await noteoverview.removeNewLineAt(
+                  orgContent,
+                  false,
+                  true
+                );
               } else {
-                orgContent = await removeNewLineAt(orgContent, true, true);
+                orgContent = await noteoverview.removeNewLineAt(
+                  orgContent,
+                  true,
+                  true
+                );
               }
 
               newBody.push(orgContent);
@@ -133,7 +141,11 @@ joplin.plugins.register({
           // Add original content after last overview block
           if (startOrgTextIndex !== noteBody.length) {
             orgContent = noteBody.substring(startOrgTextIndex, noteBody.length);
-            orgContent = await removeNewLineAt(orgContent, true, false);
+            orgContent = await noteoverview.removeNewLineAt(
+              orgContent,
+              true,
+              false
+            );
             newBody.push(orgContent);
           }
 
@@ -145,31 +157,6 @@ joplin.plugins.register({
           }
         }
       } while (overviewNotes.has_more);
-    }
-
-    async function removeNewLineAt(
-      content: string,
-      begin: boolean,
-      end: boolean
-    ): Promise<string> {
-      if (end === true) {
-        if (content.charCodeAt(content.length - 1) == 10) {
-          content = content.substring(0, content.length - 1);
-        }
-        if (content.charCodeAt(content.length - 1) == 13) {
-          content = content.substring(0, content.length - 1);
-        }
-      }
-
-      if (begin === true) {
-        if (content.charCodeAt(0) == 10) {
-          content = content.substring(1, content.length);
-        }
-        if (content.charCodeAt(0) == 13) {
-          content = content.substring(1, content.length);
-        }
-      }
-      return content;
     }
 
     // Search notes from query and return content

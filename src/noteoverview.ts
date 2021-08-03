@@ -417,4 +417,29 @@ export namespace noteoverview {
       });
     }
   }
+
+  export async function removeNewLineAt(
+    content: string,
+    begin: boolean,
+    end: boolean
+  ): Promise<string> {
+    if (end === true) {
+      if (content.charCodeAt(content.length - 1) == 10) {
+        content = content.substring(0, content.length - 1);
+      }
+      if (content.charCodeAt(content.length - 1) == 13) {
+        content = content.substring(0, content.length - 1);
+      }
+    }
+
+    if (begin === true) {
+      if (content.charCodeAt(0) == 10) {
+        content = content.substring(1, content.length);
+      }
+      if (content.charCodeAt(0) == 13) {
+        content = content.substring(1, content.length);
+      }
+    }
+    return content;
+  }
 }
