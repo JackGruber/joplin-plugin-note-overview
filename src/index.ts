@@ -235,7 +235,9 @@ joplin.plugins.register({
         }
 
         // Field alias for header
-        const headerFields = await getHeaderFields(alias, [...fieldsArray]);
+        const headerFields = await noteoverview.getHeaderFields(alias, [
+          ...fieldsArray,
+        ]);
 
         // Remove virtual fields from dbFieldsArray
         let dbFieldsArray = [...fieldsArray];
@@ -501,30 +503,6 @@ joplin.plugins.register({
       } while (resources.has_more);
 
       return await noteoverview.humanFrendlyStorageSize(size);
-    }
-
-    // Replace fields for header with alias
-    async function getHeaderFields(
-      aliasStr: string,
-      fields: any
-    ): Promise<any> {
-      let fieldAlias = {};
-      if (aliasStr.trim() !== "") {
-        const aliasArry = aliasStr.trim().split(",");
-        for (let field of aliasArry) {
-          let alias = field.trim().split(" AS ");
-          if (alias.length == 2) {
-            fieldAlias[alias[0].trim()] = alias[1].trim();
-          }
-        }
-
-        for (let key in fields) {
-          if (fieldAlias[fields[key]] !== undefined) {
-            fields[key] = fieldAlias[fields[key]];
-          }
-        }
-      }
-      return fields;
     }
 
     // Get the notbook title froma notebook id
