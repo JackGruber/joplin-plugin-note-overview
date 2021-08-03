@@ -416,7 +416,7 @@ joplin.plugins.register({
                   );
                   noteInfos.push(tagEscp);
                 } else if (fieldsArray[field] === "notebook") {
-                  let notebook: string = await getNotebookName(
+                  let notebook: string = await noteoverview.getNotebookName(
                     queryNotes.items[queryNotesKey]["parent_id"]
                   );
                   let notebookEscp: string = await noteoverview.escapeForTable(
@@ -503,19 +503,6 @@ joplin.plugins.register({
       } while (resources.has_more);
 
       return await noteoverview.humanFrendlyStorageSize(size);
-    }
-
-    // Get the notbook title froma notebook id
-    async function getNotebookName(id): Promise<string> {
-      try {
-        var folder = await joplin.data.get(["folders", id], {
-          fields: "title",
-        });
-      } catch (e) {
-        console.error("getNotebookName " + e);
-        return "n/a (" + id + ")";
-      }
-      return folder.title;
     }
 
     // Start timer

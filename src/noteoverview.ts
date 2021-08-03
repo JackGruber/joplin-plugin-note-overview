@@ -355,4 +355,17 @@ export namespace noteoverview {
     }
     return fields;
   }
+
+  // Get the notbook title froma notebook id
+  export async function getNotebookName(id): Promise<string> {
+    try {
+      var folder = await joplin.data.get(["folders", id], {
+        fields: "title",
+      });
+    } catch (e) {
+      console.error("getNotebookName " + e);
+      return "n/a (" + id + ")";
+    }
+    return folder.title;
+  }
 }
