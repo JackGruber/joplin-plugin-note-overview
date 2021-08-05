@@ -32,11 +32,15 @@
     "yargs": "^16.2.0"
   },
   "dependencies": {
+    "electron-log": "^4.4.1",
     "moment": "^2.29.1",
     "remark": "^13.0.0",
     "string-natural-compare": "^3.0.1",
     "strip-markdown": "^4.0.0",
     "yaml": "^1.10.2"
+  },
+  "browser": {
+    "fs": false
   },
   "jest": {
     "transform": {

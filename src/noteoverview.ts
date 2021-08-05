@@ -7,6 +7,8 @@ import * as strip from "strip-markdown";
 import { settings } from "./settings";
 import { MenuItemLocation } from "api/types";
 import { mergeObject } from "./helper";
+import logging from "electron-log";
+import * as path from "path";
 
 let noteoverviewDialog = null;
 let timer = null;
@@ -78,7 +80,7 @@ export namespace noteoverview {
           page: pageNum++,
         });
       } catch (e) {
-        console.error("getTags " + e);
+        logging.error("getTags " + e);
         tagNames.push("n/a");
         return tagNames;
       }
@@ -257,7 +259,7 @@ export namespace noteoverview {
           sort: "title ASC",
         });
       } catch (e) {
-        console.error("getFileNames " + e);
+        logging.error("getFileNames " + e);
         return files;
       }
       for (const resource of resources.items) {
@@ -364,7 +366,7 @@ export namespace noteoverview {
         fields: "title",
       });
     } catch (e) {
-      console.error("getNotebookName " + e);
+      logging.error("getNotebookName " + e);
       return "n/a (" + id + ")";
     }
     return folder.title;
@@ -379,7 +381,7 @@ export namespace noteoverview {
         fields: "id, body",
       });
     } catch (e) {
-      console.error("getNoteSize " + e);
+      logging.error("getNoteSize " + e);
       return "n/a";
     }
     size = note.body.length;
@@ -393,7 +395,7 @@ export namespace noteoverview {
           page: pageNum++,
         });
       } catch (e) {
-        console.error("getNoteSize resources " + e);
+        logging.error("getNoteSize resources " + e);
         return "n/a";
       }
 
@@ -453,7 +455,7 @@ export namespace noteoverview {
   }
 
   export async function createAll() {
-    console.info("check all overviews");
+    logging.info("check all overviews");
     await noteoverview.loadGlobalSettings();
 
     let pageNum = 1;
@@ -477,7 +479,7 @@ export namespace noteoverview {
     const note = await joplin.data.get(["notes", noteId], {
       fields: ["id", "title", "body"],
     });
-    console.info(`check note: ${note.title} (${note.id})`);
+    logging.info(`check note: ${note.title} (${note.id})`);
 
     // Search all note-overview blocks in note
     const noteOverviewRegEx =
@@ -496,7 +498,7 @@ export namespace noteoverview {
       try {
         noteOverviewSettings = YAML.parse(settingsBlock);
       } catch (error) {
-        console.error("YAML parse error: " + error.message);
+        logging.error("YAML parse error: " + error.message);
         await noteoverview.showError(
           note.title,
           "YAML parse error</br>" + error.message,
@@ -504,7 +506,7 @@ export namespace noteoverview {
         );
         return;
       }
-      console.log("Search: " + noteOverviewSettings["search"]);
+      logging.verbose("Search: " + noteOverviewSettings["search"]);
 
       // add original content before the settings block
       if (startOrgTextIndex != startIndex) {
@@ -542,7 +544,7 @@ export namespace noteoverview {
     // Update note?
     const newNoteBodyStr = newNoteBody.join("\n");
     if (note.body != newNoteBodyStr) {
-      console.info("Update note: " + note.title + " (" + note.id + ")");
+      logging.info("Update note: " + note.title + " (" + note.id + ")");
       await noteoverview.updateNote(newNoteBodyStr, note.id);
     }
   }
@@ -681,7 +683,7 @@ export namespace noteoverview {
             page: pageQueryNotes++,
           });
         } catch (error) {
-          console.error(error.message);
+          logging.error(error.message);
           let errorMsg = error.message;
           errorMsg = errorMsg.replace(/(.*)(:\sSELECT.*)/g, "$1");
 
@@ -854,10 +856,25 @@ export namespace noteoverview {
     return await noteoverview.removeNewLineAt(orgContent, stripe[0], stripe[1]);
   }
 
+  export async function setupLogging() {
+    const logFormatFile = "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}";
+    const logFormatConsole = "[{level}] {text}";
+    const logFile = path.join(
+      await joplin.plugins.installationDir(),
+      "noteoverview.log"
+    );
+    logging.transports.file.format = logFormatFile;
+    logging.transports.file.level = "error";
+    logging.transports.file.resolvePath = () => logFile;
+    logging.transports.console.level = "verbose";
+    logging.transports.console.format = logFormatConsole;
+  }
+
   export async function init() {
-    console.info("Note overview plugin started!");
+    logging.info("Note overview plugin started!");
 
     await settings.register();
+    await noteoverview.setupLogging();
 
     noteoverviewDialog = await joplin.views.dialogs.create(
       "noteoverviewDialog"
@@ -888,7 +905,7 @@ export namespace noteoverview {
   }
 
   export async function settingsChanged(event: any) {
-    console.log("Settings changed");
+    logging.verbose("Settings changed");
 
     // Update timer
     if (event.keys.indexOf("updateInterval") !== -1) {
@@ -902,16 +919,17 @@ export namespace noteoverview {
     clearTimeout(timer);
     timer = null;
     if (updateInterval > 0) {
+      logging.verbose("timer set " + updateInterval);
       timer = setTimeout(noteoverview.runTimed, 1000 * 60 * updateInterval);
     } else {
-      console.log("timer cleared");
+      logging.verbose("timer cleared");
     }
   }
 
   export async function runTimed() {
     const updateInterval = await joplin.settings.value("updateInterval");
     if (updateInterval > 0) {
-      console.log("run timed");
+      logging.verbose("run timed");
       await noteoverview.createAll();
       await noteoverview.setTimer(updateInterval);
     } else {
