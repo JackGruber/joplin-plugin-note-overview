@@ -65,8 +65,8 @@ export namespace noteoverview {
   }
 
   // Get all tags title as array for a note id
-  export async function getTags(noteId): Promise<any> {
-    const tagNames = [];
+  export async function getTags(noteId): Promise<string[]> {
+    const tagNames: string[] = [];
     let pageNum = 1;
     do {
       try {
