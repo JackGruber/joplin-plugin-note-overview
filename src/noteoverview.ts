@@ -771,22 +771,27 @@ export namespace noteoverview {
       case "user_updated_time":
       case "todo_due":
       case "todo_completed":
+      case "todo_due":
+      case "todo_completed":
         const dateObject = new Date(fields[field]);
         value = await noteoverview.getDateFormated(
           dateObject.getTime(),
           globalSettings.dateFormat,
           globalSettings.timeFormat
         );
-      case "todo_due":
-      case "todo_completed":
-        const color = await noteoverview.getToDoDateColor(
-          options.coloring,
-          fields["todo_due"],
-          fields["todo_completed"],
-          fields[field]
-        );
-        if (color !== "") {
-          value = `<font color="${color}">${value}</font>`;
+        switch (field) {
+          case "todo_due":
+          case "todo_completed":
+            const color = await noteoverview.getToDoDateColor(
+              options.coloring,
+              fields["todo_due"],
+              fields["todo_completed"],
+              field
+            );
+            if (color !== "") {
+              value = `<font color="${color}">${value}</font>`;
+            }
+            break;
         }
         break;
       case "status":
