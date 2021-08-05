@@ -75,7 +75,9 @@ The note content is updated every x minutes (depending on your setting) or manua
 
 > ⚠ Adding and editing the code block does not work in the **Rich Text (WYSIWYG)** editor!
 
-> ❕ The refresh of the note ist not working in the **Rich Text (WYSIWYG)** editor, to update the note view please change the note and switch back.
+> ⚠ When the note is edited in `Rich Text` (WYSIWYG) editor, the note code block is not preserved!
+
+> ❕ The refresh of the note ist not working in the `Rich Text` (WYSIWYG) editor, to update the note view please change the note and switch back.
 
 ## Codeblock options
 
