@@ -13,6 +13,7 @@ import * as path from "path";
 let noteoverviewDialog = null;
 let timer = null;
 let globalSettings: any = {};
+const consoleLogLevel = "verbose";
 
 export namespace noteoverview {
   export async function getImageNr(
@@ -177,6 +178,7 @@ export namespace noteoverview {
     todo_completed: number,
     type: string
   ): Promise<string> {
+    logging.silly("func: getToDoDateColor");
     const now = new Date();
     let colorType = "";
 
@@ -274,6 +276,7 @@ export namespace noteoverview {
     todo_due: number,
     todo_completed: number
   ) {
+    logging.silly("func: getToDoStatus");
     const now = new Date();
     if (todo_completed === 0 && todo_due !== 0 && todo_due < now.getTime())
       return "overdue";
@@ -473,6 +476,7 @@ export namespace noteoverview {
         await noteoverview.create(noteId);
       }
     } while (overviewNotes.has_more);
+    logging.info("all overviews checked");
   }
 
   export async function create(noteId: string) {
@@ -552,6 +556,7 @@ export namespace noteoverview {
   export async function getSettingsAsObject(
     overviewSettings: any
   ): Promise<any> {
+    logging.silly("func: getSettingsAsObject");
     const settings: any = {};
     settings.overview = overviewSettings;
 
@@ -627,6 +632,7 @@ export namespace noteoverview {
     noteTitle: string,
     overviewSettings: any
   ): Promise<string[]> {
+    logging.silly("func: getOverviewContent");
     const query: string = overviewSettings["search"];
     let overviewContent: string[] = [];
 
@@ -753,6 +759,7 @@ export namespace noteoverview {
     fields: any,
     options: any
   ): Promise<string> {
+    logging.silly("func: getFieldValue for " + field);
     let value = "";
     switch (field) {
       case "title":
@@ -866,7 +873,7 @@ export namespace noteoverview {
     logging.transports.file.format = logFormatFile;
     logging.transports.file.level = "error";
     logging.transports.file.resolvePath = () => logFile;
-    logging.transports.console.level = "verbose";
+    logging.transports.console.level = consoleLogLevel;
     logging.transports.console.format = logFormatConsole;
   }
 
@@ -919,7 +926,7 @@ export namespace noteoverview {
     clearTimeout(timer);
     timer = null;
     if (updateInterval > 0) {
-      logging.verbose("timer set " + updateInterval);
+      logging.verbose("timer set to " + updateInterval);
       timer = setTimeout(noteoverview.runTimed, 1000 * 60 * updateInterval);
     } else {
       logging.verbose("timer cleared");
