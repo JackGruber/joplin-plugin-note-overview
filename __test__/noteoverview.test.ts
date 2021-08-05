@@ -1,7 +1,13 @@
-import { noteoverview } from "../src/noteoverview";
+import { noteoverview, logging } from "../src/noteoverview";
 import * as YAML from "yaml";
 
 describe("String escaping for md tables", function () {
+  beforeEach(async () => {
+    jest.spyOn(logging, "silly").mockImplementation(() => {});
+    jest.spyOn(logging, "verbose").mockImplementation(() => {});
+    jest.spyOn(logging, "info").mockImplementation(() => {});
+  });
+
   it(`Escape |`, async () => {
     expect(await noteoverview.escapeForTable("Test | escape")).toBe(
       "Test \\| escape"
