@@ -6,9 +6,11 @@ import * as remark from "remark";
 import * as strip from "strip-markdown";
 import { settings } from "./settings";
 import { MenuItemLocation } from "api/types";
+import { mergeObject } from "./helper";
 
 let noteoverviewDialog = null;
 let timer = null;
+let globalSettings: any = {};
 
 export namespace noteoverview {
   export async function getImageNr(
@@ -153,7 +155,7 @@ export namespace noteoverview {
     epoch: number,
     dateFormat: string,
     timeFormat: string
-  ): Promise<String> {
+  ): Promise<string> {
     if (epoch !== 0) {
       const dateObject = new Date(epoch);
       const dateString =
@@ -212,7 +214,7 @@ export namespace noteoverview {
     else return "";
   }
 
-  export async function getDefaultColors(): Promise<Object> {
+  export async function getDefaultColoring(): Promise<Object> {
     let coloring = {
       todo: {
         open_nodue: "",
@@ -442,9 +444,419 @@ export namespace noteoverview {
     return content;
   }
 
-  export async function updateAll() {}
+  export async function loadGlobalSettings() {
+    globalSettings.dateFormat = await joplin.settings.globalValue("dateFormat");
+    globalSettings.timeFormat = await joplin.settings.globalValue("timeFormat");
+    globalSettings.statusText = await noteoverview.getDefaultStatusText();
+    globalSettings.coloring = await noteoverview.getDefaultColoring();
+    globalSettings.showNoteCount = await joplin.settings.value("showNoteCount");
+  }
+
+  export async function createAll() {
+    console.info("check all overviews");
+    await noteoverview.loadGlobalSettings();
+
+    let pageNum = 1;
+    let overviewNotes = null;
+    do {
+      overviewNotes = await joplin.data.get(["search"], {
+        query: '/"<!-- note-overview-plugin"',
+        fields: "id",
+        limit: 10,
+        page: pageNum++,
+      });
+
+      for (let overviewNotesKey in overviewNotes.items) {
+        const noteId: string = overviewNotes.items[overviewNotesKey].id;
+        noteoverview.create(noteId);
+      }
+    } while (overviewNotes.has_more);
+  }
+
+  export async function create(noteId: string) {
+    const note = await joplin.data.get(["notes", noteId], {
+      fields: ["id", "title", "body"],
+    });
+    console.info(`check note ${note.title} (${note.id})`);
+
+    // Search all note-overview blocks in note
+    const noteOverviewRegEx =
+      /(<!--\s?note-overview-plugin(?<settings>[\w\W]*?)-->)([\w\W]*?)(<!--endoverview-->|(?=<!--\s?note-overview-plugin)|$)/gi;
+    let regExMatch = null;
+    let startOrgTextIndex = 0;
+    let startIndex = 0;
+    let endIndex = 0;
+    let newNoteBody: string[] = [];
+
+    while ((regExMatch = noteOverviewRegEx.exec(note.body)) != null) {
+      const settingsBlock = regExMatch["groups"]["settings"];
+      startIndex = regExMatch.index;
+      endIndex = startIndex + regExMatch[0].length;
+      let noteOverviewSettings = null;
+      try {
+        noteOverviewSettings = YAML.parse(settingsBlock);
+      } catch (error) {
+        console.error("YAML parse error: " + error.message);
+        await noteoverview.showError(
+          note.title,
+          "YAML parse error</br>" + error.message,
+          settingsBlock
+        );
+        return;
+      }
+      console.log("Search: " + noteOverviewSettings["search"]);
+
+      // add original content before the settings block
+      if (startOrgTextIndex != startIndex) {
+        newNoteBody.push(
+          await noteoverview.getSubNoteContent(
+            note.body,
+            startOrgTextIndex,
+            startIndex,
+            false
+          )
+        );
+      }
+      startOrgTextIndex = endIndex;
+
+      let noteOverviewContent = await noteoverview.getOverviewContent(
+        note.id,
+        note.title,
+        noteOverviewSettings
+      );
+      newNoteBody = [...newNoteBody, ...noteOverviewContent];
+    }
+
+    // Add original content after last overview block
+    if (startOrgTextIndex !== note.body.length) {
+      newNoteBody.push(
+        await noteoverview.getSubNoteContent(
+          note.body,
+          startOrgTextIndex,
+          startIndex,
+          true
+        )
+      );
+    }
+
+    // Update note?
+    const newNoteBodyStr = newNoteBody.join("\n");
+    if (note.body != newNoteBodyStr) {
+      console.info("Update note " + note.title + " (" + note.id + ")");
+      await noteoverview.updateNote(newNoteBodyStr, note.id);
+    }
+  }
+
+  export async function getSettingsAsObject(
+    overviewSettings: any
+  ): Promise<any> {
+    const settings: any = {};
+    settings.overview = overviewSettings;
+
+    settings.statusText = await mergeObject(
+      globalSettings.statusText,
+      overviewSettings["status"] ? overviewSettings["status"] : null
+    );
+
+    settings.fields = overviewSettings["fields"]
+      ? overviewSettings["fields"]
+      : null;
+
+    // field sorting information
+    settings.sortStr = overviewSettings["sort"]
+      ? overviewSettings["sort"]
+      : "title ASC";
+    const sortArray = settings.sortStr.toLowerCase().split(" ");
+    if (!sortArray[1]) {
+      sortArray[1] = "ASC";
+    }
+    settings.orderBy = sortArray[0];
+    settings.orderDir = sortArray[1];
+
+    settings.alias = overviewSettings["alias"] ? overviewSettings["alias"] : "";
+
+    settings.imageSettings = overviewSettings["image"]
+      ? overviewSettings["image"]
+      : null;
+
+    settings.excerptSettings = overviewSettings["excerpt"]
+      ? overviewSettings["excerpt"]
+      : null;
+
+    settings.coloring = await mergeObject(
+      globalSettings.coloring,
+      overviewSettings["coloring"]
+    );
+
+    settings.noteCount = globalSettings.showNoteCount;
+
+    return settings;
+  }
+
+  export async function getAdditionalFields(
+    fields: string[]
+  ): Promise<string[]> {
+    const additionalFields: string[] = [];
+
+    // if a todo field is selected, add the other one to
+    if (fields.includes("todo_due")) {
+      additionalFields.push("todo_completed");
+    }
+    if (fields.includes("todo_completed")) {
+      additionalFields.push("todo_due");
+    }
+
+    // include todo fields for the status field calculation
+    if (fields.includes("status")) {
+      additionalFields.push("todo_due");
+      additionalFields.push("todo_completed");
+    }
+
+    // include body
+    if (fields.includes("image") || fields.includes("excerpt")) {
+      additionalFields.push("body");
+    }
+
+    return additionalFields;
+  }
+
+  export async function getOverviewContent(
+    noteId: string,
+    noteTitle: string,
+    overviewSettings: any
+  ): Promise<string[]> {
+    const query: string = overviewSettings["search"];
+    let overviewContent: string[] = [];
+
+    if (query) {
+      const settings = await noteoverview.getSettingsAsObject(overviewSettings);
+
+      // create array from fields
+      let fields = [];
+      if (settings.fields) {
+        fields = settings.fields.toLowerCase().replace(/\s/g, "").split(",");
+      } else {
+        fields = ["updated_time", "title"];
+      }
+
+      // Field alias for header
+      const headerFields = await noteoverview.getHeaderFields(settings.alias, [
+        ...fields,
+      ]);
+
+      // Remove virtual fields from dbFieldsArray
+      let dbFieldsArray = [...fields];
+      dbFieldsArray = dbFieldsArray.filter(
+        (el) =>
+          [
+            "notebook",
+            "tags",
+            "size",
+            "file",
+            "file_size",
+            "status",
+            "image",
+            "excerpt",
+          ].indexOf(el) === -1
+      );
+
+      dbFieldsArray = [
+        ...dbFieldsArray,
+        ...(await noteoverview.getAdditionalFields(fields)),
+      ];
+
+      overviewContent = await noteoverview.getTableHeader(headerFields);
+
+      let noteCount = 0;
+      let queryNotes = null;
+      let pageQueryNotes = 1;
+      do {
+        try {
+          queryNotes = await joplin.data.get(["search"], {
+            query: query,
+            fields: "id, parent_id, " + dbFieldsArray.join(","),
+            order_by: settings.orderBy,
+            order_dir: settings.orderDir.toUpperCase(),
+            limit: 50,
+            page: pageQueryNotes++,
+          });
+        } catch (error) {
+          console.error(error.message);
+          let errorMsg = error.message;
+          errorMsg = errorMsg.replace(/(.*)(:\sSELECT.*)/g, "$1");
+
+          await noteoverview.showError(noteTitle, errorMsg, "");
+          let settingsOnly: string[] = [];
+          settingsOnly.unshift(
+            await noteoverview.createSettingsBlock(overviewSettings)
+          );
+          return settingsOnly;
+        }
+
+        for (let queryNotesKey in queryNotes.items) {
+          if (queryNotes.items[queryNotesKey].id != noteId) {
+            noteCount++;
+
+            overviewContent.push(
+              await noteoverview.getNoteInfoAsTable(
+                fields,
+                queryNotes.items[queryNotesKey],
+                settings
+              )
+            );
+          }
+        }
+      } while (queryNotes.has_more);
+
+      if (settings.noteCount == "below") {
+        overviewContent.push("Note count: " + noteCount);
+      } else if (settings.noteCount == "above") {
+        overviewContent.unshift("Note count: " + noteCount);
+      }
+    }
+
+    overviewContent.unshift(
+      await noteoverview.createSettingsBlock(overviewSettings)
+    );
+    overviewContent.push("<!--endoverview-->");
+
+    return overviewContent;
+  }
+
+  export async function getTableHeader(header: string[]) {
+    const mdTableHeader: string[] = [];
+    mdTableHeader.push("| " + header.join(" | ") + " |");
+    mdTableHeader.push("|" + " --- |".repeat(header.length));
+
+    return mdTableHeader;
+  }
+
+  export async function getNoteInfoAsTable(
+    fields: string[],
+    noteFields: string[],
+    settings: any
+  ): Promise<string> {
+    const info: string[] = [];
+    settings.escapeForTable = true;
+
+    for (let field of fields) {
+      info.push(await noteoverview.getFieldValue(field, noteFields, settings));
+    }
+
+    return "|" + info.join("|") + "|";
+  }
+
+  export async function getFieldValue(
+    field: string,
+    fields: any,
+    options: any
+  ): Promise<string> {
+    let value = "";
+    switch (field) {
+      case "title":
+        value = `[${fields.title}](:/${fields.id})`;
+        break;
+      case "created_time":
+      case "updated_time":
+      case "user_created_time":
+      case "user_updated_time":
+      case "todo_due":
+      case "todo_completed":
+        const dateObject = new Date(fields[field]);
+        value = await noteoverview.getDateFormated(
+          dateObject.getTime(),
+          globalSettings.dateFormat,
+          globalSettings.timeFormat
+        );
+      case "todo_due":
+      case "todo_completed":
+        const color = await noteoverview.getToDoDateColor(
+          options.coloring,
+          fields["todo_due"],
+          fields["todo_completed"],
+          fields[field]
+        );
+        if (color !== "") {
+          value = `<font color="${color}">${value}</font>`;
+        }
+        break;
+      case "status":
+        const status: string = await noteoverview.getToDoStatus(
+          fields["todo_due"],
+          fields["todo_completed"]
+        );
+        value = options.statusTexts["todo"][status];
+        break;
+      case "excerpt":
+        value = await noteoverview.getMarkdownExcerpt(
+          fields["body"],
+          options.excerptSettings
+        );
+        break;
+      case "image":
+        await noteoverview.getImageNr(
+          fields["body"],
+          options.imageSettings && options.imageSettings["nr"]
+            ? options.imageSettings["nr"]
+            : 1,
+          options.imageSettings
+        );
+        break;
+      case "file":
+        value = (await noteoverview.getFileNames(fields["id"], false)).join(
+          "<br>"
+        );
+        break;
+      case "file_size":
+        value = (await noteoverview.getFileNames(fields["id"], true)).join(
+          "<br>"
+        );
+        break;
+      case "size":
+        value = await noteoverview.getNoteSize(fields["id"]);
+        break;
+      case "tags":
+        value = (await noteoverview.getTags(fields["id"])).join(", ");
+        break;
+      case "notebook":
+        value = await noteoverview.getNotebookName(fields["parent_id"]);
+        break;
+      default:
+        value = fields[field];
+    }
+
+    if (options.escapeForTable === true) {
+      value = await noteoverview.escapeForTable(value);
+    }
+
+    return value;
+  }
+
+  export async function getSubNoteContent(
+    body: string,
+    fromIndex: number,
+    toIndex: number,
+    posIsAfterOverviewSection: boolean
+  ) {
+    const orgContent = body.substring(fromIndex, toIndex);
+    let stripe: boolean[];
+
+    if (posIsAfterOverviewSection === false) {
+      if (fromIndex === 0) {
+        stripe = [false, true];
+      } else {
+        stripe = [true, true];
+      }
+    } else {
+      stripe = [true, false];
+    }
+
+    return await noteoverview.removeNewLineAt(orgContent, stripe[0], stripe[1]);
+  }
 
   export async function init() {
+    console.info("Note overview plugin started!");
+
     await settings.register();
 
     noteoverviewDialog = await joplin.views.dialogs.create(
@@ -455,7 +867,7 @@ export namespace noteoverview {
       name: "createNoteOverview",
       label: "Create note overview",
       execute: async () => {
-        noteoverview.updateAll(); //runCreateNoteOverview();
+        noteoverview.createAll();
       },
     });
 
@@ -469,11 +881,15 @@ export namespace noteoverview {
       await noteoverview.settingsChanged(event);
     });
 
-    await noteoverview.setTimer(await joplin.settings.value("updateInterval"));
+    if ((await joplin.settings.value("updateInterval")) > 0) {
+      // ToDo: use sync finish trigger
+      await noteoverview.setTimer(5);
+    }
   }
 
   export async function settingsChanged(event: any) {
     console.log("Settings changed");
+
     // Update timer
     if (event.keys.indexOf("updateInterval") !== -1) {
       await noteoverview.setTimer(
@@ -486,7 +902,6 @@ export namespace noteoverview {
     clearTimeout(timer);
     timer = null;
     if (updateInterval > 0) {
-      console.log("set timer " + updateInterval);
       timer = setTimeout(noteoverview.runTimed, 1000 * 60 * updateInterval);
     } else {
       console.log("timer cleared");
@@ -497,7 +912,7 @@ export namespace noteoverview {
     const updateInterval = await joplin.settings.value("updateInterval");
     if (updateInterval > 0) {
       console.log("run timed");
-      await noteoverview.updateAll();
+      await noteoverview.createAll();
       await noteoverview.setTimer(updateInterval);
     } else {
       timer = null;
