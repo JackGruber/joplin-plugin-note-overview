@@ -477,7 +477,7 @@ export namespace noteoverview {
     const note = await joplin.data.get(["notes", noteId], {
       fields: ["id", "title", "body"],
     });
-    console.info(`check note ${note.title} (${note.id})`);
+    console.info(`check note: ${note.title} (${note.id})`);
 
     // Search all note-overview blocks in note
     const noteOverviewRegEx =
@@ -542,7 +542,7 @@ export namespace noteoverview {
     // Update note?
     const newNoteBodyStr = newNoteBody.join("\n");
     if (note.body != newNoteBodyStr) {
-      console.info("Update note " + note.title + " (" + note.id + ")");
+      console.info("Update note: " + note.title + " (" + note.id + ")");
       await noteoverview.updateNote(newNoteBodyStr, note.id);
     }
   }
