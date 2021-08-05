@@ -21,6 +21,7 @@ export namespace noteoverview {
     imagrNr: number,
     imageSettings: Object
   ): Promise<string> {
+    logging.silly("func: getImageNr");
     const regExresourceId = /!\[([^\]]+|)\]\(:\/(?<resourceId>[\da-z]{32})\)/g;
     let ids = [];
     let imageId = null;
