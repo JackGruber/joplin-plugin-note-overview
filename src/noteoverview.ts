@@ -787,7 +787,7 @@ export namespace noteoverview {
           fields["todo_due"],
           fields["todo_completed"]
         );
-        value = options.statusTexts["todo"][status];
+        value = options.statusText["todo"][status];
         break;
       case "excerpt":
         value = await noteoverview.getMarkdownExcerpt(
