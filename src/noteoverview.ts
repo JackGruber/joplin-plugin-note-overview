@@ -411,6 +411,7 @@ export namespace noteoverview {
   }
 
   export async function updateNote(newBodyStr: string, noteId: string) {
+    logging.info("Update note: " + noteId);
     let slectedNote = await joplin.workspace.selectedNote();
     const codeView = await joplin.settings.globalValue("editor.codeView");
 
@@ -548,7 +549,6 @@ export namespace noteoverview {
     // Update note?
     const newNoteBodyStr = newNoteBody.join("\n");
     if (note.body != newNoteBodyStr) {
-      logging.info("Update note: " + note.title + " (" + note.id + ")");
       await noteoverview.updateNote(newNoteBodyStr, note.id);
     }
   }
