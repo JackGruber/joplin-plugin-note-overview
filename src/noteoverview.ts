@@ -809,7 +809,7 @@ export namespace noteoverview {
         );
         break;
       case "image":
-        await noteoverview.getImageNr(
+        value = await noteoverview.getImageNr(
           fields["body"],
           options.imageSettings && options.imageSettings["nr"]
             ? options.imageSettings["nr"]
