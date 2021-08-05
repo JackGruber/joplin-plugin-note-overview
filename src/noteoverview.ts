@@ -468,7 +468,7 @@ export namespace noteoverview {
 
       for (let overviewNotesKey in overviewNotes.items) {
         const noteId: string = overviewNotes.items[overviewNotesKey].id;
-        noteoverview.create(noteId);
+        await noteoverview.create(noteId);
       }
     } while (overviewNotes.has_more);
   }
