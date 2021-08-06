@@ -9,6 +9,12 @@ type OverviewOptions = {
   excerptSettings: any;
   coloring: any;
   noteCount: string;
+  details: OverviewOptionsDetails;
+};
+
+type OverviewOptionsDetails = {
+  summary: string;
+  open: boolean;
 };
 
 export { OverviewOptions };

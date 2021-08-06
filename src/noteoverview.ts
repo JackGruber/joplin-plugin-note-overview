@@ -614,6 +614,10 @@ export namespace noteoverview {
       overviewSettings["coloring"]
     );
 
+    settings.details = overviewSettings["details"]
+      ? overviewSettings["details"]
+      : null;
+
     settings.noteCount = globalSettings.showNoteCount;
 
     return settings;
@@ -739,6 +743,23 @@ export namespace noteoverview {
         overviewContent.push("Note count: " + noteCount);
       } else if (settings.noteCount == "above") {
         overviewContent.unshift("Note count: " + noteCount);
+      }
+
+      // Add HTML details tag
+      if (settings.details) {
+        overviewContent.unshift("");
+        if (settings.details.summary) {
+          overviewContent.unshift(
+            `<summary>${settings.details.summary}</summary>`
+          );
+        }
+        overviewContent.unshift(
+          `<details ` +
+            (settings.details.open === true ? ` open` : `close`) +
+            `>`
+        );
+
+        overviewContent.push("</details>");
       }
     }
 

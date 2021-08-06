@@ -17,6 +17,8 @@ A note overview is created based on the defined search and the specified fields.
   - [alias](#alias)
   - [image](#image)
   - [excerpt](#excerpt)
+- [Options](#options)
+  - [Details](#details)
 - [Examples](#examples)
   - [ToDo Overview](#todo-overview)
   - [Show all ToDos with status](#show-all-todos-with-status)
@@ -27,6 +29,7 @@ A note overview is created based on the defined search and the specified fields.
   - [Notes without a tag](#notes-without-a-tag)
   - [Notes createt last 7 days](#notes-createt-last-7-days)
   - [Cooking recipes overview](#cooking-recipes-overview)
+  - [Details option](#details-option)
 - [Plugin options](#plugin-options)
 - [Keyboard Shortcuts](#keyboard-shortcuts)
 - [FAQ](#faq)
@@ -158,6 +161,18 @@ excerpt:
     maxlength: 200
 ```
 
+## Options
+
+### Details
+
+Add the overview into a details section that can open and close on demand.
+
+```
+details:
+  open: false
+  summary: All notes without a Tag
+```
+
 ## Examples
 
 ### ToDo Overview
@@ -252,6 +267,20 @@ image:
 ```
 
 <img src="img/example_image.jpg">
+
+### Details option
+
+```
+<!-- note-overview-plugin
+search: -tag:*
+fields: title
+details:
+  open: false
+  summary: All notes without a Tag
+-->
+```
+
+<img src="img/example_option_details.jpg">
 
 ## Plugin options
 
