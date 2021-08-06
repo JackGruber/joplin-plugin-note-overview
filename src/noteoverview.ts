@@ -572,10 +572,10 @@ export namespace noteoverview {
     }
   }
 
-  export async function getSettingsAsObject(
+  export async function getOptions(
     overviewSettings: any
   ): Promise<OverviewOptions> {
-    logging.silly("func: getSettingsAsObject");
+    logging.silly("func: getOptions");
     const settings: any = {};
     settings.overview = overviewSettings;
 
@@ -660,7 +660,7 @@ export namespace noteoverview {
     let overviewContent: string[] = [];
 
     if (query) {
-      const settings = await noteoverview.getSettingsAsObject(overviewSettings);
+      const settings = await noteoverview.getOptions(overviewSettings);
 
       // create array from fields
       let fields = [];
