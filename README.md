@@ -229,7 +229,7 @@ sort: todo_due ASC
 
 ```
 <!-- note-overview-plugin
-search: *
+search: "*"
 fields: updated_time, title
 alias: updated_time AS Modified
 -->
