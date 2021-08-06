@@ -411,18 +411,35 @@ export namespace noteoverview {
     return await noteoverview.humanFrendlyStorageSize(size);
   }
 
-  export async function updateNote(newBodyStr: string, noteId: string) {
+  export async function updateNote(
+    newBodyStr: string,
+    noteId: string,
+    userTriggerd: boolean
+  ) {
     logging.info("Update note: " + noteId);
-    let slectedNote = await joplin.workspace.selectedNote();
+    const slectedNote = await joplin.workspace.selectedNote();
     const codeView = await joplin.settings.globalValue("editor.codeView");
+    const noteVisiblePanes = await joplin.settings.globalValue(
+      "noteVisiblePanes"
+    );
 
-    if (slectedNote.id == noteId && codeView === true) {
+    // Update actual note only when in viewer mode (rich text editor delete HTML comments) or user triggerd
+    // Issue #13
+    if (
+      slectedNote.id === noteId &&
+      codeView === true &&
+      (noteVisiblePanes === "viewer" || userTriggerd === true)
+    ) {
+      logging.verbose("   Use replaceSelection");
       await joplin.commands.execute("textSelectAll");
       await joplin.commands.execute("replaceSelection", newBodyStr);
-    } else {
+    } else if (slectedNote.id !== noteId) {
+      logging.verbose("   Use API");
       await joplin.data.put(["notes", noteId], null, {
         body: newBodyStr,
       });
+    } else {
+      logging.verbose("   skipping");
     }
   }
 
@@ -459,7 +476,7 @@ export namespace noteoverview {
     globalSettings.showNoteCount = await joplin.settings.value("showNoteCount");
   }
 
-  export async function createAll() {
+  export async function createAll(userTriggerd: boolean) {
     logging.info("check all overviews");
     await noteoverview.loadGlobalSettings();
 
@@ -475,13 +492,13 @@ export namespace noteoverview {
 
       for (let overviewNotesKey in overviewNotes.items) {
         const noteId: string = overviewNotes.items[overviewNotesKey].id;
-        await noteoverview.create(noteId);
+        await noteoverview.create(noteId, userTriggerd);
       }
     } while (overviewNotes.has_more);
     logging.info("all overviews checked");
   }
 
-  export async function create(noteId: string) {
+  export async function create(noteId: string, userTriggerd: boolean) {
     const note = await joplin.data.get(["notes", noteId], {
       fields: ["id", "title", "body"],
     });
@@ -550,7 +567,7 @@ export namespace noteoverview {
     // Update note?
     const newNoteBodyStr = newNoteBody.join("\n");
     if (note.body != newNoteBodyStr) {
-      await noteoverview.updateNote(newNoteBodyStr, note.id);
+      await noteoverview.updateNote(newNoteBodyStr, note.id, userTriggerd);
     }
   }
 
@@ -897,7 +914,7 @@ export namespace noteoverview {
       name: "createNoteOverview",
       label: "Create note overview",
       execute: async () => {
-        noteoverview.createAll();
+        noteoverview.createAll(true);
       },
     });
 
@@ -943,7 +960,7 @@ export namespace noteoverview {
     const updateInterval = await joplin.settings.value("updateInterval");
     if (updateInterval > 0) {
       logging.verbose("run timed");
-      await noteoverview.createAll();
+      await noteoverview.createAll(false);
       await noteoverview.setTimer(updateInterval);
     } else {
       timer = null;
