@@ -9,6 +9,7 @@ import { MenuItemLocation } from "api/types";
 import { mergeObject } from "./helper";
 import logging from "electron-log";
 import * as path from "path";
+import { OverviewOptions } from "./type";
 
 let noteoverviewDialog = null;
 let timer = null;
@@ -573,7 +574,7 @@ export namespace noteoverview {
 
   export async function getSettingsAsObject(
     overviewSettings: any
-  ): Promise<any> {
+  ): Promise<OverviewOptions> {
     logging.silly("func: getSettingsAsObject");
     const settings: any = {};
     settings.overview = overviewSettings;
