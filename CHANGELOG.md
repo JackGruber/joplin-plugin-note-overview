@@ -7,6 +7,7 @@
 - Add: Option `count` to customize note count field for a single overview
 - Add: Plugin option `Note count text` to customize note count text
 - Add: Option `listview` to display the overview as list instead of a table
+- Add: Virtual field `breadcrumb` to display the notebook path
 
 ## v1.4.3 (2021-05-17)
 

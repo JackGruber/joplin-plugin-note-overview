@@ -122,6 +122,7 @@ In addition to the Joplin fields, there are the following virtual fields:
 - `size`: Size of the note, including attachments
 - `tag`: Assigned tags of the note
 - `notebook`: Folder in which the note is stored
+- `breadcrumb`: Folder breadcrumb (Folder path)
 - `image`: In this field a image resource from the note will be displayed. This field can be configured using the `image` option
 - `excerpt`: Displays an excerpt of the note body
 

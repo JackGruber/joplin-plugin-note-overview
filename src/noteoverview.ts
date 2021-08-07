@@ -17,6 +17,8 @@ let timer = null;
 let globalSettings: any = {};
 const consoleLogLevel = "verbose";
 
+let joplinNotebooks: any = null;
+
 export namespace noteoverview {
   export async function getImageNr(
     body: string,
@@ -365,17 +367,66 @@ export namespace noteoverview {
     return fields;
   }
 
-  // Get the notbook title froma notebook id
   export async function getNotebookName(id): Promise<string> {
-    try {
-      var folder = await joplin.data.get(["folders", id], {
-        fields: "title",
-      });
-    } catch (e) {
-      logging.error("getNotebookName " + e);
-      return "n/a (" + id + ")";
+    if (joplinNotebooks[id]) {
+      return joplinNotebooks[id].title;
+    } else {
+      return "n/a";
     }
-    return folder.title;
+  }
+
+  export async function getNotebookBreadcrumb(id): Promise<string> {
+    if (joplinNotebooks[id]) {
+      return joplinNotebooks[id].path.join(" > ");
+    } else {
+      return "n/a";
+    }
+  }
+
+  export async function loadNotebooks(reload = false) {
+    logging.silly("Func: loadNotebooks");
+    if (reload === true || joplinNotebooks === null) {
+      logging.silly("load notebooks");
+      joplinNotebooks = {};
+      let queryFolders;
+      let pageQuery = 0;
+      do {
+        try {
+          queryFolders = await joplin.data.get(["folders"], {
+            fields: "id, parent_id, title",
+            limit: 50,
+            page: pageQuery++,
+          });
+        } catch (error) {
+          logging.error(error.message);
+        }
+
+        for (let queryFolderKey in queryFolders.items) {
+          const id = queryFolders.items[queryFolderKey].id;
+          joplinNotebooks[id] = {
+            id: id,
+            title: queryFolders.items[queryFolderKey].title,
+            parent_id: queryFolders.items[queryFolderKey].parent_id,
+          };
+        }
+        pageQuery++;
+      } while (queryFolders.has_more);
+
+      const getParentName = (id: string, notebookPath: string[]) => {
+        if (id === "") return;
+        if (joplinNotebooks[id].parent_id !== "") {
+          getParentName(joplinNotebooks[id].parent_id, notebookPath);
+        }
+        notebookPath.push(joplinNotebooks[id].title);
+      };
+
+      for (const key in joplinNotebooks) {
+        const notebookPath: string[] = [];
+        getParentName(joplinNotebooks[key].parent_id, notebookPath);
+        notebookPath.push(joplinNotebooks[key].title);
+        joplinNotebooks[key].path = notebookPath;
+      }
+    }
   }
 
   // Calculate notes size including resources
@@ -487,6 +538,7 @@ export namespace noteoverview {
   export async function updateAll(userTriggerd: boolean) {
     logging.info("check all overviews");
     await noteoverview.loadGlobalSettings();
+    await noteoverview.loadNotebooks(true);
 
     let pageNum = 1;
     let overviewNotes = null;
@@ -695,6 +747,7 @@ export namespace noteoverview {
         (el) =>
           [
             "notebook",
+            "breadcrumb",
             "tags",
             "size",
             "file",
@@ -997,6 +1050,9 @@ export namespace noteoverview {
         break;
       case "notebook":
         value = await noteoverview.getNotebookName(fields["parent_id"]);
+        break;
+      case "breadcrumb":
+        value = await noteoverview.getNotebookBreadcrumb(fields["parent_id"]);
         break;
       default:
         value = fields[field];
