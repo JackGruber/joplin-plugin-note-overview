@@ -827,7 +827,7 @@ export namespace noteoverview {
           ? `${options.count.text} `
           : ``;
 
-      const countStr = text.replace("{count}", count.toString());
+      const countStr = text.replace("{{count}}", count.toString());
 
       if (options.count.position === "above") {
         if (options.listview) overview.unshift("");
@@ -853,9 +853,9 @@ export namespace noteoverview {
   ): Promise<string> {
     let info = options.listview.text
       ? options.listview.text
-      : "[{title}](/:{id})";
+      : "[{{title}}](/:{{id}})";
     try {
-      info = info.replace(/{([^}]+)}/g, (match, groups) => {
+      info = info.replace(/{{([^}]+)}}/g, (match, groups) => {
         if (noteFields[groups]) {
           return noteFields[groups];
         } else {

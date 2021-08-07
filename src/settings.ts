@@ -33,14 +33,14 @@ export namespace settings {
         },
       },
       showNoteCountText: {
-        value: "Note count: {count}",
+        value: "Note count: {{count}}",
         type: SettingItemType.String,
         section: "noteOverviewSection",
         public: true,
         advanced: true,
         label: "Note count text",
         description:
-          "Text for the display of the found notes, {count} is replace with the number of matched notes",
+          "Text for the display of the found notes, {{count}} is replace with the number of matched notes",
       },
 
       todoStatusOpen: {

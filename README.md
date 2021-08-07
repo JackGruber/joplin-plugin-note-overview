@@ -182,7 +182,9 @@ Customize note count field for a single overview.
 count:
   enable: [true | false]
   position: [above | below]
-  text: Note count: {count}
+  text: Note count: {{count}}
+```
+
 ```
 
 ## Examples
@@ -190,85 +192,102 @@ count:
 ### ToDo Overview
 
 ```
+
 <!-- note-overview-plugin
 search: type:todo iscompleted:0
 fields: todo_due, title, tags, notebook
 sort: todo_due ASC
 -->
+
 ```
 
 ### Show all ToDos with status
 
 ```
+
 <!-- note-overview-plugin
 search: type:todo
 fields: status, todo_due, title
 sort: todo_completed ASC
 -->
+
 ```
 
 ### Open ToDos for the next 7 days and overdue ToDos
 
 ```
+
 <!-- note-overview-plugin
 search: -due:day+7 iscompleted:0
 fields: todo_due, title
 sort: todo_due ASC
 -->
+
 ```
 
 ### Exclude ToDos with no due date
 
 ```
+
 <!-- note-overview-plugin
 search: due:19700201 iscompleted:0
 fields: todo_due, title
 sort: todo_due ASC
 -->
+
 ```
 
 ### Show all ToDos with no due date
 
 ```
+
 <!-- note-overview-plugin
 search: -due:19700201 iscompleted:0
 fields: todo_due, title
 sort: todo_due ASC
 -->
+
 ```
 
 ### Rename fields
 
 ```
+
 <!-- note-overview-plugin
 search: "*"
 fields: updated_time, title
 alias: updated_time AS Modified
 -->
+
 ```
 
 ### Notes without a tag
 
 ```
+
 <!-- note-overview-plugin
 search: -tag:*
 fields: updated_time, title
 -->
+
 ```
 
 ### Notes createt last 7 days
 
 ```
+
 <!-- note-overview-plugin
 search: created:day-7
 fields: title, updated_time
 sort: title DESC
 -->
+
 ```
 
 ### Cooking recipes overview
 
 ```
+
 <!-- note-overview-plugin
 search: notebook:Cooking
 fields: title, image, tags
@@ -276,6 +295,7 @@ image:
   width: 200
   height: 200
 -->
+
 ```
 
 <img src="img/example_image.jpg">
@@ -283,6 +303,7 @@ image:
 ### Details option
 
 ```
+
 <!-- note-overview-plugin
 search: -tag:*
 fields: title
@@ -290,6 +311,7 @@ details:
   open: false
   summary: All notes without a Tag
 -->
+
 ```
 
 <img src="img/example_option_details.jpg">
@@ -297,33 +319,35 @@ details:
 ### Count option
 
 ```
+
 <!-- note-overview-plugin
 search: -tag:*
 fields: title
 count:
   enable: true
   position: above
-  text: For the query {count} notes where found
+  text: For the query {{count}} notes where found
 -->
+
 ```
 
 ## Plugin options
 
 Settings for the plugin, accessible at `Tools > Options > Note overview`.
 
-| Option                         | Description                                                                                                                                                      | Default               |
-| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
-| `Show note count`              | Show the number of notes found.                                                                                                                                  | `off`                 |
-| `Note count text`              | Text for the display of the found notes, `{count}` is replace with the number of matched notes.                                                                  | `Note count: {count}` |
-| `Update interval in minutes`   | How often the overview notes should be updated.                                                                                                                  | `5`                   |
-| `Field status: open todo`      | Text for the `status` field, when the todo is not completed.                                                                                                     |                       |
-| `Field status: todo completed` | Text for the `status` field, when the todo is completed.                                                                                                         |                       |
-| `Field status: todo over due`  | Text for the `status` field, when the due date of the todo is exceeded.                                                                                          |                       |
-| `Color: todo [open]`           | HTML color for the `due_date`, when the todo is not completed.                                                                                                   |                       |
-| `Color: todo [open_overdue]`   | HTML color for the `due_date`, when the todo is over the due date.                                                                                               | `red`                 |
-| `Color: todo [done]`           | HTML color for the `due_date` and `todo_completed`, when the todo is completed. Seperate the color for due_date and todo_completed by a `,`.                     | `limegreen,limegreen` |
-| `Color: todo [done_overdue]`   | HTML color for the `due_date` and `todo_completed`, when the todo was completed after the due date. Seperate the color for due_date and todo_completed by a `,`. | `orange,orange`       |
-| `Color: todo [done_nodue]`     | HTML color for the `todo_completed`, when the todo was completed but no due date was set.                                                                        |                       |
+| Option                         | Description                                                                                                                                                      | Default                 |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| `Show note count`              | Show the number of notes found.                                                                                                                                  | `off`                   |
+| `Note count text`              | Text for the display of the found notes, `{count}` is replace with the number of matched notes.                                                                  | `Note count: {{count}}` |
+| `Update interval in minutes`   | How often the overview notes should be updated.                                                                                                                  | `5`                     |
+| `Field status: open todo`      | Text for the `status` field, when the todo is not completed.                                                                                                     |                         |
+| `Field status: todo completed` | Text for the `status` field, when the todo is completed.                                                                                                         |                         |
+| `Field status: todo over due`  | Text for the `status` field, when the due date of the todo is exceeded.                                                                                          |                         |
+| `Color: todo [open]`           | HTML color for the `due_date`, when the todo is not completed.                                                                                                   |                         |
+| `Color: todo [open_overdue]`   | HTML color for the `due_date`, when the todo is over the due date.                                                                                               | `red`                   |
+| `Color: todo [done]`           | HTML color for the `due_date` and `todo_completed`, when the todo is completed. Seperate the color for due_date and todo_completed by a `,`.                     | `limegreen,limegreen`   |
+| `Color: todo [done_overdue]`   | HTML color for the `due_date` and `todo_completed`, when the todo was completed after the due date. Seperate the color for due_date and todo_completed by a `,`. | `orange,orange`         |
+| `Color: todo [done_nodue]`     | HTML color for the `todo_completed`, when the todo was completed but no due date was set.                                                                        |                         |
 
 ## Keyboard Shortcuts
 
@@ -344,12 +368,12 @@ There is a space missing between the `<option>:` and the value. The option shoul
 ### Error: All collection items must start at the same column
 
 If an option value starts with a `{`, the text must be enclosed by quotes.
-For example change `text: {title} match` to `text: "{title} match"`
+For example change `text: {{title}} match` to `text: "{{title}} match"`
 
 ### Error: r.replace is not a function
 
 If an option value starts with a `{` and and ends with a `}` the text is interpreted as object. Enclose the value with quotes.
-For example change `text: {title}` to `text: "{title}"`
+For example change `text: {{title}}` to `text: "{{title}}"`
 
 ## Develop
 
@@ -371,3 +395,4 @@ See [Changelog](CHANGELOG.md)
 - [Joplin - Plugin API reference](https://joplinapp.org/api/references/plugin_api/classes/joplin.html)
 - [Joplin - Data API reference](https://joplinapp.org/api/references/rest_api/)
 - [Joplin - Plugin examples](https://github.com/laurent22/joplin/tree/dev/packages/app-cli/tests/support/plugins)
+```
