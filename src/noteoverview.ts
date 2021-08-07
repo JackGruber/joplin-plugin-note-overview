@@ -10,6 +10,7 @@ import { mergeObject } from "./helper";
 import logging from "electron-log";
 import * as path from "path";
 import { OverviewOptions } from "./type";
+import * as fs from "fs-extra";
 
 let noteoverviewDialog = null;
 let timer = null;
@@ -938,6 +939,19 @@ export namespace noteoverview {
     return await noteoverview.removeNewLineAt(orgContent, stripe[0], stripe[1]);
   }
 
+  export async function getFileLogLevel(): Promise<any> {
+    const logLevelFile = path.join(
+      await joplin.plugins.installationDir(),
+      "debug.txt"
+    );
+    console.log(logLevelFile);
+    if (fs.existsSync(logLevelFile)) {
+      return "silly";
+    } else {
+      return "error";
+    }
+  }
+
   export async function setupLogging() {
     const logFormatFile = "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}";
     const logFormatConsole = "[{level}] {text}";
@@ -945,8 +959,9 @@ export namespace noteoverview {
       await joplin.plugins.installationDir(),
       "noteoverview.log"
     );
+    const levelFile = await noteoverview.getFileLogLevel();
     logging.transports.file.format = logFormatFile;
-    logging.transports.file.level = "error";
+    logging.transports.file.level = levelFile;
     logging.transports.file.resolvePath = () => logFile;
     logging.transports.console.level = consoleLogLevel;
     logging.transports.console.format = logFormatConsole;
