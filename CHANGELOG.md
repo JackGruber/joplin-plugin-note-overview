@@ -2,6 +2,10 @@
 
 ## not released
 
+## v1.5.1 (2021-08-08)
+
+- Fix: #21 Note count off settings not respected
+
 ## v1.5.0 (2021-08-07)
 
 - Fix: #13 Prevents the current note from being updated by a background run when the note is open for editing
