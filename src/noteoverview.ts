@@ -742,7 +742,7 @@ export namespace noteoverview {
               await noteoverview.getNoteInfoAsTable(
                 fields,
                 queryNotes.items[queryNotesKey],
-                settings
+                options
               )
             );
           }
@@ -814,13 +814,13 @@ export namespace noteoverview {
   export async function getNoteInfoAsTable(
     fields: string[],
     noteFields: string[],
-    settings: any
+    options: OverviewOptions
   ): Promise<string> {
     const info: string[] = [];
-    settings.escapeForTable = true;
+    options.escapeForTable = true;
 
     for (let field of fields) {
-      info.push(await noteoverview.getFieldValue(field, noteFields, settings));
+      info.push(await noteoverview.getFieldValue(field, noteFields, options));
     }
 
     return "|" + info.join("|") + "|";
@@ -829,7 +829,7 @@ export namespace noteoverview {
   export async function getFieldValue(
     field: string,
     fields: any,
-    options: any
+    options: OverviewOptions
   ): Promise<string> {
     logging.silly("func: getFieldValue for " + field);
     let value = "";
