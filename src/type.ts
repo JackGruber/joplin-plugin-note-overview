@@ -29,6 +29,8 @@ type OverviewListview = {
   separator: string;
   text: string;
   linebreak: boolean;
+  prefix: string;
+  suffix: string;
 };
 
 export { OverviewOptions };

@@ -768,6 +768,9 @@ export namespace noteoverview {
           }
         }
 
+        if (options.listview.prefix) entrys.unshift(options.listview.prefix);
+        if (options.listview.suffix) entrys.push(options.listview.suffix);
+
         if (options.listview.linebreak === false) {
           overviewContent.push(entrys.join(""));
         } else {
