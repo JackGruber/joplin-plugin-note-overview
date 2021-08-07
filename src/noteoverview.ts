@@ -522,16 +522,20 @@ export namespace noteoverview {
   }
 
   export async function loadGlobalSettings() {
+    globalSettings = {};
     globalSettings.dateFormat = await joplin.settings.globalValue("dateFormat");
     globalSettings.timeFormat = await joplin.settings.globalValue("timeFormat");
     globalSettings.statusText = await noteoverview.getDefaultStatusText();
     globalSettings.coloring = await noteoverview.getDefaultColoring();
     const showNoteCount = await joplin.settings.value("showNoteCount");
-    if (showNoteCount !== false) {
+    if (showNoteCount !== "off") {
       globalSettings.showNoteCount = {
+        enable: true,
         position: showNoteCount,
         text: await joplin.settings.value("showNoteCountText"),
       };
+    } else {
+      globalSettings.showNoteCount = { enable: false };
     }
   }
 

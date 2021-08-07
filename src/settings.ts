@@ -20,14 +20,14 @@ export namespace settings {
         description: "0 = disable automatic note overview creation",
       },
       showNoteCount: {
-        value: "Off",
+        value: "off",
         type: SettingItemType.String,
         section: "noteOverviewSection",
         isEnum: true,
         public: true,
         label: "Show note count",
         options: {
-          false: "Off",
+          off: "Off",
           above: "Above",
           below: "Below",
         },
