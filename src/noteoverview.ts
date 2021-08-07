@@ -484,7 +484,7 @@ export namespace noteoverview {
     }
   }
 
-  export async function createAll(userTriggerd: boolean) {
+  export async function updateAll(userTriggerd: boolean) {
     logging.info("check all overviews");
     await noteoverview.loadGlobalSettings();
 
@@ -500,13 +500,13 @@ export namespace noteoverview {
 
       for (let overviewNotesKey in overviewNotes.items) {
         const noteId: string = overviewNotes.items[overviewNotesKey].id;
-        await noteoverview.create(noteId, userTriggerd);
+        await noteoverview.update(noteId, userTriggerd);
       }
     } while (overviewNotes.has_more);
     logging.info("all overviews checked");
   }
 
-  export async function create(noteId: string, userTriggerd: boolean) {
+  export async function update(noteId: string, userTriggerd: boolean) {
     const note = await joplin.data.get(["notes", noteId], {
       fields: ["id", "title", "body"],
     });
@@ -1022,7 +1022,7 @@ export namespace noteoverview {
       name: "createNoteOverview",
       label: "Create note overview",
       execute: async () => {
-        noteoverview.createAll(true);
+        noteoverview.updateAll(true);
       },
     });
 
@@ -1068,7 +1068,7 @@ export namespace noteoverview {
     const updateInterval = await joplin.settings.value("updateInterval");
     if (updateInterval > 0) {
       logging.verbose("run timed");
-      await noteoverview.createAll(false);
+      await noteoverview.updateAll(false);
       await noteoverview.setTimer(updateInterval);
     } else {
       timer = null;
