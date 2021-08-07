@@ -839,6 +839,38 @@ export namespace noteoverview {
     }
   }
 
+  export async function replaceFieldPlaceholder(
+    text: string,
+    noteFields: string[],
+    options: OverviewOptions
+  ): Promise<string> {
+    // asyncStringReplace copied from https://dev.to/ycmjason/stringprototypereplace-asynchronously-28k9
+    const asyncStringReplace = async (
+      str: string,
+      regex: RegExp,
+      aReplacer: any
+    ) => {
+      const substrs = [];
+      let match;
+      let i = 0;
+      while ((match = regex.exec(str)) !== null) {
+        substrs.push(str.slice(i, match.index));
+        substrs.push(aReplacer(...match));
+        i = regex.lastIndex;
+      }
+      substrs.push(str.slice(i));
+      return (await Promise.all(substrs)).join("");
+    };
+
+    return await asyncStringReplace(
+      text,
+      /{{([^}]+)}}/g,
+      async (match, groups) => {
+        return await noteoverview.getFieldValue(groups, noteFields, options);
+      }
+    );
+  }
+
   export async function getTableHeader(header: string[]) {
     const mdTableHeader: string[] = [];
     mdTableHeader.push("| " + header.join(" | ") + " |");
@@ -854,18 +886,12 @@ export namespace noteoverview {
     let info = options.listview.text
       ? options.listview.text
       : "[{{title}}](/:{{id}})";
-    try {
-      info = info.replace(/{{([^}]+)}}/g, (match, groups) => {
-        if (noteFields[groups]) {
-          return noteFields[groups];
-        } else {
-          return "";
-        }
-      });
-    } catch (error) {
-      logging.error(error.message);
-      noteoverview.showError("", error.message, "");
-    }
+
+    info = await noteoverview.replaceFieldPlaceholder(
+      info,
+      noteFields,
+      options
+    );
 
     return info;
   }
