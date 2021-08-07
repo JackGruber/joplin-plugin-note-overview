@@ -10,6 +10,7 @@ type OverviewOptions = {
   coloring: any;
   count: OverviewOptionsCount;
   details: OverviewOptionsDetails;
+  listview: OverviewListview;
   escapeForTable: boolean;
 };
 
@@ -22,6 +23,11 @@ type OverviewOptionsCount = {
   enable: boolean;
   text: string;
   position: string;
+};
+
+type OverviewListview = {
+  separator: string;
+  text: string;
 };
 
 export { OverviewOptions };

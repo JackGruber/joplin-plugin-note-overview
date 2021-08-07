@@ -630,6 +630,10 @@ export namespace noteoverview {
       overviewSettings["count"] ? overviewSettings["count"] : null
     );
 
+    settings.listview = overviewSettings["listview"]
+      ? overviewSettings["listview"]
+      : null;
+
     return settings;
   }
 
@@ -706,7 +710,9 @@ export namespace noteoverview {
         ...(await noteoverview.getAdditionalFields(fields)),
       ];
 
-      overviewContent = await noteoverview.getTableHeader(headerFields);
+      if (!options.listview) {
+        overviewContent = await noteoverview.getTableHeader(headerFields);
+      }
 
       let noteCount = 0;
       let queryNotes = null;
@@ -738,13 +744,22 @@ export namespace noteoverview {
           if (queryNotes.items[queryNotesKey].id != noteId) {
             noteCount++;
 
-            overviewContent.push(
-              await noteoverview.getNoteInfoAsTable(
-                fields,
-                queryNotes.items[queryNotesKey],
-                options
-              )
-            );
+            if (options.listview) {
+              overviewContent.push(
+                await noteoverview.getNoteInfoAsListView(
+                  queryNotes.items[queryNotesKey],
+                  options
+                )
+              );
+            } else {
+              overviewContent.push(
+                await noteoverview.getNoteInfoAsTable(
+                  fields,
+                  queryNotes.items[queryNotesKey],
+                  options
+                )
+              );
+            }
           }
         }
       } while (queryNotes.has_more);
@@ -796,8 +811,10 @@ export namespace noteoverview {
       const countStr = text.replace("{count}", count.toString());
 
       if (options.count.position === "above") {
+        if (options.listview) overview.unshift("");
         overview.unshift(countStr);
       } else {
+        if (options.listview) overview.push("");
         overview.push(countStr);
       }
     }
@@ -809,6 +826,29 @@ export namespace noteoverview {
     mdTableHeader.push("|" + " --- |".repeat(header.length));
 
     return mdTableHeader;
+  }
+
+  export async function getNoteInfoAsListView(
+    noteFields: string[],
+    options: OverviewOptions
+  ): Promise<string> {
+    let info = options.listview.text
+      ? options.listview.text
+      : "[{title}](/:{id})";
+    try {
+      info = info.replace(/{([^}]+)}/g, (match, groups) => {
+        if (noteFields[groups]) {
+          return noteFields[groups];
+        } else {
+          return "";
+        }
+      });
+    } catch (error) {
+      logging.error(error.message);
+      noteoverview.showError("", error.message, "");
+    }
+
+    return info;
   }
 
   export async function getNoteInfoAsTable(
