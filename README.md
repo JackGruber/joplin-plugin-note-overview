@@ -12,38 +12,44 @@ A note overview is created based on the defined search and the specified fields.
 <!-- TOC depthfrom:2 orderedlist:false -->
 
 - [Installation](#installation)
-  - [Automatic](#automatic)
-  - [Manual](#manual)
+    - [Automatic](#automatic)
+    - [Manual](#manual)
 - [Usage](#usage)
 - [Codeblock options](#codeblock-options)
-  - [search](#search)
-  - [fields](#fields)
-  - [sort](#sort)
-  - [alias](#alias)
-  - [image](#image)
-  - [excerpt](#excerpt)
+    - [search](#search)
+    - [fields](#fields)
+    - [sort](#sort)
+    - [alias](#alias)
+    - [image](#image)
+    - [excerpt](#excerpt)
 - [Options](#options)
-  - [Details](#details)
+    - [details](#details)
+    - [count](#count)
+    - [listview](#listview)
 - [Examples](#examples)
-  - [ToDo Overview](#todo-overview)
-  - [Show all ToDos with status](#show-all-todos-with-status)
-  - [Open ToDos for the next 7 days and overdue ToDos](#open-todos-for-the-next-7-days-and-overdue-todos)
-  - [Exclude ToDos with no due date](#exclude-todos-with-no-due-date)
-  - [Show all ToDos with no due date](#show-all-todos-with-no-due-date)
-  - [Rename fields](#rename-fields)
-  - [Notes without a tag](#notes-without-a-tag)
-  - [Notes createt last 7 days](#notes-createt-last-7-days)
-  - [Cooking recipes overview](#cooking-recipes-overview)
-  - [Details option](#details-option)
-  - [noteCount](#notecount)
+    - [ToDo Overview](#todo-overview)
+    - [Show all ToDos with status](#show-all-todos-with-status)
+    - [Open ToDos for the next 7 days and overdue ToDos](#open-todos-for-the-next-7-days-and-overdue-todos)
+    - [Exclude ToDos with no due date](#exclude-todos-with-no-due-date)
+    - [Show all ToDos with no due date](#show-all-todos-with-no-due-date)
+    - [Rename fields](#rename-fields)
+    - [Notes without a tag](#notes-without-a-tag)
+    - [Notes createt last 7 days](#notes-createt-last-7-days)
+    - [Cooking recipes overview](#cooking-recipes-overview)
+    - [Details option](#details-option)
+    - [Count option](#count-option)
+    - [Listview option no linbreak](#listview-option-no-linbreak)
+    - [Listview option combine notes dynamically](#listview-option-combine-notes-dynamically)
 - [Plugin options](#plugin-options)
 - [Keyboard Shortcuts](#keyboard-shortcuts)
 - [FAQ](#faq)
-  - [Error: Nested mappings are not allowed in compact mappings](#error-nested-mappings-are-not-allowed-in-compact-mappings)
-  - [Error: Implicit map keys need to be followed by map values](#error-implicit-map-keys-need-to-be-followed-by-map-values)
+    - [Error: Nested mappings are not allowed in compact mappings](#error-nested-mappings-are-not-allowed-in-compact-mappings)
+    - [Error: Implicit map keys need to be followed by map values](#error-implicit-map-keys-need-to-be-followed-by-map-values)
+    - [Error: All collection items must start at the same column](#error-all-collection-items-must-start-at-the-same-column)
+    - [Error: r.replace is not a function](#error-rreplace-is-not-a-function)
 - [Develop](#develop)
-  - [Build](#build)
-  - [Updating the plugin framework](#updating-the-plugin-framework)
+    - [Build](#build)
+    - [Updating the plugin framework](#updating-the-plugin-framework)
 - [Changelog](#changelog)
 - [Links](#links)
 
@@ -70,7 +76,7 @@ A note overview is created based on the defined search and the specified fields.
 
 Create one or more notes with the following content:
 
-```md
+```yml
 <!-- note-overview-plugin
 search: -tag:*
 fields: updated_time, title
@@ -98,7 +104,7 @@ Options that can be specified in the in the code block using YAML syntax.
 The search filter which will be used to create the overview.
 [Documentation of search filters](https://joplinapp.org/#search-filters).
 
-```
+```yml
 search: type:todo
 ```
 
@@ -118,7 +124,7 @@ In addition to the Joplin fields, there are the following virtual fields:
 - `image`: In this field a image resource from the note will be displayed. This field can be configured using the `image` option
 - `excerpt`: Displays an excerpt of the note body
 
-```
+```yml
 fields: todo_due, title, tags, notebook
 ```
 
@@ -126,7 +132,7 @@ fields: todo_due, title, tags, notebook
 
 By which field the output should be sorted. It can be only sorted by one field and it's not possible to sort by a virtual field!
 
-```
+```yml
 sort: todo_due ASC
 ```
 
@@ -136,7 +142,7 @@ This allows renaming the fields in the output.
 
 Syntax: `<field> AS <new field name>`, multiple fields comma seperated.
 
-```
+```yml
 alias: todo_due AS Due Date, notebook AS Folder
 ```
 
@@ -151,21 +157,21 @@ This allows you to control the image displayed in the `image` field.
 - `width`: The image is reduced to this width.
 - `height`: The image is reduced to this height
 
-```
+```yml
 image:
-    nr: 1
-    exactnr: true
-    width: 200
-    height: 200
+  nr: 1
+  exactnr: true
+  width: 200
+  height: 200
 ```
 
 ### excerpt
 
 Displays an excerpt of the note body, the length of the excerpt can be configured using `maxlength`.
 
-```
+```yml
 excerpt:
-    maxlength: 200
+  maxlength: 200
 ```
 
 ## Options
@@ -174,7 +180,7 @@ excerpt:
 
 Add the overview into a details section that can open and close on demand.
 
-```
+```yml
 details:
   open: [true | false]
   summary: All notes without a Tag
@@ -184,81 +190,83 @@ details:
 
 Customize note count field for a single overview.
 
-```
+```yml
 count:
   enable: [true | false]
   position: [above | below]
   text: Note count: {{count}}
 ```
 
+### listview
+
+Option to display the overview as list instead of a table.
+For the field `text` all fields can be used, all used Joplin fields must be specified in the `fields`!
+
+```yml
+fields: title
+listview:
+  text: "{{title}} in {{notebook}}"
+  linebreak: [true | false]
+  separator: " | "
+  prefix: ==
+  suffix: ==
 ```
 
 ## Examples
 
 ### ToDo Overview
 
-```
-
+```yml
 <!-- note-overview-plugin
 search: type:todo iscompleted:0
 fields: todo_due, title, tags, notebook
 sort: todo_due ASC
 -->
-
 ```
 
 ### Show all ToDos with status
 
-```
-
+```yml
 <!-- note-overview-plugin
 search: type:todo
 fields: status, todo_due, title
 sort: todo_completed ASC
 -->
-
 ```
 
 ### Open ToDos for the next 7 days and overdue ToDos
 
-```
-
+```yml
 <!-- note-overview-plugin
 search: -due:day+7 iscompleted:0
 fields: todo_due, title
 sort: todo_due ASC
 -->
-
 ```
 
 ### Exclude ToDos with no due date
 
-```
-
+```yml
 <!-- note-overview-plugin
 search: due:19700201 iscompleted:0
 fields: todo_due, title
 sort: todo_due ASC
 -->
-
 ```
 
 ### Show all ToDos with no due date
 
-```
-
+```yml
 <!-- note-overview-plugin
 search: -due:19700201 iscompleted:0
 fields: todo_due, title
 sort: todo_due ASC
 -->
-
 ```
 
 ### Rename fields
 
-```
-
+```yml
 <!-- note-overview-plugin
 search: "*"
 fields: updated_time, title
@@ -269,31 +277,26 @@ alias: updated_time AS Modified
 
 ### Notes without a tag
 
-```
-
+```yml
 <!-- note-overview-plugin
 search: -tag:*
 fields: updated_time, title
 -->
-
 ```
 
 ### Notes createt last 7 days
 
-```
-
+```yml
 <!-- note-overview-plugin
 search: created:day-7
 fields: title, updated_time
 sort: title DESC
 -->
-
 ```
 
 ### Cooking recipes overview
 
-```
-
+```yml
 <!-- note-overview-plugin
 search: notebook:Cooking
 fields: title, image, tags
@@ -301,15 +304,13 @@ image:
   width: 200
   height: 200
 -->
-
 ```
 
 <img src="img/example_image.jpg">
 
 ### Details option
 
-```
-
+```yml
 <!-- note-overview-plugin
 search: -tag:*
 fields: title
@@ -317,15 +318,13 @@ details:
   open: false
   summary: All notes without a Tag
 -->
-
 ```
 
 <img src="img/example_option_details.jpg">
 
 ### Count option
 
-```
-
+```yml
 <!-- note-overview-plugin
 search: -tag:*
 fields: title
@@ -335,7 +334,7 @@ count:
   text: For the query {{count}} notes where found
 -->
 
-````
+```
 
 ### Listview option (no linbreak)
 
@@ -350,7 +349,7 @@ listview:
   prefix: ==
   suffix: ==
 -->
-````
+```
 
 <img src="img/example_option_listview_nolb.jpg">
 
@@ -430,7 +429,3 @@ See [Changelog](CHANGELOG.md)
 - [Joplin - Plugin API reference](https://joplinapp.org/api/references/plugin_api/classes/joplin.html)
 - [Joplin - Data API reference](https://joplinapp.org/api/references/rest_api/)
 - [Joplin - Plugin examples](https://github.com/laurent22/joplin/tree/dev/packages/app-cli/tests/support/plugins)
-
-```
-
-```
