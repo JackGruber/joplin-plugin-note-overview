@@ -751,22 +751,7 @@ export namespace noteoverview {
 
       await addNoteCount(overviewContent, noteCount, options);
 
-      // Add HTML details tag
-      if (options.details) {
-        overviewContent.unshift("");
-        if (options.details.summary) {
-          overviewContent.unshift(
-            `<summary>${options.details.summary}</summary>`
-          );
-        }
-        overviewContent.unshift(
-          `<details ` +
-            (options.details.open === true ? ` open` : `close`) +
-            `>`
-        );
-
-        overviewContent.push("</details>");
-      }
+      await addHTMLDetailsTag(overviewContent, options);
     }
 
     overviewContent.unshift(
@@ -775,6 +760,23 @@ export namespace noteoverview {
     overviewContent.push("<!--endoverview-->");
 
     return overviewContent;
+  }
+
+  export async function addHTMLDetailsTag(
+    overview: string[],
+    options: OverviewOptions
+  ) {
+    if (options.details) {
+      overview.unshift("");
+      if (options.details.summary) {
+        overview.unshift(`<summary>${options.details.summary}</summary>`);
+      }
+      overview.unshift(
+        `<details ` + (options.details.open === true ? ` open` : `close`) + `>`
+      );
+
+      overview.push("</details>");
+    }
   }
 
   export async function addNoteCount(
