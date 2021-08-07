@@ -669,18 +669,18 @@ export namespace noteoverview {
     let overviewContent: string[] = [];
 
     if (query) {
-      const settings = await noteoverview.getOptions(overviewSettings);
+      const options = await noteoverview.getOptions(overviewSettings);
 
       // create array from fields
       let fields = [];
-      if (settings.fields) {
-        fields = settings.fields.toLowerCase().replace(/\s/g, "").split(",");
+      if (options.fields) {
+        fields = options.fields.toLowerCase().replace(/\s/g, "").split(",");
       } else {
         fields = ["updated_time", "title"];
       }
 
       // Field alias for header
-      const headerFields = await noteoverview.getHeaderFields(settings.alias, [
+      const headerFields = await noteoverview.getHeaderFields(options.alias, [
         ...fields,
       ]);
 
@@ -715,8 +715,8 @@ export namespace noteoverview {
           queryNotes = await joplin.data.get(["search"], {
             query: query,
             fields: "id, parent_id, " + dbFieldsArray.join(","),
-            order_by: settings.orderBy,
-            order_dir: settings.orderDir.toUpperCase(),
+            order_by: options.orderBy,
+            order_dir: options.orderDir.toUpperCase(),
             limit: 50,
             page: pageQueryNotes++,
           });
@@ -748,19 +748,19 @@ export namespace noteoverview {
         }
       } while (queryNotes.has_more);
 
-      await addNoteCount(overviewContent, noteCount, settings);
+      await addNoteCount(overviewContent, noteCount, options);
 
       // Add HTML details tag
-      if (settings.details) {
+      if (options.details) {
         overviewContent.unshift("");
-        if (settings.details.summary) {
+        if (options.details.summary) {
           overviewContent.unshift(
-            `<summary>${settings.details.summary}</summary>`
+            `<summary>${options.details.summary}</summary>`
           );
         }
         overviewContent.unshift(
           `<details ` +
-            (settings.details.open === true ? ` open` : `close`) +
+            (options.details.open === true ? ` open` : `close`) +
             `>`
         );
 
