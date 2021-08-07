@@ -625,9 +625,9 @@ export namespace noteoverview {
       ? overviewSettings["details"]
       : null;
 
-    settings.noteCount = await mergeObject(
+    settings.count = await mergeObject(
       globalSettings.showNoteCount,
-      overviewSettings["noteCount"] ? overviewSettings["noteCount"] : null
+      overviewSettings["count"] ? overviewSettings["count"] : null
     );
 
     return settings;
@@ -785,17 +785,17 @@ export namespace noteoverview {
     options: OverviewOptions
   ) {
     if (
-      options.noteCount &&
-      (options.noteCount.enable || options.noteCount.enable !== false)
+      options.count &&
+      (options.count.enable || options.count.enable !== false)
     ) {
       const text =
-        options.noteCount.text && options.noteCount.text !== ""
-          ? `${options.noteCount.text} `
+        options.count.text && options.count.text !== ""
+          ? `${options.count.text} `
           : ``;
 
       const countStr = text.replace("{count}", count.toString());
 
-      if (options.noteCount.position === "above") {
+      if (options.count.position === "above") {
         overview.unshift(countStr);
       } else {
         overview.push(countStr);

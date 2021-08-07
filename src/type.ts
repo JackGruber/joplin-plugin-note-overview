@@ -8,7 +8,7 @@ type OverviewOptions = {
   imageSettings: any;
   excerptSettings: any;
   coloring: any;
-  noteCount: OverviewOptionsNoteCount;
+  count: OverviewOptionsCount;
   details: OverviewOptionsDetails;
 };
 
@@ -17,7 +17,7 @@ type OverviewOptionsDetails = {
   open: boolean;
 };
 
-type OverviewOptionsNoteCount = {
+type OverviewOptionsCount = {
   enable: boolean;
   text: string;
   position: string;

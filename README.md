@@ -174,6 +174,17 @@ details:
   summary: All notes without a Tag
 ```
 
+### count
+
+Customize note count field for a single overview.
+
+```
+count:
+  enable: [true | false]
+  position: [above | below]
+  text: Note count: {count}
+```
+
 ## Examples
 
 ### ToDo Overview
@@ -283,15 +294,17 @@ details:
 
 <img src="img/example_option_details.jpg">
 
-### noteCount
-
-Customize note count field for a single overview.
+### Count option
 
 ```
-noteCount:
-  enable: [true | false]
-  position: [above | below]
-  text: Note count: {count}
+<!-- note-overview-plugin
+search: -tag:*
+fields: title
+count:
+  enable: true
+  position: above
+  text: For the query {count} notes where found
+-->
 ```
 
 ## Plugin options
