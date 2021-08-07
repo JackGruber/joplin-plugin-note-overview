@@ -23,7 +23,6 @@ A note overview is created based on the defined search and the specified fields.
     - [alias](#alias)
     - [image](#image)
     - [excerpt](#excerpt)
-- [Options](#options)
     - [details](#details)
     - [count](#count)
     - [listview](#listview)
