@@ -1,5 +1,13 @@
 # Changelog
 
+## not released
+
+- Fix: #13 Prevents the current note from being updated by a background run when the note is open for editing
+- Add: Option `details` to include overview in a HTML deatils section
+- Add: Option `count` to customize note count field for a single overview
+- Add: Plugin option `Note count text` to customize note count text
+- Add: Option `listview` to display the overview as list instead of a table
+
 ## v1.4.3 (2021-05-17)
 
 - Fix: #12 Prevent note live update on Rich Text (WYSIWYG) editor
