@@ -170,7 +170,7 @@ Add the overview into a details section that can open and close on demand.
 
 ```
 details:
-  open: false
+  open: [true | false]
   summary: All notes without a Tag
 ```
 
