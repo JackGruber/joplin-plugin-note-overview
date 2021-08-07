@@ -46,7 +46,7 @@ A note overview is created based on the defined search and the specified fields.
     - [Error: Nested mappings are not allowed in compact mappings](#error-nested-mappings-are-not-allowed-in-compact-mappings)
     - [Error: Implicit map keys need to be followed by map values](#error-implicit-map-keys-need-to-be-followed-by-map-values)
     - [Error: All collection items must start at the same column](#error-all-collection-items-must-start-at-the-same-column)
-    - [Error: r.replace is not a function](#error-rreplace-is-not-a-function)
+    - [Error: e.slice is not a function](#error-eslice-is-not-a-function)
 - [Develop](#develop)
     - [Build](#build)
     - [Updating the plugin framework](#updating-the-plugin-framework)
@@ -403,7 +403,7 @@ There is a space missing between the `<option>:` and the value. The option shoul
 If an option value starts with a `{`, the text must be enclosed by quotes.
 For example change `text: {{title}} match` to `text: "{{title}} match"`
 
-### Error: r.replace is not a function
+### Error: e.slice is not a function
 
 If an option value starts with a `{` and and ends with a `}` the text is interpreted as object. Enclose the value with quotes.
 For example change `text: {{title}}` to `text: "{{title}}"`

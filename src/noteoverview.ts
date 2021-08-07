@@ -862,13 +862,19 @@ export namespace noteoverview {
       return (await Promise.all(substrs)).join("");
     };
 
-    return await asyncStringReplace(
-      text,
-      /{{([^}]+)}}/g,
-      async (match, groups) => {
-        return await noteoverview.getFieldValue(groups, noteFields, options);
-      }
-    );
+    try {
+      return await asyncStringReplace(
+        text,
+        /{{([^}]+)}}/g,
+        async (match, groups) => {
+          return await noteoverview.getFieldValue(groups, noteFields, options);
+        }
+      );
+    } catch (error) {
+      logging.error(error.message);
+      await noteoverview.showError("", error.message, "");
+      throw error;
+    }
   }
 
   export async function getTableHeader(header: string[]) {
@@ -1030,7 +1036,6 @@ export namespace noteoverview {
       await joplin.plugins.installationDir(),
       "debug.txt"
     );
-    console.log(logLevelFile);
     if (fs.existsSync(logLevelFile)) {
       return "silly";
     } else {
