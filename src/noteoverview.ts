@@ -710,13 +710,10 @@ export namespace noteoverview {
         ...(await noteoverview.getAdditionalFields(fields)),
       ];
 
-      if (!options.listview) {
-        overviewContent = await noteoverview.getTableHeader(headerFields);
-      }
-
       let noteCount = 0;
       let queryNotes = null;
       let pageQueryNotes = 1;
+      const entrys: string[] = [];
       do {
         try {
           queryNotes = await joplin.data.get(["search"], {
@@ -745,14 +742,14 @@ export namespace noteoverview {
             noteCount++;
 
             if (options.listview) {
-              overviewContent.push(
+              entrys.push(
                 await noteoverview.getNoteInfoAsListView(
                   queryNotes.items[queryNotesKey],
                   options
                 )
               );
             } else {
-              overviewContent.push(
+              entrys.push(
                 await noteoverview.getNoteInfoAsTable(
                   fields,
                   queryNotes.items[queryNotesKey],
@@ -763,6 +760,25 @@ export namespace noteoverview {
           }
         }
       } while (queryNotes.has_more);
+
+      if (options.listview) {
+        if (options.listview.separator) {
+          for (let index = 0; index < entrys.length - 1; index++) {
+            entrys[index] += options.listview.separator;
+          }
+        }
+
+        if (options.listview.linebreak === false) {
+          overviewContent.push(entrys.join(""));
+        } else {
+          overviewContent = entrys;
+        }
+      } else {
+        overviewContent = [
+          ...(await noteoverview.getTableHeader(headerFields)),
+          ...entrys,
+        ];
+      }
 
       await addNoteCount(overviewContent, noteCount, options);
 

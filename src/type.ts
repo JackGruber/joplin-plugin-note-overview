@@ -28,6 +28,7 @@ type OverviewOptionsCount = {
 type OverviewListview = {
   separator: string;
   text: string;
+  linebreak: boolean;
 };
 
 export { OverviewOptions };
