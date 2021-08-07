@@ -164,7 +164,7 @@ excerpt:
 
 ## Options
 
-### Details
+### details
 
 Add the overview into a details section that can open and close on demand.
 
