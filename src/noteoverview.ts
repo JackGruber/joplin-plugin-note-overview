@@ -474,7 +474,13 @@ export namespace noteoverview {
     globalSettings.timeFormat = await joplin.settings.globalValue("timeFormat");
     globalSettings.statusText = await noteoverview.getDefaultStatusText();
     globalSettings.coloring = await noteoverview.getDefaultColoring();
-    globalSettings.showNoteCount = await joplin.settings.value("showNoteCount");
+    const showNoteCount = await joplin.settings.value("showNoteCount");
+    if (showNoteCount !== false) {
+      globalSettings.showNoteCount = {
+        position: showNoteCount,
+        text: await joplin.settings.value("showNoteCountText"),
+      };
+    }
   }
 
   export async function createAll(userTriggerd: boolean) {
@@ -618,7 +624,10 @@ export namespace noteoverview {
       ? overviewSettings["details"]
       : null;
 
-    settings.noteCount = globalSettings.showNoteCount;
+    settings.noteCount = await mergeObject(
+      globalSettings.showNoteCount,
+      overviewSettings["noteCount"] ? overviewSettings["noteCount"] : null
+    );
 
     return settings;
   }
@@ -739,11 +748,7 @@ export namespace noteoverview {
         }
       } while (queryNotes.has_more);
 
-      if (settings.noteCount == "below") {
-        overviewContent.push("Note count: " + noteCount);
-      } else if (settings.noteCount == "above") {
-        overviewContent.unshift("Note count: " + noteCount);
-      }
+      await addNoteCount(overviewContent, noteCount, settings);
 
       // Add HTML details tag
       if (settings.details) {
@@ -769,6 +774,31 @@ export namespace noteoverview {
     overviewContent.push("<!--endoverview-->");
 
     return overviewContent;
+  }
+
+  export async function addNoteCount(
+    overview: string[],
+    count: number,
+    options: OverviewOptions
+  ): Promise<string[]> {
+    if (
+      options.noteCount &&
+      (options.noteCount.enable || options.noteCount.enable !== false)
+    ) {
+      const text =
+        options.noteCount.text && options.noteCount.text !== ""
+          ? `${options.noteCount.text} `
+          : ``;
+
+      const countStr = text.replace("{count}", count.toString());
+
+      if (options.noteCount.position === "above") {
+        overview.unshift(countStr);
+      } else {
+        overview.push(countStr);
+      }
+    }
+    return overview;
   }
 
   export async function getTableHeader(header: string[]) {

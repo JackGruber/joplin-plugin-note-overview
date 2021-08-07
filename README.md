@@ -30,6 +30,7 @@ A note overview is created based on the defined search and the specified fields.
   - [Notes createt last 7 days](#notes-createt-last-7-days)
   - [Cooking recipes overview](#cooking-recipes-overview)
   - [Details option](#details-option)
+  - [noteCount](#notecount)
 - [Plugin options](#plugin-options)
 - [Keyboard Shortcuts](#keyboard-shortcuts)
 - [FAQ](#faq)
@@ -282,6 +283,17 @@ details:
 
 <img src="img/example_option_details.jpg">
 
+### noteCount
+
+Customize note count field for a single overview.
+
+```
+noteCount:
+  enable: [true | false]
+  position: [above | below]
+  text: Note count: {count}
+```
+
 ## Plugin options
 
 Settings for the plugin, accessible at `Tools > Options > Note overview`.
@@ -289,6 +301,7 @@ Settings for the plugin, accessible at `Tools > Options > Note overview`.
 | Option                         | Description                                                                                                                                                      | Default               |
 | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
 | `Show note count`              | Show the number of notes found.                                                                                                                                  | `off`                 |
+| `Note count text`              | Text for the display of the found notes, `{count}` is replace with the number of matched notes.                                                                  | `Note count: {count}` |
 | `Update interval in minutes`   | How often the overview notes should be updated.                                                                                                                  | `5`                   |
 | `Field status: open todo`      | Text for the `status` field, when the todo is not completed.                                                                                                     |                       |
 | `Field status: todo completed` | Text for the `status` field, when the todo is completed.                                                                                                         |                       |
