@@ -413,7 +413,7 @@ export namespace noteoverview {
     return await noteoverview.humanFrendlyStorageSize(size);
   }
 
-  export async function updateNote(
+  export async function updateNoteBody(
     newBodyStr: string,
     noteId: string,
     userTriggerd: boolean
@@ -575,7 +575,7 @@ export namespace noteoverview {
     // Update note?
     const newNoteBodyStr = newNoteBody.join("\n");
     if (note.body != newNoteBodyStr) {
-      await noteoverview.updateNote(newNoteBodyStr, note.id, userTriggerd);
+      await noteoverview.updateNoteBody(newNoteBodyStr, note.id, userTriggerd);
     }
   }
 
