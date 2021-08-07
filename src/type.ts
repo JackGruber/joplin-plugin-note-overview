@@ -10,6 +10,7 @@ type OverviewOptions = {
   coloring: any;
   count: OverviewOptionsCount;
   details: OverviewOptionsDetails;
+  escapeForTable: boolean;
 };
 
 type OverviewOptionsDetails = {
