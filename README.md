@@ -37,9 +37,9 @@ A note overview is created based on the defined search and the specified fields.
     - [Notes createt last 7 days](#notes-createt-last-7-days)
     - [Cooking recipes overview](#cooking-recipes-overview)
     - [Details option](#details-option)
-    - [Count option](#count-option)
-    - [Listview option no linbreak](#listview-option-no-linbreak)
-    - [Listview option combine notes dynamically](#listview-option-combine-notes-dynamically)
+    - [Change count for single overview](#change-count-for-single-overview)
+    - [Change to listview no linbreak](#change-to-listview-no-linbreak)
+    - [Combine notes dynamically](#combine-notes-dynamically)
 - [Plugin options](#plugin-options)
 - [Keyboard Shortcuts](#keyboard-shortcuts)
 - [FAQ](#faq)
@@ -173,8 +173,6 @@ Displays an excerpt of the note body, the length of the excerpt can be configure
 excerpt:
   maxlength: 200
 ```
-
-## Options
 
 ### details
 
@@ -322,7 +320,7 @@ details:
 
 <img src="img/example_option_details.jpg">
 
-### Count option
+### Change count for single overview
 
 ```yml
 <!-- note-overview-plugin
@@ -336,7 +334,7 @@ count:
 
 ```
 
-### Listview option (no linbreak)
+### Change to listview (no linbreak)
 
 ```yml
 <!-- note-overview-plugin
@@ -353,7 +351,7 @@ listview:
 
 <img src="img/example_option_listview_nolb.jpg">
 
-### Listview option (combine notes dynamically)
+### Combine notes dynamically
 
 ```yml
 <!-- note-overview-plugin
