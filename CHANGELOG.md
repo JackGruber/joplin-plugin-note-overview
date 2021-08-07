@@ -2,6 +2,8 @@
 
 ## not released
 
+## v1.5.0 (2021-08-07)
+
 - Fix: #13 Prevents the current note from being updated by a background run when the note is open for editing
 - Add: Option `details` to include overview in a HTML deatils section
 - Add: Option `count` to customize note count field for a single overview
