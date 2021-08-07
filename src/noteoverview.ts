@@ -781,7 +781,7 @@ export namespace noteoverview {
     overview: string[],
     count: number,
     options: OverviewOptions
-  ): Promise<string[]> {
+  ) {
     if (
       options.noteCount &&
       (options.noteCount.enable || options.noteCount.enable !== false)
@@ -799,7 +799,6 @@ export namespace noteoverview {
         overview.push(countStr);
       }
     }
-    return overview;
   }
 
   export async function getTableHeader(header: string[]) {
