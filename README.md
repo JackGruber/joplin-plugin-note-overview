@@ -9,6 +9,7 @@ A note overview is created based on the defined search and the specified fields.
 <img src=img/main.jpg>
 
 <!-- prettier-ignore-start -->
+
 <!-- TOC depthfrom:2 orderedlist:false -->
 
 - [Installation](#installation)
@@ -54,6 +55,7 @@ A note overview is created based on the defined search and the specified fields.
 - [Links](#links)
 
 <!-- /TOC -->
+
 <!-- prettier-ignore-end -->
 
 ## Installation
