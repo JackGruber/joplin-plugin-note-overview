@@ -329,6 +329,35 @@ count:
   text: For the query {{count}} notes where found
 -->
 
+````
+
+### Listview option (no linbreak)
+
+```yml
+<!-- note-overview-plugin
+search: -tag:*
+fields: title, updated_time
+listview:
+  text: "{{title}}"
+  linebreak: false
+  separator: " | "
+  prefix: ==
+  suffix: ==
+-->
+````
+
+<img src="img/example_option_listview_nolb.jpg">
+
+### Listview option (combine notes dynamically)
+
+```yml
+<!-- note-overview-plugin
+search: notebook:"Welcome! (Desktop)"
+fields: body
+listview:
+  text: "{{body}}"
+  separator: ---
+-->
 ```
 
 ## Plugin options
@@ -395,4 +424,7 @@ See [Changelog](CHANGELOG.md)
 - [Joplin - Plugin API reference](https://joplinapp.org/api/references/plugin_api/classes/joplin.html)
 - [Joplin - Data API reference](https://joplinapp.org/api/references/rest_api/)
 - [Joplin - Plugin examples](https://github.com/laurent22/joplin/tree/dev/packages/app-cli/tests/support/plugins)
+
+```
+
 ```
