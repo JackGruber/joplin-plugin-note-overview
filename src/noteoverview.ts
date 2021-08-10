@@ -389,7 +389,7 @@ export namespace noteoverview {
       logging.silly("load notebooks");
       joplinNotebooks = {};
       let queryFolders;
-      let pageQuery = 0;
+      let pageQuery = 1;
       do {
         try {
           queryFolders = await joplin.data.get(["folders"], {
@@ -409,15 +409,16 @@ export namespace noteoverview {
             parent_id: queryFolders.items[queryFolderKey].parent_id,
           };
         }
-        pageQuery++;
       } while (queryFolders.has_more);
 
       const getParentName = (id: string, notebookPath: string[]) => {
         if (id === "") return;
-        if (joplinNotebooks[id].parent_id !== "") {
-          getParentName(joplinNotebooks[id].parent_id, notebookPath);
+        if (joplinNotebooks[id]) { // To avoid orphan notebooks
+          if (joplinNotebooks[id].parent_id !== "") {
+            getParentName(joplinNotebooks[id].parent_id, notebookPath);
+          }
+          notebookPath.push(joplinNotebooks[id].title);
         }
-        notebookPath.push(joplinNotebooks[id].title);
       };
 
       for (const key in joplinNotebooks) {
