@@ -31,8 +31,8 @@ export async function updateChangelog(version: string) {
   const changelog = path.resolve(path.join(__dirname, "..", "CHANGELOG.md"));
 
   let data = fs.readFileSync(changelog, { encoding: "utf8", flag: "r" });
-  version = `## ${version} (${moment().format("YYYY-MM-DD")})`;
-  data = data.replace(/## not released/, `## not released\n\n## ${version}`);
+  version = `${version} (${moment().format("YYYY-MM-DD")})`;
+  data = data.replace(/## not released/, `## not released\n\n## v${version}`);
   fs.writeFileSync(changelog, data);
 }
 
