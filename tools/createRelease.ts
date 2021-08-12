@@ -40,6 +40,8 @@ async function createRelease() {
     token: process.env.GITHUB_TOKEN,
     body: log,
   };
+
+  console.log("githubRelease");
   const releaseResult = await githubRelease(releaseOptions);
 
   const jpl = await getJPLFileName();
@@ -51,6 +53,8 @@ async function createRelease() {
     label: jpl,
     uploadUrl: releaseResult.upload_url,
   };
+
+  console.log("githubAsset");
   await githubAsset(releaseAssetOptions);
 }
 
