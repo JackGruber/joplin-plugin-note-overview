@@ -5,6 +5,7 @@ import {
   setPluginVersion,
   updateChangelog,
   getJPLFileName,
+  getChangelog,
 } from "./utils";
 import {
   githubRelease,
@@ -19,12 +20,16 @@ import { execCommand } from "./execCommand";
 
 async function createRelease() {
   console.log("Create GitHub release");
+
   const info = await getInfo();
 
   const manifestFile = path.resolve(
     path.join(__dirname, "../src/manifest.json")
   );
   const manifest = require(manifestFile);
+
+  const log = await getChangelog(manifest.version);
+  console.log(log);
 
   const releaseOptions: ReleaseOptions = {
     owner: info.owner,
@@ -33,7 +38,7 @@ async function createRelease() {
     name: `v${manifest.version}`,
     prerelease: false,
     token: process.env.GITHUB_TOKEN,
-    body: "",
+    body: log,
   };
   const releaseResult = await githubRelease(releaseOptions);
 
@@ -51,9 +56,6 @@ async function createRelease() {
 
 async function main() {
   dotenv.config();
-  if (!(await nothingUncomitted())) {
-    throw new Error("Not a clean git status");
-  }
 
   if (
     process.env.GITHUB_TOKEN === undefined ||
@@ -71,6 +73,10 @@ async function main() {
   else if (argv.minor) type = "minor";
   else if (argv.major) type = "major";
   else throw new Error("--patch, --minor or --major not provided");
+
+  if (!(await nothingUncomitted())) {
+    throw new Error("Not a clean git status");
+  }
 
   if ((await getBranch()) !== "develop") {
     throw new Error("not in develop branch");

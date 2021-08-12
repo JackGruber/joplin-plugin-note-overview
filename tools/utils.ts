@@ -53,3 +53,15 @@ export async function runNpmVersion(type: string) {
     { showOutput: true, showInput: true }
   );
 }
+
+export async function getChangelog(version: string): Promise<string> {
+  const changelog = path.resolve(path.join(__dirname, "..", "CHANGELOG.md"));
+  let data = fs.readFileSync(changelog, { encoding: "utf8", flag: "r" });
+
+  version = version.replace(/\./g, "\\.");
+  const regExp = new RegExp(`(?<ENTRY>## v${version}(.|\n)*?)^##`, "im");
+  const match = data.match(regExp);
+  let change = match.groups.ENTRY.split("\n");
+  change.splice(0, 2);
+  return change.join("\n");
+}
