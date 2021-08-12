@@ -119,7 +119,8 @@ async function main() {
   console.log("Execute the following commands:");
   console.log(`git push`);
   console.log(`git push --tag`);
-  console.log(`npm run publish`);
+  console.log(`npm publish`);
+  console.log(`npm run gitRelease`);
 }
 
 main().catch((error) => {
