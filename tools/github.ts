@@ -69,9 +69,7 @@ export async function githubRelease(options: ReleaseOptions): Promise<any> {
 
 export async function githubAsset(info: AssetOptions): Promise<any> {
   const cleanUrl = info.uploadUrl.replace("{?name,label}", "");
-  console.log("A");
   const form = new FormData();
-  console.log("info.asset");
   form.append("file", fs.createReadStream(info.asset));
   const state = fs.statSync(info.asset);
   const headers = {
