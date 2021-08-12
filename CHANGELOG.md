@@ -2,6 +2,10 @@
 
 ## not released
 
+## ## 1.5.2 (2021-08-12)
+
+- Fix: Fix: #22 Loading error on over 100 notebooks and orphan notebooks
+
 ## v1.5.1 (2021-08-08)
 
 - Fix: #21 Note count off settings not respected
