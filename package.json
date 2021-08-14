@@ -6,7 +6,7 @@
     "prepare": "npm run test && npm run dist && husky install",
     "update": "npm install -g generator-joplin && yo joplin --update",
     "compileTools": "tsc -p ./tools/tsconfig.json",
-    "release": "npm run compileTools && node ./tools/createRelease.js",
+    "release": "npm test && npm run compileTools && node ./tools/createRelease.js",
     "publish": "npm publish && npm run gitRelease",
     "gitRelease": "node ./tools/createRelease.js --upload",
     "test": "jest"
