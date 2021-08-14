@@ -7,6 +7,7 @@
     "update": "npm install -g generator-joplin && yo joplin --update",
     "compileTools": "tsc -p ./tools/tsconfig.json",
     "release": "npm run compileTools && node ./tools/createRelease.js",
+    "publish": "npm publish && npm run gitRelease",
     "gitRelease": "node ./tools/createRelease.js --upload",
     "test": "jest"
   },
@@ -59,11 +60,8 @@
       "js"
     ],
     "moduleNameMapper": {
-      "^api$": "<rootDir>/api",
+      "^api$": "<rootDir>/__test__/mocks/joplinApi.ts",
       "^api/(.*)$": "<rootDir>/api/$1"
-    },
-    "globals": {
-      "joplin": true
     }
   },
   "lint-staged": {
