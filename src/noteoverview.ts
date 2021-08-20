@@ -607,7 +607,12 @@ export namespace noteoverview {
           )
         );
       }
-      startOrgTextIndex = endIndex;
+
+      if (regExMatch[4] === "<!--endoverview-->") {
+        startOrgTextIndex = endIndex;
+      } else {
+        startOrgTextIndex = startIndex + regExMatch[1].length;
+      }
 
       let noteOverviewContent = await noteoverview.getOverviewContent(
         note.id,
@@ -623,7 +628,7 @@ export namespace noteoverview {
         await noteoverview.getSubNoteContent(
           note.body,
           startOrgTextIndex,
-          startIndex,
+          note.body.length,
           true
         )
       );
