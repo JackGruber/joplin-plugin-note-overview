@@ -413,7 +413,8 @@ export namespace noteoverview {
 
       const getParentName = (id: string, notebookPath: string[]) => {
         if (id === "") return;
-        if (joplinNotebooks[id]) { // To avoid orphan notebooks
+        if (joplinNotebooks[id]) {
+          // To avoid orphan notebooks
           if (joplinNotebooks[id].parent_id !== "") {
             getParentName(joplinNotebooks[id].parent_id, notebookPath);
           }

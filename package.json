@@ -8,7 +8,8 @@
     "compileTools": "tsc -p ./tools/tsconfig.json",
     "release": "npm test && npm run compileTools && node ./tools/createRelease.js",
     "publish": "npm publish && npm run gitRelease",
-    "gitRelease": "node ./tools/createRelease.js --upload",
+    "gitRelease": "node ./mode_modules/joplinplugindevtools/dist/createRelease.js --upload",
+    "gitPreRelease": "node ./mode_modules/joplinplugindevtools/dist/createRelease.js --upload --prerelease",
     "test": "jest"
   },
   "license": "MIT",
@@ -26,6 +27,7 @@
     "glob": "^7.1.6",
     "husky": "^6.0.0",
     "jest": "^26.6.3",
+    "joplinplugindevtools": "^1.0.2",
     "lint-staged": "^11.0.0",
     "mime": "^2.5.2",
     "on-build-webpack": "^0.1.0",
@@ -60,7 +62,7 @@
       "js"
     ],
     "moduleNameMapper": {
-      "^api$": "<rootDir>/__test__/mocks/joplinApi.ts",
+      "^api$": "<rootDir>/node_modules/joplinplugindevtools/dist/apiMock.js",
       "^api/(.*)$": "<rootDir>/api/$1"
     }
   },
