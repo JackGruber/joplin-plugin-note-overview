@@ -2,3 +2,4 @@ api/
 dist/
 publish/
 webpack.config.js
+__test__/data/notes/**/*.md
