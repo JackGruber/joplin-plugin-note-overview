@@ -5,9 +5,8 @@
     "dist": "webpack --joplin-plugin-config buildMain && webpack --joplin-plugin-config buildExtraScripts && webpack --joplin-plugin-config createArchive",
     "prepare": "npm run test && npm run dist && husky install",
     "update": "npm install -g generator-joplin && yo joplin --update",
-    "compileTools": "tsc -p ./tools/tsconfig.json",
-    "release": "npm test && npm run compileTools && node ./tools/createRelease.js",
-    "publish": "npm publish && npm run gitRelease",
+    "release": "npm test && node ./tools/createRelease.js",
+    "preRelease": "npm test && node ./tools/createRelease.js --prerelease",
     "gitRelease": "node ./mode_modules/joplinplugindevtools/dist/createRelease.js --upload",
     "gitPreRelease": "node ./mode_modules/joplinplugindevtools/dist/createRelease.js --upload --prerelease",
     "test": "jest"
