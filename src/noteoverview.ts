@@ -1148,9 +1148,10 @@ export namespace noteoverview {
       await noteoverview.settingsChanged(event);
     });
 
-    if ((await joplin.settings.value("updateInterval")) > 0) {
+    const timeInterval = await joplin.settings.value("updateInterval");
+    if (timeInterval > 0) {
       // ToDo: use sync finish trigger
-      await noteoverview.setTimer(5);
+      await noteoverview.setTimer(timeInterval);
     }
   }
 
