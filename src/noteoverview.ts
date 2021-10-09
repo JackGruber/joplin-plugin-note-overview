@@ -1165,7 +1165,9 @@ export namespace noteoverview {
 
   export async function updateOnSyncComplete() {
     logging.verbose("onSyncComplete Event");
-    logging.verbose(await joplin.settings.value("updateOnSync"));
+    logging.verbose(
+      "updateOnSync: " + (await joplin.settings.value("updateOnSync"))
+    );
 
     if (!firstSyncCompleted) {
       logging.verbose("firstSyncCompleted");
