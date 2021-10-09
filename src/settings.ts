@@ -20,7 +20,7 @@ export namespace settings {
         description: "0 = disable automatic note overview creation",
       },
       updateOnSync: {
-        value: "off",
+        value: "no",
         type: SettingItemType.String,
         section: "noteOverviewSection",
         isEnum: true,
