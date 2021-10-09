@@ -2,6 +2,8 @@
 
 ## not released
 
+## v1.5.4 (2021-10-09)
+
 - Fix: Default value for `Update on Joplin sync`
 
 ## v1.5.3 (2021-10-09)
