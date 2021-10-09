@@ -2,6 +2,8 @@
 
 ## not released
 
+## v1.5.3 (2021-10-09)
+
 - Add: Option `Update on Joplin sync` to start the Noteoverview update after Joplin syncronisation
 - Improved: Start first Noteoverview update after the first Joplin syncronisation (Not as before after 5 minutes)
 
