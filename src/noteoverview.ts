@@ -1148,10 +1148,13 @@ export namespace noteoverview {
       await noteoverview.settingsChanged(event);
     });
 
-    if ((await joplin.settings.value("updateInterval")) > 0) {
-      // ToDo: use sync finish trigger
-      await noteoverview.setTimer(5);
-    }
+    let firstSyncCompleted = false;
+    joplin.workspace.onSyncComplete(() => {
+      if (!firstSyncCompleted) {
+        firstSyncCompleted = true;
+        noteoverview.runTimed();
+      }
+    });
   }
 
   export async function settingsChanged(event: any) {
