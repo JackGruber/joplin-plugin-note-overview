@@ -120,7 +120,7 @@ In addition to the Joplin fields, there are the following virtual fields:
 - `file`: List of all attachments
 - `file_size`: List of all attachments including their size
 - `size`: Size of the note, including attachments
-- `tag`: Assigned tags of the note
+- `tags`: Assigned tags of the note
 - `notebook`: Folder in which the note is stored
 - `breadcrumb`: Folder breadcrumb (Folder path)
 - `image`: In this field a image resource from the note will be displayed. This field can be configured using the `image` option
