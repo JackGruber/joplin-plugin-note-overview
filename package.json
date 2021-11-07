@@ -7,8 +7,8 @@
     "update": "npm install -g generator-joplin && yo joplin --update",
     "release": "npm test && node ./tools/createRelease.js",
     "preRelease": "npm test && node ./tools/createRelease.js --prerelease",
-    "gitRelease": "node ./mode_modules/joplinplugindevtools/dist/createRelease.js --upload",
-    "gitPreRelease": "node ./mode_modules/joplinplugindevtools/dist/createRelease.js --upload --prerelease",
+    "gitRelease": "node ./node_modules/joplinplugindevtools/dist/createRelease.js --upload",
+    "gitPreRelease": "node ./node_modules/joplinplugindevtools/dist/createRelease.js --upload --prerelease",
     "test": "jest"
   },
   "license": "MIT",
