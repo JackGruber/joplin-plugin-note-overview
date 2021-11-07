@@ -19,6 +19,20 @@ export namespace settings {
         label: "Update interval in minutes",
         description: "0 = disable automatic note overview creation",
       },
+      updateOnSync: {
+        value: "no",
+        type: SettingItemType.String,
+        section: "noteOverviewSection",
+        isEnum: true,
+        public: true,
+        label: "Update on Joplin sync",
+        options: {
+          yes: "Yes",
+          no: "No",
+        },
+        description:
+          "Update the Noteoverview after a Joplin syncronisation. Independent of the update interval.",
+      },
       showNoteCount: {
         value: "off",
         type: SettingItemType.String,

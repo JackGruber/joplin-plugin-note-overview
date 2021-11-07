@@ -2,6 +2,15 @@
 
 ## not released
 
+## v1.5.4 (2021-10-09)
+
+- Fix: Default value for `Update on Joplin sync`
+
+## v1.5.3 (2021-10-09)
+
+- Add: Option `Update on Joplin sync` to start the Noteoverview update after Joplin syncronisation
+- Improved: Start first Noteoverview update after the first Joplin syncronisation (Not as before after 5 minutes)
+
 ## v1.5.2 (2021-08-12)
 
 - Fix: #22 Loading error on over 100 notebooks and orphan notebooks
