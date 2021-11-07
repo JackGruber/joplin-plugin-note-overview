@@ -16,7 +16,7 @@ describe("noteoverview.update", function () {
     jest.spyOn(logging, "info").mockReset();
   });
 
-  it(`Check matching noteoverview blocks`, async () => {
+  it(`Check calls of getOverviewContent function`, async () => {
     /* prettier-ignore */
     const testCases = [
         { noteid: "simpleEmpty", expected: 1, },
