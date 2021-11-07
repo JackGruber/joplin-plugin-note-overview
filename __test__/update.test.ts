@@ -21,6 +21,7 @@ describe("noteoverview.update", function () {
     const testCases = [
         { noteid: "simpleEmpty", expected: 1, },
         { noteid: "simple", expected: 1, },
+        { noteid: "multipleEmpty", expected: 3, },
       ];
 
     const spyOnegetOverviewContent = jest.spyOn(
