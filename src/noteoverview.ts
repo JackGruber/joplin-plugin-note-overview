@@ -350,6 +350,7 @@ export namespace noteoverview {
   ): Promise<any> {
     let fieldAlias = {};
     if (aliasStr.trim() !== "") {
+      aliasStr = aliasStr.replace(/ AS /gi, " AS ");
       const aliasArry = aliasStr.trim().split(",");
       for (let field of aliasArry) {
         let alias = field.trim().split(" AS ");

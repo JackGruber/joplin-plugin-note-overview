@@ -131,6 +131,46 @@ describe("Get image nr X from body", function () {
   });
 });
 
+describe("Check getHeaderFields", function () {
+  it(`Check return value`, async () => {
+    const testCases = [
+      {
+        aliasStr:
+          "title AS Nazov, updated_time AS CTime, tags AS Tagy, breadcrumb AS Umiesnenie",
+        fields: ["title", "updated_time", "tags", "breadcrumb"],
+        expected: ["Nazov", "CTime", "Tagy", "Umiesnenie"],
+      },
+      {
+        aliasStr:
+          "title AS Nazov, updated_time as CTime, tags AS Tagy, breadcrumb AS Umiesnenie",
+        fields: ["title", "updated_time", "tags", "breadcrumb"],
+        expected: ["Nazov", "CTime", "Tagy", "Umiesnenie"],
+      },
+      {
+        aliasStr:
+          "updated_time as CTime, tags AS Tagy, breadcrumb AS Umiesnenie, title AS Nazov",
+        fields: ["title", "updated_time", "tags", "breadcrumb"],
+        expected: ["Nazov", "CTime", "Tagy", "Umiesnenie"],
+      },
+      {
+        aliasStr:
+          "updated_time as CTime, tags AS Tagy, breadcrumb AS Umiesnenie, title AS Nazov,",
+        fields: ["title", "updated_time", "tags", "breadcrumb"],
+        expected: ["Nazov", "CTime", "Tagy", "Umiesnenie"],
+      },
+    ];
+
+    for (const testCase of testCases) {
+      const actual = await noteoverview.getHeaderFields(
+        testCase.aliasStr,
+        testCase.fields
+      );
+      expect(actual.length).toEqual(testCase.fields.length);
+      expect(actual).toEqual(testCase.expected);
+    }
+  });
+});
+
 describe("get MD excerpt", function () {
   it(`remove ~~ ++ ==`, async () => {
     const settings = { maxlength: 100 };
