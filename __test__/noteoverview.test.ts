@@ -158,6 +158,18 @@ describe("Check getHeaderFields", function () {
         fields: ["title", "updated_time", "tags", "breadcrumb"],
         expected: ["Nazov", "CTime", "Tagy", "Umiesnenie"],
       },
+      {
+        aliasStr:
+          "title AS Nazov, updated_time AS 💾🕒, tags as Tagy, breadcrumb AS Umiesnenie,",
+        fields: ["title", "updated_time", "tags", "breadcrumb"],
+        expected: ["Nazov", "💾🕒", "Tagy", "Umiesnenie"],
+      },
+      {
+        aliasStr:
+          "title AS Nazov, updated_time AS 💾🕒, tags as #️⃣ Tagy, breadcrumb AS Umiesnenie,",
+        fields: ["title", "updated_time", "tags", "breadcrumb"],
+        expected: ["Nazov", "💾🕒", "#️⃣ Tagy", "Umiesnenie"],
+      },
     ];
 
     for (const testCase of testCases) {
