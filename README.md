@@ -34,7 +34,7 @@ A note overview is created based on the defined search and the specified fields.
     - [Show all ToDos with no due date](#show-all-todos-with-no-due-date)
     - [Rename fields](#rename-fields)
     - [Notes without a tag](#notes-without-a-tag)
-    - [Notes createt last 7 days](#notes-createt-last-7-days)
+    - [Notes created last 7 days](#notes-created-last-7-days)
     - [Cooking recipes overview](#cooking-recipes-overview)
     - [Details option](#details-option)
     - [Change count for single overview](#change-count-for-single-overview)
@@ -284,7 +284,7 @@ fields: updated_time, title
 -->
 ```
 
-### Notes createt last 7 days
+### Notes created last 7 days
 
 ```yml
 <!-- note-overview-plugin
