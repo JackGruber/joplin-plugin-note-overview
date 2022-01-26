@@ -48,326 +48,6 @@ describe("Date formating", function () {
   });
 });
 
-describe("ToDo status text", function () {
-  it(`Status `, async () => {
-    const now = new Date().getTime();
-
-    const testCases = [
-      [0, 0, "open"],
-      [0, now, "done"],
-      [now - 86400, 0, "overdue"],
-      [now + 86400, now - 86400, "done"],
-      [now - 86400, now + 86400, "done"],
-    ];
-
-    for (const t of testCases) {
-      const todo_due = Number(t[0]);
-      const todo_completed = Number(t[1]);
-      const expected = t[2];
-      const actual = await noteoverview.getToDoStatus(todo_due, todo_completed);
-      expect(actual).toBe(expected);
-    }
-  });
-});
-
-describe("ToDo coloring", function () {
-  it(`ToDo open no due date`, async () => {
-    const todo_due = 0;
-    const todo_completed = 0;
-    const coloring = {
-      todo: {
-        done_nodue: "1;2",
-        open_nodue: "3;4",
-        open: "5;6",
-        open_overdue: "7;8",
-        done: "9;10",
-        done_overdue: "11;12",
-      },
-    };
-
-    expect(
-      await noteoverview.getToDoDateColor(
-        coloring,
-        todo_due,
-        todo_completed,
-        "todo_due"
-      )
-    ).toBe("3");
-    expect(
-      await noteoverview.getToDoDateColor(
-        coloring,
-        todo_due,
-        todo_completed,
-        "todo_completed"
-      )
-    ).toBe("4");
-  });
-
-  it(`ToDo done no due date`, async () => {
-    const now = new Date().getTime();
-    const todo_due = 0;
-    const todo_completed = new Date(now - 60 * 60 * 24).getTime();
-    const coloring = {
-      todo: {
-        done_nodue: "1;2",
-        open_nodue: "3;4",
-        open: "5;6",
-        open_overdue: "7;8",
-        done: "9;10",
-        done_overdue: "11;12",
-      },
-    };
-
-    expect(
-      await noteoverview.getToDoDateColor(
-        coloring,
-        todo_due,
-        todo_completed,
-        "todo_due"
-      )
-    ).toBe("1");
-    expect(
-      await noteoverview.getToDoDateColor(
-        coloring,
-        todo_due,
-        todo_completed,
-        "todo_completed"
-      )
-    ).toBe("2");
-  });
-
-  it(`ToDo coloring with ;`, async () => {
-    const now = new Date().getTime();
-    const todo_due = new Date(now + 60 * 60 * 24).getTime();
-    const todo_completed = 0;
-    const coloring = {
-      todo: {
-        done_nodue: "1;2",
-        open_nodue: "3;4",
-        open: "5;6",
-        open_overdue: "7;8",
-        done: "9;10",
-        done_overdue: "11;12",
-      },
-    };
-
-    expect(
-      await noteoverview.getToDoDateColor(
-        coloring,
-        todo_due,
-        todo_completed,
-        "todo_due"
-      )
-    ).toBe("5");
-    expect(
-      await noteoverview.getToDoDateColor(
-        coloring,
-        todo_due,
-        todo_completed,
-        "todo_completed"
-      )
-    ).toBe("6");
-  });
-
-  it(`ToDo coloring only one color`, async () => {
-    const now = new Date().getTime();
-    const todo_due = new Date(now + 60 * 60 * 24).getTime();
-    const todo_completed = 0;
-    const coloring = {
-      todo: {
-        done_nodue: "1;2",
-        open_nodue: "3;4",
-        open: "5",
-        open_overdue: "7;8",
-        done: "9;10",
-        done_overdue: "11;12",
-      },
-    };
-
-    expect(
-      await noteoverview.getToDoDateColor(
-        coloring,
-        todo_due,
-        todo_completed,
-        "todo_due"
-      )
-    ).toBe("5");
-    expect(
-      await noteoverview.getToDoDateColor(
-        coloring,
-        todo_due,
-        todo_completed,
-        "todo_completed"
-      )
-    ).toBe("5");
-  });
-
-  it(`ToDo coloring with ,`, async () => {
-    const now = new Date().getTime();
-    const todo_due = new Date(now + 60 * 60 * 24).getTime();
-    const todo_completed = 0;
-    const coloring = {
-      todo: {
-        done_nodue: "1;2",
-        open_nodue: "3;4",
-        open: "5,6",
-        open_overdue: "7;8",
-        done: "9;10",
-        done_overdue: "11;12",
-      },
-    };
-
-    expect(
-      await noteoverview.getToDoDateColor(
-        coloring,
-        todo_due,
-        todo_completed,
-        "todo_due"
-      )
-    ).toBe("5");
-    expect(
-      await noteoverview.getToDoDateColor(
-        coloring,
-        todo_due,
-        todo_completed,
-        "todo_completed"
-      )
-    ).toBe("6");
-  });
-
-  it(`ToDo open in due date`, async () => {
-    const now = new Date().getTime();
-    const todo_due = new Date(now + 60 * 60 * 24).getTime();
-    const todo_completed = 0;
-    const coloring = {
-      todo: {
-        done_nodue: "1;2",
-        open_nodue: "3;4",
-        open: "5;6",
-        open_overdue: "7;8",
-        done: "9;10",
-        done_overdue: "11;12",
-      },
-    };
-
-    expect(
-      await noteoverview.getToDoDateColor(
-        coloring,
-        todo_due,
-        todo_completed,
-        "todo_due"
-      )
-    ).toBe("5");
-    expect(
-      await noteoverview.getToDoDateColor(
-        coloring,
-        todo_due,
-        todo_completed,
-        "todo_completed"
-      )
-    ).toBe("6");
-  });
-
-  it(`ToDo open over due date`, async () => {
-    const now = new Date().getTime();
-    const todo_due = new Date(now - 60 * 60 * 24).getTime();
-    const todo_completed = 0;
-    const coloring = {
-      todo: {
-        done_nodue: "1;2",
-        open_nodue: "3;4",
-        open: "5;6",
-        open_overdue: "7;8",
-        done: "9;10",
-        done_overdue: "11;12",
-      },
-    };
-
-    expect(
-      await noteoverview.getToDoDateColor(
-        coloring,
-        todo_due,
-        todo_completed,
-        "todo_due"
-      )
-    ).toBe("7");
-    expect(
-      await noteoverview.getToDoDateColor(
-        coloring,
-        todo_due,
-        todo_completed,
-        "todo_completed"
-      )
-    ).toBe("8");
-  });
-
-  it(`ToDo done in due date`, async () => {
-    const now = new Date().getTime();
-    const todo_due = new Date(now + 60 * 60 * 24).getTime();
-    const todo_completed = new Date(now - 60 * 60 * 24).getTime();
-    const coloring = {
-      todo: {
-        done_nodue: "1;2",
-        open_nodue: "3;4",
-        open: "5;6",
-        open_overdue: "7;8",
-        done: "9;10",
-        done_overdue: "11;12",
-      },
-    };
-
-    expect(
-      await noteoverview.getToDoDateColor(
-        coloring,
-        todo_due,
-        todo_completed,
-        "todo_due"
-      )
-    ).toBe("9");
-    expect(
-      await noteoverview.getToDoDateColor(
-        coloring,
-        todo_due,
-        todo_completed,
-        "todo_completed"
-      )
-    ).toBe("10");
-  });
-
-  it(`ToDo done over due date`, async () => {
-    const now = new Date().getTime();
-    const todo_due = new Date(now - 60 * 60 * 24).getTime();
-    const todo_completed = new Date(now + 60 * 60 * 24).getTime();
-    const coloring = {
-      todo: {
-        done_nodue: "1;2",
-        open_nodue: "3;4",
-        open: "5;6",
-        open_overdue: "7;8",
-        done: "9;10",
-        done_overdue: "11;12",
-      },
-    };
-
-    expect(
-      await noteoverview.getToDoDateColor(
-        coloring,
-        todo_due,
-        todo_completed,
-        "todo_due"
-      )
-    ).toBe("11");
-    expect(
-      await noteoverview.getToDoDateColor(
-        coloring,
-        todo_due,
-        todo_completed,
-        "todo_completed"
-      )
-    ).toBe("12");
-  });
-});
-
 describe("Singel tests", function () {
   it(`humanFrendlyStorageSize`, async () => {
     const testCases = [
@@ -448,6 +128,58 @@ describe("Get image nr X from body", function () {
     expect(imgStr).toBe(
       `<img src=':/766bf08661e51d3897e6314b56f4d113' width='100' height='300'>`
     );
+  });
+});
+
+describe("Check getHeaderFields", function () {
+  it(`Check return value`, async () => {
+    const testCases = [
+      {
+        aliasStr:
+          "title AS Nazov, updated_time AS CTime, tags AS Tagy, breadcrumb AS Umiesnenie",
+        fields: ["title", "updated_time", "tags", "breadcrumb"],
+        expected: ["Nazov", "CTime", "Tagy", "Umiesnenie"],
+      },
+      {
+        aliasStr:
+          "title AS Nazov, updated_time as CTime, tags AS Tagy, breadcrumb AS Umiesnenie",
+        fields: ["title", "updated_time", "tags", "breadcrumb"],
+        expected: ["Nazov", "CTime", "Tagy", "Umiesnenie"],
+      },
+      {
+        aliasStr:
+          "updated_time as CTime, tags AS Tagy, breadcrumb AS Umiesnenie, title AS Nazov",
+        fields: ["title", "updated_time", "tags", "breadcrumb"],
+        expected: ["Nazov", "CTime", "Tagy", "Umiesnenie"],
+      },
+      {
+        aliasStr:
+          "updated_time as CTime, tags AS Tagy, breadcrumb AS Umiesnenie, title AS Nazov,",
+        fields: ["title", "updated_time", "tags", "breadcrumb"],
+        expected: ["Nazov", "CTime", "Tagy", "Umiesnenie"],
+      },
+      {
+        aliasStr:
+          "title AS Nazov, updated_time AS 💾🕒, tags as Tagy, breadcrumb AS Umiesnenie,",
+        fields: ["title", "updated_time", "tags", "breadcrumb"],
+        expected: ["Nazov", "💾🕒", "Tagy", "Umiesnenie"],
+      },
+      {
+        aliasStr:
+          "title AS Nazov, updated_time AS 💾🕒, tags as #️⃣ Tagy, breadcrumb AS Umiesnenie,",
+        fields: ["title", "updated_time", "tags", "breadcrumb"],
+        expected: ["Nazov", "💾🕒", "#️⃣ Tagy", "Umiesnenie"],
+      },
+    ];
+
+    for (const testCase of testCases) {
+      const actual = await noteoverview.getHeaderFields(
+        testCase.aliasStr,
+        testCase.fields
+      );
+      expect(actual.length).toEqual(testCase.fields.length);
+      expect(actual).toEqual(testCase.expected);
+    }
   });
 });
 

@@ -2,9 +2,22 @@
 
 ## not released
 
-## ## 1.5.2 (2021-08-12)
+- Improved: Alias keyword AS is now case insensetive #43
+- Fix: #47 Wrong color for finished todos (`todo [done]`) where loaded from the pluginsettings
+- Fix: #42 Table misformatted if values are blank
 
-- Fix: Fix: #22 Loading error on over 100 notebooks and orphan notebooks
+## v1.5.4 (2021-10-09)
+
+- Fix: Default value for `Update on Joplin sync`
+
+## v1.5.3 (2021-10-09)
+
+- Add: Option `Update on Joplin sync` to start the Noteoverview update after Joplin syncronisation
+- Improved: Start first Noteoverview update after the first Joplin syncronisation (Not as before after 5 minutes)
+
+## v1.5.2 (2021-08-12)
+
+- Fix: #22 Loading error on over 100 notebooks and orphan notebooks
 
 ## v1.5.1 (2021-08-08)
 

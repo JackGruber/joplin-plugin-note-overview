@@ -16,7 +16,7 @@ let noteoverviewDialog = null;
 let timer = null;
 let globalSettings: any = {};
 const consoleLogLevel = "verbose";
-
+let firstSyncCompleted = false;
 let joplinNotebooks: any = null;
 
 export namespace noteoverview {
@@ -229,7 +229,7 @@ export namespace noteoverview {
         open_nodue: "",
         open: await joplin.settings.value("colorTodoOpen"),
         open_overdue: await joplin.settings.value("colorTodoOpenOverdue"),
-        done: await joplin.settings.value("colorTodoOpenOverdue"),
+        done: await joplin.settings.value("colorTodoDone"),
         done_overdue: await joplin.settings.value("colorTodoDoneOverdue"),
         done_nodue: await joplin.settings.value("colorTodoDoneNodue"),
       },
@@ -350,6 +350,7 @@ export namespace noteoverview {
   ): Promise<any> {
     let fieldAlias = {};
     if (aliasStr.trim() !== "") {
+      aliasStr = aliasStr.replace(/ AS /gi, " AS ");
       const aliasArry = aliasStr.trim().split(",");
       for (let field of aliasArry) {
         let alias = field.trim().split(" AS ");
@@ -413,7 +414,8 @@ export namespace noteoverview {
 
       const getParentName = (id: string, notebookPath: string[]) => {
         if (id === "") return;
-        if (joplinNotebooks[id]) { // To avoid orphan notebooks
+        if (joplinNotebooks[id]) {
+          // To avoid orphan notebooks
           if (joplinNotebooks[id].parent_id !== "") {
             getParentName(joplinNotebooks[id].parent_id, notebookPath);
           }
@@ -1072,6 +1074,8 @@ export namespace noteoverview {
       value = await noteoverview.escapeForTable(value);
     }
 
+    if (value === "") value = " ";
+
     return value;
   }
 
@@ -1152,9 +1156,36 @@ export namespace noteoverview {
       await noteoverview.settingsChanged(event);
     });
 
-    if ((await joplin.settings.value("updateInterval")) > 0) {
-      // ToDo: use sync finish trigger
-      await noteoverview.setTimer(5);
+    // Use onSyncComplete event when sync target is configured
+    if (
+      (await joplin.settings.globalValue("sync.target")) === 0 &&
+      (await joplin.settings.value("updateInterval")) > 0
+    ) {
+      logging.verbose("set first update on timer");
+      await noteoverview.setTimer(1);
+    } else {
+      logging.verbose("set update on onSyncComplete event");
+      joplin.workspace.onSyncComplete(() => {
+        noteoverview.updateOnSyncComplete();
+      });
+    }
+  }
+
+  export async function updateOnSyncComplete() {
+    logging.verbose("onSyncComplete Event");
+    logging.verbose(
+      "updateOnSync: " + (await joplin.settings.value("updateOnSync"))
+    );
+
+    if (!firstSyncCompleted) {
+      logging.verbose("firstSyncCompleted");
+      firstSyncCompleted = true;
+      await noteoverview.updateAll(false);
+      await noteoverview.setTimer(
+        await joplin.settings.value("updateInterval")
+      );
+    } else if ((await joplin.settings.value("updateOnSync")) === "yes") {
+      await noteoverview.updateAll(false);
     }
   }
 

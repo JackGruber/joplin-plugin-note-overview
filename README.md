@@ -34,7 +34,7 @@ A note overview is created based on the defined search and the specified fields.
     - [Show all ToDos with no due date](#show-all-todos-with-no-due-date)
     - [Rename fields](#rename-fields)
     - [Notes without a tag](#notes-without-a-tag)
-    - [Notes createt last 7 days](#notes-createt-last-7-days)
+    - [Notes created last 7 days](#notes-created-last-7-days)
     - [Cooking recipes overview](#cooking-recipes-overview)
     - [Details option](#details-option)
     - [Change count for single overview](#change-count-for-single-overview)
@@ -103,7 +103,7 @@ Options that can be specified in the in the code block using YAML syntax.
 ### search
 
 The search filter which will be used to create the overview.
-[Documentation of search filters](https://joplinapp.org/#search-filters).
+[Documentation of search filters](https://joplinapp.org/help/#search-filters).
 
 ```yml
 search: type:todo
@@ -120,7 +120,7 @@ In addition to the Joplin fields, there are the following virtual fields:
 - `file`: List of all attachments
 - `file_size`: List of all attachments including their size
 - `size`: Size of the note, including attachments
-- `tag`: Assigned tags of the note
+- `tags`: Assigned tags of the note
 - `notebook`: Folder in which the note is stored
 - `breadcrumb`: Folder breadcrumb (Folder path)
 - `image`: In this field a image resource from the note will be displayed. This field can be configured using the `image` option
@@ -284,7 +284,7 @@ fields: updated_time, title
 -->
 ```
 
-### Notes createt last 7 days
+### Notes created last 7 days
 
 ```yml
 <!-- note-overview-plugin
@@ -374,6 +374,7 @@ Settings for the plugin, accessible at `Tools > Options > Note overview`.
 | `Show note count`              | Show the number of notes found.                                                                                                                                  | `off`                   |
 | `Note count text`              | Text for the display of the found notes, `{count}` is replace with the number of matched notes.                                                                  | `Note count: {{count}}` |
 | `Update interval in minutes`   | How often the overview notes should be updated.                                                                                                                  | `5`                     |
+| `Update on Joplin sync`        | Update the Noteoverview after a Joplin syncronisation. Independent of the update interval.                                                                       | `No`                    |
 | `Field status: open todo`      | Text for the `status` field, when the todo is not completed.                                                                                                     |                         |
 | `Field status: todo completed` | Text for the `status` field, when the todo is completed.                                                                                                         |                         |
 | `Field status: todo over due`  | Text for the `status` field, when the due date of the todo is exceeded.                                                                                          |                         |
