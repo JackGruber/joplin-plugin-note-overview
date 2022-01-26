@@ -2,6 +2,8 @@
 
 ## not released
 
+## v1.5.5 (2022-01-26)
+
 - Improved: Alias keyword `AS` is now case insensetive #43
 - Fix: #47 Wrong color for finished todos (`todo [done]`) where loaded from the pluginsettings
 - Fix: #42 Table misformatted if values are blank
