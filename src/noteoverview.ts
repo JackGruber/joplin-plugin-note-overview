@@ -1069,6 +1069,8 @@ export namespace noteoverview {
       value = await noteoverview.escapeForTable(value);
     }
 
+    if (value === "") value = " ";
+
     return value;
   }
 
