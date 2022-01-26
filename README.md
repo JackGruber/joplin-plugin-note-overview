@@ -34,7 +34,7 @@ A note overview is created based on the defined search and the specified fields.
     - [Show all ToDos with no due date](#show-all-todos-with-no-due-date)
     - [Rename fields](#rename-fields)
     - [Notes without a tag](#notes-without-a-tag)
-    - [Notes createt last 7 days](#notes-createt-last-7-days)
+    - [Notes created last 7 days](#notes-created-last-7-days)
     - [Cooking recipes overview](#cooking-recipes-overview)
     - [Details option](#details-option)
     - [Change count for single overview](#change-count-for-single-overview)
@@ -120,7 +120,7 @@ In addition to the Joplin fields, there are the following virtual fields:
 - `file`: List of all attachments
 - `file_size`: List of all attachments including their size
 - `size`: Size of the note, including attachments
-- `tag`: Assigned tags of the note
+- `tags`: Assigned tags of the note
 - `notebook`: Folder in which the note is stored
 - `breadcrumb`: Folder breadcrumb (Folder path)
 - `image`: In this field a image resource from the note will be displayed. This field can be configured using the `image` option
@@ -284,7 +284,7 @@ fields: updated_time, title
 -->
 ```
 
-### Notes createt last 7 days
+### Notes created last 7 days
 
 ```yml
 <!-- note-overview-plugin

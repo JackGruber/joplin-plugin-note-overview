@@ -2,6 +2,8 @@
 
 ## not released
 
+- Improved: Alias keyword AS is now case insensetive #43
+
 ## v1.5.4 (2021-10-09)
 
 - Fix: Default value for `Update on Joplin sync`
