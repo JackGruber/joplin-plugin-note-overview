@@ -1,14 +1,14 @@
 {
   "name": "joplin-plugin-note-overview",
-  "version": "1.5.2",
+  "version": "1.5.5",
   "scripts": {
     "dist": "webpack --joplin-plugin-config buildMain && webpack --joplin-plugin-config buildExtraScripts && webpack --joplin-plugin-config createArchive",
     "prepare": "npm run test && npm run dist && husky install",
     "update": "npm install -g generator-joplin && yo joplin --update",
-    "release": "npm test && node ./tools/createRelease.js",
-    "preRelease": "npm test && node ./tools/createRelease.js --prerelease",
-    "gitRelease": "node ./mode_modules/joplinplugindevtools/dist/createRelease.js --upload",
-    "gitPreRelease": "node ./mode_modules/joplinplugindevtools/dist/createRelease.js --upload --prerelease",
+    "release": "npm test && node ./node_modules/joplinplugindevtools/dist/createRelease.js",
+    "preRelease": "npm test && node ./node_modules/joplinplugindevtools/dist/createRelease.js --prerelease",
+    "gitRelease": "node ./node_modules/joplinplugindevtools/dist/createRelease.js --upload",
+    "gitPreRelease": "node ./node_modules/joplinplugindevtools/dist/createRelease.js --upload --prerelease",
     "test": "jest"
   },
   "license": "MIT",
@@ -26,7 +26,7 @@
     "glob": "^7.1.6",
     "husky": "^6.0.0",
     "jest": "^26.6.3",
-    "joplinplugindevtools": "^1.0.4",
+    "joplinplugindevtools": "^1.0.14",
     "lint-staged": "^11.0.0",
     "mime": "^2.5.2",
     "on-build-webpack": "^0.1.0",
