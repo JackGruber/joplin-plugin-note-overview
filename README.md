@@ -410,6 +410,10 @@ For example change `text: {{title}} match` to `text: "{{title}} match"`
 If an option value starts with a `{` and and ends with a `}` the text is interpreted as object. Enclose the value with quotes.
 For example change `text: {{title}}` to `text: "{{title}}"`
 
+### My overview note is not being updated automatically
+
+The overview note will not be updated in the background if it's currently opened (i.e. displayed and/or edited).
+
 ## Develop
 
 ### Build
