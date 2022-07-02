@@ -412,7 +412,7 @@ For example change `text: {{title}}` to `text: "{{title}}"`
 
 ### My overview note is not being updated automatically
 
-The overview note will not be updated in the background if it's currently opened (i.e. displayed and/or edited).
+The overview note will not be updated in the background if it's currently openedis in the markdown editor, split view or in the WYSIWYG
 
 ## Develop
 
