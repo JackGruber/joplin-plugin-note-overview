@@ -228,6 +228,8 @@ export namespace noteoverview {
       todo: {
         open_nodue: "",
         open: await joplin.settings.value("colorTodoOpen"),
+        warning: await joplin.settings.value("colorTodoWarning"),
+        warningHours: await joplin.settings.value("todoWarningHours"),
         open_overdue: await joplin.settings.value("colorTodoOpenOverdue"),
         done: await joplin.settings.value("colorTodoDone"),
         done_overdue: await joplin.settings.value("colorTodoDoneOverdue"),
