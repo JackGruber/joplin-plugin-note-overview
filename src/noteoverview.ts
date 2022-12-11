@@ -193,6 +193,14 @@ export namespace noteoverview {
     } else if (todo_due === 0 && todo_completed !== 0) {
       // ToDo done no due date
       colorType = "done_nodue";
+    } else if (
+      todo_due > now.getTime() &&
+      todo_completed === 0 &&
+      coloring["todo"]["warningHours"] !== 0 &&
+      todo_due - 3600 * coloring["todo"]["warningHours"] * 1000 < now.getTime()
+    ) {
+      // ToDo open and in warning time
+      colorType = "warning";
     } else if (todo_due > now.getTime() && todo_completed === 0) {
       // ToDo open in time
       colorType = "open";
@@ -228,6 +236,8 @@ export namespace noteoverview {
       todo: {
         open_nodue: "",
         open: await joplin.settings.value("colorTodoOpen"),
+        warning: await joplin.settings.value("colorTodoWarning"),
+        warningHours: await joplin.settings.value("todoWarningHours"),
         open_overdue: await joplin.settings.value("colorTodoOpenOverdue"),
         done: await joplin.settings.value("colorTodoDone"),
         done_overdue: await joplin.settings.value("colorTodoDoneOverdue"),

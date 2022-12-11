@@ -2,6 +2,8 @@
 
 ## not released
 
+- Add: #35 Warning color when a taks is close to a due date
+
 ## v1.5.5 (2022-01-26)
 
 - Improved: Alias keyword `AS` is now case insensetive #43
