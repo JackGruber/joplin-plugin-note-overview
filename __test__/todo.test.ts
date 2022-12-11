@@ -106,7 +106,7 @@ describe("ToDo status text", function () {
     it(`ToDo done no due date`, async () => {
       const now = new Date().getTime();
       const todo_due = 0;
-      const todo_completed = new Date(now - 60 * 60 * 24).getTime();
+      const todo_completed = new Date(now - 60 * 60 * 24 * 1000).getTime();
       const coloring = getColoringTestObject();
 
       expect(
@@ -129,7 +129,7 @@ describe("ToDo status text", function () {
 
     it(`ToDo coloring with ;`, async () => {
       const now = new Date().getTime();
-      const todo_due = new Date(now + 60 * 60 * 24).getTime();
+      const todo_due = new Date(now + 60 * 60 * 24 * 1000).getTime();
       const todo_completed = 0;
       const coloring = getColoringTestObject();
 
@@ -153,7 +153,7 @@ describe("ToDo status text", function () {
 
     it(`ToDo coloring only one color`, async () => {
       const now = new Date().getTime();
-      const todo_due = new Date(now + 60 * 60 * 24).getTime();
+      const todo_due = new Date(now + 60 * 60 * 24 * 1000).getTime();
       const todo_completed = 0;
       let coloring = getColoringTestObject();
       coloring["todo"]["open"] = "5";
@@ -178,7 +178,7 @@ describe("ToDo status text", function () {
 
     it(`ToDo coloring with ,`, async () => {
       const now = new Date().getTime();
-      const todo_due = new Date(now + 60 * 60 * 24).getTime();
+      const todo_due = new Date(now + 60 * 60 * 24 * 1000).getTime();
       const todo_completed = 0;
       let coloring = getColoringTestObject();
       coloring["todo"]["open"] = "5,6";
@@ -205,7 +205,7 @@ describe("ToDo status text", function () {
 
     it(`ToDo open in due date`, async () => {
       const now = new Date().getTime();
-      const todo_due = new Date(now + 60 * 60 * 24).getTime();
+      const todo_due = new Date(now + 60 * 60 * 24 * 1000).getTime();
       const todo_completed = 0;
       let coloring = getColoringTestObject();
 
@@ -229,7 +229,7 @@ describe("ToDo status text", function () {
 
     it(`ToDo open over due date`, async () => {
       const now = new Date().getTime();
-      const todo_due = new Date(now - 60 * 60 * 24).getTime();
+      const todo_due = new Date(now - 60 * 60 * 24 * 1000).getTime();
       const todo_completed = 0;
       let coloring = getColoringTestObject();
 
@@ -253,8 +253,8 @@ describe("ToDo status text", function () {
 
     it(`ToDo done in due date`, async () => {
       const now = new Date().getTime();
-      const todo_due = new Date(now + 60 * 60 * 24).getTime();
-      const todo_completed = new Date(now - 60 * 60 * 24).getTime();
+      const todo_due = new Date(now + 60 * 60 * 24 * 1000).getTime();
+      const todo_completed = new Date(now - 60 * 60 * 24 * 1000).getTime();
       let coloring = getColoringTestObject();
 
       expect(
@@ -277,8 +277,8 @@ describe("ToDo status text", function () {
 
     it(`ToDo done over due date`, async () => {
       const now = new Date().getTime();
-      const todo_due = new Date(now - 60 * 60 * 24).getTime();
-      const todo_completed = new Date(now + 60 * 60 * 24).getTime();
+      const todo_due = new Date(now - 60 * 60 * 24 * 1000).getTime();
+      const todo_completed = new Date(now + 60 * 60 * 24 * 1000).getTime();
       let coloring = getColoringTestObject();
 
       expect(
