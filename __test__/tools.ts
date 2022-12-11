@@ -1,8 +1,11 @@
 import * as path from "path";
 import * as fs from "fs-extra";
+import { getPackedSettings } from "http2";
+import * as YAML from "yaml";
 
 const dataDir = path.join(__dirname, "data");
 const dataNotes = path.join(dataDir, "notes");
+const optionsDir = path.join(dataDir, "options");
 
 export function getNote(id: string) {
   const data = require(path.join(dataNotes, id, "data.json"));
@@ -31,4 +34,13 @@ export function getColoringTestObject() {
       warningHours: 15,
     },
   };
+}
+
+export function getOptionsFromFile(optionFile: string): string {
+  const file = path.join(optionsDir, optionFile + ".yml");
+  const yamlData = fs.readFileSync(file, {
+    encoding: "utf8",
+    flag: "r",
+  });
+  return YAML.parse(yamlData);
 }

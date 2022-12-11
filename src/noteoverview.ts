@@ -708,6 +708,8 @@ export namespace noteoverview {
       ? overviewSettings["listview"]
       : null;
 
+    settings.link = overviewSettings["link"] ? overviewSettings["link"] : null;
+
     return settings;
   }
 
@@ -733,6 +735,10 @@ export namespace noteoverview {
     // include body
     if (fields.includes("image") || fields.includes("excerpt")) {
       additionalFields.push("body");
+    }
+
+    if (fields.includes("link")) {
+      additionalFields.push("source_url");
     }
 
     return additionalFields;
@@ -777,6 +783,7 @@ export namespace noteoverview {
             "status",
             "image",
             "excerpt",
+            "link",
           ].indexOf(el) === -1
       );
 
@@ -1075,6 +1082,21 @@ export namespace noteoverview {
         break;
       case "breadcrumb":
         value = await noteoverview.getNotebookBreadcrumb(fields["parent_id"]);
+        break;
+      case "link":
+        const caption =
+          options.link && options.link.hasOwnProperty("caption")
+            ? options.link["caption"]
+            : "Link";
+        const htmlLink =
+          options.link && options.link.hasOwnProperty("html")
+            ? options.link["html"]
+            : false;
+        if (htmlLink) {
+          value = '<a href="' + fields["source_url"] + '">' + caption + "</a>";
+        } else {
+          value = "[" + caption + "](" + fields["source_url"] + ")";
+        }
         break;
       default:
         value = fields[field];

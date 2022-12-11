@@ -26,6 +26,7 @@ A note overview is created based on the defined search and the specified fields.
     - [details](#details)
     - [count](#count)
     - [listview](#listview)
+    - [link](#link)
 - [Examples](#examples)
     - [ToDo Overview](#todo-overview)
     - [Show all ToDos with status](#show-all-todos-with-status)
@@ -125,6 +126,7 @@ In addition to the Joplin fields, there are the following virtual fields:
 - `breadcrumb`: Folder breadcrumb (Folder path)
 - `image`: In this field a image resource from the note will be displayed. This field can be configured using the `image` option
 - `excerpt`: Displays an excerpt of the note body
+- `link`: Display the `source_url`. This field can be configured using the `link` option
 
 ```yml
 fields: todo_due, title, tags, notebook
@@ -210,6 +212,21 @@ listview:
   separator: " | "
   prefix: ==
   suffix: ==
+```
+
+### link
+
+This allows you to control the output displayed in the `link` field.
+
+- `caption`: The text to display for the link (default = `Link`).
+- `html`:
+  `false` = Output is a markdown link (default)
+  `true` = Output is a HTML link
+
+```yml
+link:
+  caption: "Jump to"
+  html: true
 ```
 
 ## Examples

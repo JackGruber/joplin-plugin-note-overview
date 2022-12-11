@@ -3,6 +3,7 @@
 ## not released
 
 - Add: #35 Warning color when a taks is close to a due date
+- Add: Virtual field `link` to display the `source_url` to make the output configurable
 
 ## v1.5.5 (2022-01-26)
 
