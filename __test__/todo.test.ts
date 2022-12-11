@@ -201,7 +201,31 @@ describe("ToDo status text", function () {
       ).toBe("6");
     });
 
-    it(`ToDo open in due date and warning range`, async () => {});
+    it(`ToDo open in due date and warning range`, async () => {
+      const now = new Date().getTime();
+      const todo_completed = 0;
+      let coloring = getColoringTestObject();
+      const todo_due = new Date(
+        now + 3600 * (coloring["todo"]["warningHours"] / 2) * 1000
+      ).getTime();
+
+      expect(
+        await noteoverview.getToDoDateColor(
+          coloring,
+          todo_due,
+          todo_completed,
+          "todo_due"
+        )
+      ).toBe("13");
+      expect(
+        await noteoverview.getToDoDateColor(
+          coloring,
+          todo_due,
+          todo_completed,
+          "todo_completed"
+        )
+      ).toBe("14");
+    });
 
     it(`ToDo open in due date`, async () => {
       const now = new Date().getTime();
