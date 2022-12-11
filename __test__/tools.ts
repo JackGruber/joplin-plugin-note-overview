@@ -27,6 +27,8 @@ export function getColoringTestObject() {
       open_overdue: "7;8",
       done: "9;10",
       done_overdue: "11;12",
+      warning: "13",
+      warningHours: "15",
     },
   };
 }
