@@ -5,6 +5,7 @@
 - Add: #35 Warning color when a taks is close to a due date
 - Add: Virtual field `link` to display the `source_url` to make the output configurable
 - Fix: Ignore noteoverview blocks if they start with a codeblock (```) statement
+- Add: #36 Variable `{{count}}` to the summary of the details HTML tag
 
 ## v1.5.5 (2022-01-26)
 

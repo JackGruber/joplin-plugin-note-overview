@@ -867,7 +867,7 @@ export namespace noteoverview {
 
       await addNoteCount(overviewContent, noteCount, options);
 
-      await addHTMLDetailsTag(overviewContent, options);
+      await addHTMLDetailsTag(overviewContent, noteCount, options);
     }
 
     overviewContent.unshift(
@@ -880,12 +880,17 @@ export namespace noteoverview {
 
   export async function addHTMLDetailsTag(
     overview: string[],
+    noteCount: number,
     options: OverviewOptions
   ) {
     if (options.details) {
       overview.unshift("");
       if (options.details.summary) {
-        overview.unshift(`<summary>${options.details.summary}</summary>`);
+        const summary = options.details.summary.replace(
+          "{{count}}",
+          noteCount.toString()
+        );
+        overview.unshift(`<summary>${summary}</summary>`);
       }
       overview.unshift(
         `<details ` + (options.details.open === true ? ` open` : `close`) + `>`

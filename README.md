@@ -181,11 +181,12 @@ excerpt:
 ### details
 
 Add the overview into a details section that can open and close on demand.
+In the summary the variable `{{count}}` can be used, to display the number of matched notes.
 
 ```yml
 details:
   open: [true | false]
-  summary: All notes without a Tag
+  summary: {{count}} notes without a Tag
 ```
 
 ### count
