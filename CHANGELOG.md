@@ -4,6 +4,7 @@
 
 - Add: #35 Warning color when a taks is close to a due date
 - Add: Virtual field `link` to display the `source_url` to make the output configurable
+- Fix: #25 Ignore noteoverview blocks if there is a codeblock (```) instruction direct befor
 
 ## v1.5.5 (2022-01-26)
 
