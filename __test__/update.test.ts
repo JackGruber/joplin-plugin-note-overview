@@ -22,6 +22,7 @@ describe("noteoverview.update", function () {
         { noteid: "simpleEmpty", expected: 1, },
         { noteid: "simple", expected: 1, },
         { noteid: "multipleEmpty", expected: 3, },
+        { noteid: "codeBlock", expected: 2, },
       ];
 
     const spyOnegetOverviewContent = jest.spyOn(
@@ -46,5 +47,9 @@ describe("noteoverview.update", function () {
       expect(spyOnegetOverviewContent).toBeCalledTimes(testCase.expected);
       spyOnegetOverviewContent.mockClear();
     }
+  });
+
+  it(`RegEx codeblock`, async () => {
+    //
   });
 });

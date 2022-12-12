@@ -583,7 +583,7 @@ export namespace noteoverview {
 
     // Search all note-overview blocks in note
     const noteOverviewRegEx =
-      /(<!--\s?note-overview-plugin(?<settings>[\w\W]*?)-->)([\w\W]*?)(<!--endoverview-->|(?=<!--\s?note-overview-plugin)|$)/gi;
+      /(?<!```\n)(?<!``` \n)(<!--\s?note-overview-plugin(?<settings>[\w\W]*?)-->)([\w\W]*?)(<!--endoverview-->|(?=<!--\s?note-overview-plugin)|$)/gi;
     let regExMatch = null;
     let startOrgTextIndex = 0;
     let startIndex = 0;
