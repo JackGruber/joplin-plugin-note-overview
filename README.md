@@ -16,6 +16,7 @@ A note overview is created based on the defined search and the specified fields.
     - [Automatic](#automatic)
     - [Manual](#manual)
 - [Usage](#usage)
+    - [Limitations](#limitations)
 - [Codeblock options](#codeblock-options)
     - [search](#search)
     - [fields](#fields)
@@ -44,6 +45,7 @@ A note overview is created based on the defined search and the specified fields.
 - [Plugin options](#plugin-options)
 - [Keyboard Shortcuts](#keyboard-shortcuts)
 - [FAQ](#faq)
+    - [The note overview is not updated](#the-note-overview-is-not-updated)
     - [Error: Nested mappings are not allowed in compact mappings](#error-nested-mappings-are-not-allowed-in-compact-mappings)
     - [Error: Implicit map keys need to be followed by map values](#error-implicit-map-keys-need-to-be-followed-by-map-values)
     - [Error: All collection items must start at the same column](#error-all-collection-items-must-start-at-the-same-column)
@@ -91,11 +93,15 @@ Several of these blocks can be included in one note, also between text.
 
 The note content is updated every x minutes (depending on your setting) or manualy by `Tools > Create Note overview`.
 
+### Limitations
+
 > ⚠ Adding and editing the code block does not work in the **Rich Text (WYSIWYG)** editor!
 
 > ⚠ When the note is edited in `Rich Text` (WYSIWYG) editor, the note code block is not preserved!
 
-> ❕ The refresh of the note ist not working in the `Rich Text` (WYSIWYG) editor, to update the note view please change the note and switch back.
+> ⚠ The manual refresh of the note ist not working in the `Rich Text` (WYSIWYG) editor, to update the note chnage to markdown editor, viewer or a other note and trigger the note overview update again.
+
+> With an automatic update, the currently displayed note opend in the `markdown` or `Rich Text` (WYSIWYG) editor is not updated to prevent data loss during editing!
 
 ## Codeblock options
 
@@ -411,6 +417,10 @@ Under `Options > Keyboard Shortcuts` you can assign a keyboard shortcut for the 
 - `Create note overview`
 
 ## FAQ
+
+### The note overview is not updated
+
+See the [limitations](#limitations) section.
 
 ### Error: Nested mappings are not allowed in compact mappings
 
