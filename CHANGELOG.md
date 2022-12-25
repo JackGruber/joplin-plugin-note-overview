@@ -6,6 +6,7 @@
 - Add: Virtual field `link` to display the `source_url` to make the output configurable
 - Fix: Ignore noteoverview blocks if they start with a codeblock (```) statement
 - Add: #36 Variable `{{count}}` to the summary of the details HTML tag
+- Add: #27 RegEx filter `regex` for excerpt
 
 ## v1.5.5 (2022-01-26)
 
