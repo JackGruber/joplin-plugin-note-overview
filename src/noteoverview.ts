@@ -349,12 +349,17 @@ export namespace noteoverview {
       }
 
       const hits = markdown.match(matchRegex);
+      const excerptArray = [];
       if (hits == null) return "";
 
       for (let match of hits) {
-        excerpt += match + "\n";
+        excerptArray.push(match);
       }
-      excerpt = await cleanExcerpt(excerpt, removeMd, imageName);
+      excerpt = await cleanExcerpt(
+        excerptArray.join("\n"),
+        removeMd,
+        imageName
+      );
       return excerpt;
     } else {
       contentText = await cleanExcerpt(contentText, removeMd, imageName);
