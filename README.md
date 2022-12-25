@@ -42,6 +42,7 @@ A note overview is created based on the defined search and the specified fields.
     - [Change count for single overview](#change-count-for-single-overview)
     - [Change to listview no linbreak](#change-to-listview-no-linbreak)
     - [Combine notes dynamically](#combine-notes-dynamically)
+    - [Show all uncompleted checkboxes ToDos](#show-all-uncompleted-checkboxes-todos)
 - [Plugin options](#plugin-options)
 - [Keyboard Shortcuts](#keyboard-shortcuts)
 - [FAQ](#faq)
@@ -177,12 +178,22 @@ image:
 
 ### excerpt
 
-Displays an excerpt of the note body, the length of the excerpt can be configured using `maxlength`.
+Displays an excerpt of the note body, the length of the excerpt can be configured using `maxlength` or you can use a RegEx to select data for the excerpt.
 
 ```yml
 excerpt:
   maxlength: 200
+  removenewline: [true | false]
+  removemd: [true | false]
+  regex: ^.*Joplin.*$
+  regexflags: gmi
 ```
+
+- `maxlength`: Maximum length for the excerpt
+- `removenewline`: Remove new lines from excerpt, default `true`
+- `removemd`: Remove markdown from excerpt, default `true`
+- `regex`: Regular expression to match content for the excerpt. `maxlength` will be ignored if this option is used.
+- `regexflags`: Regular expression flags for the `regex` match
 
 ### details
 
@@ -388,6 +399,27 @@ listview:
   separator: ---
 -->
 ```
+
+### Show all uncompleted checkboxes (ToDos)
+
+```yml
+<!-- note-overview-plugin
+search: tag:todo
+fields: title, excerpt
+listview:
+  text: |-
+
+    {{title}}
+    {{excerpt}}
+excerpt:
+  regex: ^.*- \[( )\].*$
+  regexflags: gmi
+  removenewline: false
+  removemd: false
+-->
+```
+
+<img src="img/example_option_excerpt_regex_checkbox.png">
 
 ## Plugin options
 
