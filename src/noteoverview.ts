@@ -371,13 +371,9 @@ export namespace noteoverview {
     removeMd: boolean,
     imageName: boolean
   ): Promise<string> {
-    // Trim and normalize whitespace in content text
-    content = content.trim().replace(/\s+/g, " ");
-
     if (imageName === false) {
       content = content.replace(/(!\[)([^\]]+)(\]\([^\)]+\))/g, "$1$3");
     }
-
     if (removeMd === true) {
       let processedMd = remark().use(strip).processSync(content);
       content = processedMd["contents"].toString();
@@ -386,6 +382,10 @@ export namespace noteoverview {
       content = content.replace(/(\s\\?==|==\s)/g, " ");
       content = content.replace(/(\s\\?\+\+|\+\+\s)/g, " ");
     }
+
+    // Trim and normalize whitespace in content text
+    content = content.trim().replace(/\s+/g, " ");
+
     return content;
   }
 
