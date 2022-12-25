@@ -336,6 +336,10 @@ export namespace noteoverview {
       excerptSettings && excerptSettings.hasOwnProperty("imagename")
         ? excerptSettings["imagename"]
         : false;
+    const removeNewLine =
+      excerptSettings && excerptSettings.hasOwnProperty("removeNewLine")
+        ? excerptSettings["removeNewLine"]
+        : true;
     let contentText = markdown;
 
     let excerpt = "";
@@ -358,11 +362,17 @@ export namespace noteoverview {
       excerpt = await cleanExcerpt(
         excerptArray.join("\n"),
         removeMd,
-        imageName
+        imageName,
+        removeNewLine
       );
       return excerpt;
     } else {
-      contentText = await cleanExcerpt(contentText, removeMd, imageName);
+      contentText = await cleanExcerpt(
+        contentText,
+        removeMd,
+        imageName,
+        removeNewLine
+      );
       excerpt = contentText.slice(0, maxExcerptLength);
 
       if (contentText.length > maxExcerptLength) {
@@ -376,7 +386,8 @@ export namespace noteoverview {
   export async function cleanExcerpt(
     content: string,
     removeMd: boolean,
-    imageName: boolean
+    imageName: boolean,
+    removeNewLine: boolean
   ): Promise<string> {
     if (imageName === false) {
       content = content.replace(/(!\[)([^\]]+)(\]\([^\)]+\))/g, "$1$3");
@@ -391,7 +402,11 @@ export namespace noteoverview {
     }
 
     // Trim and normalize whitespace in content text
-    content = content.trim().replace(/\s+/g, " ");
+    if (removeNewLine === false) {
+      content = content.trim().replace(/(\t| )+/g, " ");
+    } else {
+      content = content.trim().replace(/\s+/g, " ");
+    }
 
     return content;
   }
