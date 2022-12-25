@@ -349,6 +349,8 @@ export namespace noteoverview {
       }
 
       const hits = markdown.match(matchRegex);
+      if (hits == null) return "";
+
       for (let match of hits) {
         excerpt += match + "\n";
       }
