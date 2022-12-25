@@ -224,4 +224,16 @@ describe("get MD excerpt", function () {
     const actual = await noteoverview.getMarkdownExcerpt(md, settings);
     expect(actual).toBe(expected);
   });
+
+  it(`don't remove new line, removemd: false and max length 26`, async () => {
+    const settings = {
+      maxlength: 26,
+      removeNewLine: false,
+      removemd: false,
+    };
+    const md = "- [ ] Test Item 1\n- [ ] 123";
+    const expected = "- [ ] Test Item 1\n- [ ] 12...";
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual).toBe(expected);
+  });
 });
