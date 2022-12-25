@@ -575,6 +575,37 @@ export namespace noteoverview {
     logging.info("all overviews checked");
   }
 
+  export async function validateExcerptRegEx(
+    settings: any,
+    title: string
+  ): Promise<Boolean> {
+    // Validate excerpt regex match
+    if (
+      settings.hasOwnProperty("excerpt") &&
+      settings["excerpt"].hasOwnProperty("regexp")
+    ) {
+      const flags =
+        settings &&
+        settings.hasOwnProperty("excerpt") &&
+        settings["excerpt"].hasOwnProperty("regexpflags")
+          ? settings["excerpt"]["regexpflags"]
+          : false;
+      try {
+        if (flags !== false) new RegExp(settings["excerpt"]["regexp"], flags);
+        else new RegExp(settings["excerpt"]["regexp"]);
+      } catch (error) {
+        logging.error("RegEx parse error: " + error.message);
+        await noteoverview.showError(
+          title,
+          "RegEx parse error</br>" + error.message,
+          settings["excerpt"]["regexp"]
+        );
+        return false;
+      }
+    }
+    return true;
+  }
+
   export async function update(noteId: string, userTriggerd: boolean) {
     const note = await joplin.data.get(["notes", noteId], {
       fields: ["id", "title", "body"],
@@ -606,6 +637,13 @@ export namespace noteoverview {
         );
         return;
       }
+
+      if (
+        (await validateExcerptRegEx(noteOverviewSettings, note.title)) === false
+      ) {
+        return;
+      }
+
       logging.verbose("Search: " + noteOverviewSettings["search"]);
 
       // add original content before the settings block
