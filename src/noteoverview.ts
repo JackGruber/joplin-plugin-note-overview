@@ -320,6 +320,14 @@ export namespace noteoverview {
       excerptSettings && excerptSettings.hasOwnProperty("maxlength")
         ? excerptSettings["maxlength"]
         : 200;
+    const excerptRegexp =
+      excerptSettings && excerptSettings.hasOwnProperty("regexp")
+        ? excerptSettings["regexp"]
+        : false;
+    const excerptRegexpFlags =
+      excerptSettings && excerptSettings.hasOwnProperty("regexpflags")
+        ? excerptSettings["regexpflags"]
+        : false;
     const removeMd =
       excerptSettings && excerptSettings.hasOwnProperty("removemd")
         ? excerptSettings["removemd"]
@@ -330,27 +338,54 @@ export namespace noteoverview {
         : false;
     let contentText = markdown;
 
+    let excerpt = "";
+
+    if (excerptRegexp !== false) {
+      let matchRegex = null;
+      if (excerptRegexpFlags !== false) {
+        matchRegex = new RegExp(excerptRegexp, excerptRegexpFlags);
+      } else {
+        matchRegex = new RegExp(excerptRegexp);
+      }
+
+      const hits = markdown.match(matchRegex);
+      for (let match of hits) {
+        excerpt += match + "\n";
+      }
+      excerpt = await cleanExcerpt(excerpt, removeMd, imageName);
+      return excerpt;
+    } else {
+      contentText = await cleanExcerpt(contentText, removeMd, imageName);
+      excerpt = contentText.slice(0, maxExcerptLength);
+
+      if (contentText.length > maxExcerptLength) {
+        return excerpt + "...";
+      }
+
+      return excerpt;
+    }
+  }
+
+  export async function cleanExcerpt(
+    content: string,
+    removeMd: boolean,
+    imageName: boolean
+  ): Promise<string> {
+    // Trim and normalize whitespace in content text
+    content = content.trim().replace(/\s+/g, " ");
+
     if (imageName === false) {
-      contentText = contentText.replace(/(!\[)([^\]]+)(\]\([^\)]+\))/g, "$1$3");
+      content = content.replace(/(!\[)([^\]]+)(\]\([^\)]+\))/g, "$1$3");
     }
 
     if (removeMd === true) {
-      let processedMd = remark().use(strip).processSync(contentText);
-      contentText = String(processedMd["contents"]);
-      contentText = contentText.replace(/(\s\\?~~|~~\s)/g, " ");
-      contentText = contentText.replace(/(\s\\?==|==\s)/g, " ");
-      contentText = contentText.replace(/(\s\\?\+\+|\+\+\s)/g, " ");
+      let processedMd = remark().use(strip).processSync(content);
+      content = String(processedMd["contents"]);
+      content = content.replace(/(\s\\?~~|~~\s)/g, " ");
+      content = content.replace(/(\s\\?==|==\s)/g, " ");
+      content = content.replace(/(\s\\?\+\+|\+\+\s)/g, " ");
     }
-
-    // Trim and normalize whitespace in content text
-    contentText = contentText.trim().replace(/\s+/g, " ");
-    const excerpt = contentText.slice(0, maxExcerptLength);
-
-    if (contentText.length > maxExcerptLength) {
-      return excerpt + "...";
-    }
-
-    return excerpt;
+    return content;
   }
 
   // Replace fields for header with alias
