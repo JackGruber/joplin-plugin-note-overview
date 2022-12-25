@@ -224,4 +224,70 @@ describe("get MD excerpt", function () {
     const actual = await noteoverview.getMarkdownExcerpt(md, settings);
     expect(actual).toBe(expected);
   });
+
+  it(`don't remove new line, removemd: false and max length 26`, async () => {
+    const settings = {
+      maxlength: 26,
+      removenewline: false,
+      removemd: false,
+    };
+    const md = "- [ ] Test Item 1\n- [ ] 123";
+    const expected = "- [ ] Test Item 1\n- [ ] 12...";
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual).toBe(expected);
+  });
+
+  it(`Regex, removeMd: false`, async () => {
+    const settings = {
+      maxlength: 100,
+      regex: "^.*item.*$",
+      regexflags: "mig",
+      removemd: false,
+    };
+    const md =
+      "- [ ] Test Item 1\n- [ ] Test item 2\n- [ ] Test 3\n- [ ] Test Item 3";
+    const expected = "- [ ] Test Item 1 - [ ] Test item 2 - [ ] Test Item 3";
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual).toBe(expected);
+  });
+
+  it(`Regex, removeMd: false, no match`, async () => {
+    const settings = {
+      maxlength: 100,
+      regex: "^.*item.*$",
+      removemd: false,
+    };
+    const md =
+      "- [ ] Test Item 1\n- [ ] Test item 2\n- [ ] Test 3\n- [ ] Test Item 3";
+    const expected = "";
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual).toBe(expected);
+  });
+
+  it(`Regex, removeMd: false, no options`, async () => {
+    const settings = {
+      maxlength: 100,
+      regex: ".*item.*",
+      removemd: false,
+    };
+    const md =
+      "- [ ] Test Item 1\n- [ ] Test item 2\n- [ ] Test 3\n- [ ] Test Item 3";
+    const expected = "- [ ] Test item 2";
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual).toBe(expected);
+  });
+
+  it(`Regex, removeMd: false, no global option`, async () => {
+    const settings = {
+      maxlength: 100,
+      regex: "^.*item.*$",
+      removemd: false,
+      regexflags: "mi",
+    };
+    const md =
+      "- [ ] Test Item 1\n- [ ] Test item 2\n- [ ] Test 3\n- [ ] Test Item 3";
+    const expected = "- [ ] Test Item 1";
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual).toBe(expected);
+  });
 });

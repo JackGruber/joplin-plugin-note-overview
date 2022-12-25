@@ -320,6 +320,14 @@ export namespace noteoverview {
       excerptSettings && excerptSettings.hasOwnProperty("maxlength")
         ? excerptSettings["maxlength"]
         : 200;
+    const excerptRegex =
+      excerptSettings && excerptSettings.hasOwnProperty("regex")
+        ? excerptSettings["regex"]
+        : false;
+    const excerptRegexFlags =
+      excerptSettings && excerptSettings.hasOwnProperty("regexflags")
+        ? excerptSettings["regexflags"]
+        : false;
     const removeMd =
       excerptSettings && excerptSettings.hasOwnProperty("removemd")
         ? excerptSettings["removemd"]
@@ -328,29 +336,79 @@ export namespace noteoverview {
       excerptSettings && excerptSettings.hasOwnProperty("imagename")
         ? excerptSettings["imagename"]
         : false;
+    const removeNewLine =
+      excerptSettings && excerptSettings.hasOwnProperty("removenewline")
+        ? excerptSettings["removenewline"]
+        : true;
     let contentText = markdown;
 
-    if (imageName === false) {
-      contentText = contentText.replace(/(!\[)([^\]]+)(\]\([^\)]+\))/g, "$1$3");
-    }
+    let excerpt = "";
 
+    if (excerptRegex !== false) {
+      let matchRegex = null;
+      if (excerptRegexFlags !== false) {
+        matchRegex = new RegExp(excerptRegex, excerptRegexFlags);
+      } else {
+        matchRegex = new RegExp(excerptRegex);
+      }
+
+      const hits = markdown.match(matchRegex);
+      const excerptArray = [];
+      if (hits == null) return "";
+
+      for (let match of hits) {
+        excerptArray.push(match);
+      }
+      excerpt = await cleanExcerpt(
+        excerptArray.join("\n"),
+        removeMd,
+        imageName,
+        removeNewLine
+      );
+      return excerpt;
+    } else {
+      contentText = await cleanExcerpt(
+        contentText,
+        removeMd,
+        imageName,
+        removeNewLine
+      );
+      excerpt = contentText.slice(0, maxExcerptLength);
+
+      if (contentText.length > maxExcerptLength) {
+        return excerpt + "...";
+      }
+
+      return excerpt;
+    }
+  }
+
+  export async function cleanExcerpt(
+    content: string,
+    removeMd: boolean,
+    imageName: boolean,
+    removeNewLine: boolean
+  ): Promise<string> {
+    if (imageName === false) {
+      content = content.replace(/(!\[)([^\]]+)(\]\([^\)]+\))/g, "$1$3");
+    }
     if (removeMd === true) {
-      let processedMd = remark().use(strip).processSync(contentText);
-      contentText = String(processedMd["contents"]);
-      contentText = contentText.replace(/(\s\\?~~|~~\s)/g, " ");
-      contentText = contentText.replace(/(\s\\?==|==\s)/g, " ");
-      contentText = contentText.replace(/(\s\\?\+\+|\+\+\s)/g, " ");
+      let processedMd = remark().use(strip).processSync(content);
+      content = processedMd["contents"].toString();
+      content = content.substring(0, content.length - 1);
+      content = content.replace(/(\s\\?~~|~~\s)/g, " ");
+      content = content.replace(/(\s\\?==|==\s)/g, " ");
+      content = content.replace(/(\s\\?\+\+|\+\+\s)/g, " ");
     }
 
     // Trim and normalize whitespace in content text
-    contentText = contentText.trim().replace(/\s+/g, " ");
-    const excerpt = contentText.slice(0, maxExcerptLength);
-
-    if (contentText.length > maxExcerptLength) {
-      return excerpt + "...";
+    if (removeNewLine === false) {
+      content = content.trim().replace(/(\t| )+/g, " ");
+    } else {
+      content = content.trim().replace(/\s+/g, " ");
     }
 
-    return excerpt;
+    return content;
   }
 
   // Replace fields for header with alias
@@ -575,6 +633,37 @@ export namespace noteoverview {
     logging.info("all overviews checked");
   }
 
+  export async function validateExcerptRegEx(
+    settings: any,
+    title: string
+  ): Promise<Boolean> {
+    // Validate excerpt regex match
+    if (
+      settings.hasOwnProperty("excerpt") &&
+      settings["excerpt"].hasOwnProperty("regexp")
+    ) {
+      const flags =
+        settings &&
+        settings.hasOwnProperty("excerpt") &&
+        settings["excerpt"].hasOwnProperty("regexflags")
+          ? settings["excerpt"]["regexflags"]
+          : false;
+      try {
+        if (flags !== false) new RegExp(settings["excerpt"]["regex"], flags);
+        else new RegExp(settings["excerpt"]["regex"]);
+      } catch (error) {
+        logging.error("RegEx parse error: " + error.message);
+        await noteoverview.showError(
+          title,
+          "RegEx parse error</br>" + error.message,
+          settings["excerpt"]["regex"]
+        );
+        return false;
+      }
+    }
+    return true;
+  }
+
   export async function update(noteId: string, userTriggerd: boolean) {
     const note = await joplin.data.get(["notes", noteId], {
       fields: ["id", "title", "body"],
@@ -606,6 +695,13 @@ export namespace noteoverview {
         );
         return;
       }
+
+      if (
+        (await validateExcerptRegEx(noteOverviewSettings, note.title)) === false
+      ) {
+        return;
+      }
+
       logging.verbose("Search: " + noteOverviewSettings["search"]);
 
       // add original content before the settings block
