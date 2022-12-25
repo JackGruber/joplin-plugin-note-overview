@@ -320,13 +320,13 @@ export namespace noteoverview {
       excerptSettings && excerptSettings.hasOwnProperty("maxlength")
         ? excerptSettings["maxlength"]
         : 200;
-    const excerptRegexp =
-      excerptSettings && excerptSettings.hasOwnProperty("regexp")
-        ? excerptSettings["regexp"]
+    const excerptRegex =
+      excerptSettings && excerptSettings.hasOwnProperty("regex")
+        ? excerptSettings["regex"]
         : false;
-    const excerptRegexpFlags =
-      excerptSettings && excerptSettings.hasOwnProperty("regexpflags")
-        ? excerptSettings["regexpflags"]
+    const excerptRegexFlags =
+      excerptSettings && excerptSettings.hasOwnProperty("regexflags")
+        ? excerptSettings["regexflags"]
         : false;
     const removeMd =
       excerptSettings && excerptSettings.hasOwnProperty("removemd")
@@ -337,22 +337,24 @@ export namespace noteoverview {
         ? excerptSettings["imagename"]
         : false;
     const removeNewLine =
-      excerptSettings && excerptSettings.hasOwnProperty("removeNewLine")
-        ? excerptSettings["removeNewLine"]
+      excerptSettings && excerptSettings.hasOwnProperty("removenewline")
+        ? excerptSettings["removenewline"]
         : true;
     let contentText = markdown;
 
     let excerpt = "";
 
-    if (excerptRegexp !== false) {
+    if (excerptRegex !== false) {
       let matchRegex = null;
-      if (excerptRegexpFlags !== false) {
-        matchRegex = new RegExp(excerptRegexp, excerptRegexpFlags);
+      if (excerptRegexFlags !== false) {
+        matchRegex = new RegExp(excerptRegex, excerptRegexFlags);
       } else {
-        matchRegex = new RegExp(excerptRegexp);
+        matchRegex = new RegExp(excerptRegex);
       }
 
       const hits = markdown.match(matchRegex);
+      console.log(matchRegex);
+      console.log(hits);
       const excerptArray = [];
       if (hits == null) return "";
 
@@ -645,18 +647,18 @@ export namespace noteoverview {
       const flags =
         settings &&
         settings.hasOwnProperty("excerpt") &&
-        settings["excerpt"].hasOwnProperty("regexpflags")
-          ? settings["excerpt"]["regexpflags"]
+        settings["excerpt"].hasOwnProperty("regexflags")
+          ? settings["excerpt"]["regexflags"]
           : false;
       try {
-        if (flags !== false) new RegExp(settings["excerpt"]["regexp"], flags);
-        else new RegExp(settings["excerpt"]["regexp"]);
+        if (flags !== false) new RegExp(settings["excerpt"]["regex"], flags);
+        else new RegExp(settings["excerpt"]["regex"]);
       } catch (error) {
         logging.error("RegEx parse error: " + error.message);
         await noteoverview.showError(
           title,
           "RegEx parse error</br>" + error.message,
-          settings["excerpt"]["regexp"]
+          settings["excerpt"]["regex"]
         );
         return false;
       }
