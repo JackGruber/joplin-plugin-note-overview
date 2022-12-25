@@ -380,7 +380,8 @@ export namespace noteoverview {
 
     if (removeMd === true) {
       let processedMd = remark().use(strip).processSync(content);
-      content = String(processedMd["contents"]);
+      content = processedMd["contents"].toString();
+      content = content.substring(0, content.length - 1);
       content = content.replace(/(\s\\?~~|~~\s)/g, " ");
       content = content.replace(/(\s\\?==|==\s)/g, " ");
       content = content.replace(/(\s\\?\+\+|\+\+\s)/g, " ");
