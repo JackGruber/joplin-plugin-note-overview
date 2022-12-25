@@ -353,8 +353,6 @@ export namespace noteoverview {
       }
 
       const hits = markdown.match(matchRegex);
-      console.log(matchRegex);
-      console.log(hits);
       const excerptArray = [];
       if (hits == null) return "";
 
