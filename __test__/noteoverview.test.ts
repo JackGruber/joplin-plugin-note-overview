@@ -228,7 +228,7 @@ describe("get MD excerpt", function () {
   it(`don't remove new line, removemd: false and max length 26`, async () => {
     const settings = {
       maxlength: 26,
-      removeNewLine: false,
+      removenewline: false,
       removemd: false,
     };
     const md = "- [ ] Test Item 1\n- [ ] 123";
@@ -240,8 +240,8 @@ describe("get MD excerpt", function () {
   it(`Regex, removeMd: false`, async () => {
     const settings = {
       maxlength: 100,
-      regexp: "^.*item.*$",
-      regexpflags: "mig",
+      regex: "^.*item.*$",
+      regexflags: "mig",
       removemd: false,
     };
     const md =
@@ -254,7 +254,7 @@ describe("get MD excerpt", function () {
   it(`Regex, removeMd: false, no match`, async () => {
     const settings = {
       maxlength: 100,
-      regexp: "^.*item.*$",
+      regex: "^.*item.*$",
       removemd: false,
     };
     const md =
@@ -267,7 +267,7 @@ describe("get MD excerpt", function () {
   it(`Regex, removeMd: false, no options`, async () => {
     const settings = {
       maxlength: 100,
-      regexp: ".*item.*",
+      regex: ".*item.*",
       removemd: false,
     };
     const md =
@@ -280,9 +280,9 @@ describe("get MD excerpt", function () {
   it(`Regex, removeMd: false, no global option`, async () => {
     const settings = {
       maxlength: 100,
-      regexp: "^.*item.*$",
+      regex: "^.*item.*$",
       removemd: false,
-      regexpflags: "mi",
+      regexflags: "mi",
     };
     const md =
       "- [ ] Test Item 1\n- [ ] Test item 2\n- [ ] Test 3\n- [ ] Test Item 3";
