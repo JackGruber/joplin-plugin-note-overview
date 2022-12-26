@@ -109,8 +109,10 @@ export namespace noteoverview {
     let settingsBlock = [];
 
     // Replace search with original search
-    noteoverviewSettings["search"] = noteoverviewSettings["searchWithVars"];
-    delete noteoverviewSettings["searchWithVars"];
+    if (noteoverviewSettings["searchWithVars"]) {
+      noteoverviewSettings["search"] = noteoverviewSettings["searchWithVars"];
+      delete noteoverviewSettings["searchWithVars"];
+    }
 
     const yamlBlock = YAML.stringify(noteoverviewSettings);
     settingsBlock.push("<!-- note-overview-plugin");
