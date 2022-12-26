@@ -107,6 +107,12 @@ export namespace noteoverview {
     noteoverviewSettings: object
   ): Promise<string> {
     let settingsBlock = [];
+
+    // Replace search with original search
+    noteoverviewSettings["search"] = noteoverviewSettings["searchWithVars"];
+    console.log(noteoverviewSettings);
+    delete noteoverviewSettings["searchWithVars"];
+
     const yamlBlock = YAML.stringify(noteoverviewSettings);
     settingsBlock.push("<!-- note-overview-plugin");
     settingsBlock.push(yamlBlock.substring(0, yamlBlock.length - 1));
@@ -703,7 +709,15 @@ export namespace noteoverview {
         return;
       }
 
+      noteOverviewSettings["searchWithVars"] = noteOverviewSettings["search"];
+      noteOverviewSettings["search"] = await noteoverview.replaceSearchVars(
+        noteOverviewSettings["search"]
+      );
+
       logging.verbose("Search: " + noteOverviewSettings["search"]);
+      logging.verbose(
+        "Search with vars: " + noteOverviewSettings["searchWithVars"]
+      );
 
       // add original content before the settings block
       if (startOrgTextIndex != startIndex) {
@@ -1382,6 +1396,51 @@ export namespace noteoverview {
     } else {
       timer = null;
     }
+  }
+
+  export async function replaceSearchVars(query: string): Promise<string> {
+    logging.verbose("replaceSearchVars");
+
+    const joplinLocale = await joplin.settings.globalValue("locale");
+    const momentsLocale = joplinLocale.split("_")[0];
+
+    return query.replace(/{{moments:(?<format>[^}]+)}}/g, (match, groups) => {
+      let now = new Date(Date.now());
+      let momentDate = moment(now);
+      momentDate.locale(momentsLocale);
+
+      // Modify date
+      const modifyDateRegEx = /( modify:)(?<modify>.*)/;
+      const modifyDate = groups.match(modifyDateRegEx);
+      groups = groups.replace(modifyDateRegEx, "");
+      if (modifyDate !== null) {
+        let actions = [];
+        if (modifyDate["groups"]["modify"].match(",") !== null) {
+          actions = modifyDate["groups"]["modify"].split(",");
+        } else {
+          actions.push(modifyDate["groups"]["modify"]);
+        }
+
+        for (const action of actions) {
+          let add = action.substring(0, 1);
+          let quantity = action.substring(1, action.length - 1);
+          let type = action.substring(action.length - 1, action.length);
+
+          try {
+            if (add == "-") {
+              momentDate.subtract(quantity, type);
+            } else if (add == "+") {
+              momentDate.add(quantity, type);
+            }
+          } catch (e) {
+            logging.error(e);
+          }
+        }
+        now = new Date(momentDate.valueOf());
+      }
+
+      return momentDate.format(groups);
+    });
   }
 }
 
