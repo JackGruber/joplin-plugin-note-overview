@@ -102,7 +102,7 @@ The note content is updated every x minutes (depending on your setting) or manua
 
 > ⚠ The manual refresh of the note ist not working in the `Rich Text` (WYSIWYG) editor, to update the note chnage to markdown editor, viewer or a other note and trigger the note overview update again.
 
-> With an automatic update, the currently displayed note opend in the `markdown` or `Rich Text` (WYSIWYG) editor is not updated to prevent data loss during editing!
+> With an automatic update, the currently displayed note opened in the `markdown` or `Rich Text` (WYSIWYG) editor is not updated to prevent data loss during editing!
 
 ## Codeblock options
 
