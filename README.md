@@ -117,6 +117,12 @@ The search filter which will be used to create the overview.
 search: type:todo
 ```
 
+Additional date variables `{{moments:<FORMAT>}}` are available, replace the `<FORMAT>` with the [moments formatting](https://momentjs.com/docs/#/displaying/)
+
+```yml
+search: Logbook {{moments:YYYY}}
+```
+
 ### fields
 
 Which fields should be output in the table.<br>
