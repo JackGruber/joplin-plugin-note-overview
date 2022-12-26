@@ -126,6 +126,22 @@ To search for date texts the variable `{{moments:<FORMAT>}}` is available, repla
 search: Logbook {{moments:YYYY}}
 ```
 
+The date can be manipulated with `modify:<MANIPULATION>`, for `<MANIPULATION>` the syntax is `<+ or -><amount><Key>` and the following key. This syntax can be repeated comma separated.
+
+| Modification | Key |
+| ------------ | --- |
+| years        | y   |
+| quarters     | Q   |
+| months       | M   |
+| weeks        | w   |
+| days         | d   |
+| hours        | h   |
+| minutes      | m   |
+
+```yml
+search: Logbook {{moments:DD-MM-YYYY modify:+1m,-1d}}
+```
+
 ### fields
 
 Which fields should be output in the table.<br>
