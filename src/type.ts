@@ -12,6 +12,11 @@ type OverviewOptions = {
   details: OverviewOptionsDetails;
   listview: OverviewListview;
   escapeForTable: boolean;
+  link: OverviewOptionsLink;
+};
+
+type OverviewOptionsLink = {
+  caption: string;
 };
 
 type OverviewOptionsDetails = {

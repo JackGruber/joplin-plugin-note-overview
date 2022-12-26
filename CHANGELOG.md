@@ -2,6 +2,17 @@
 
 ## not released
 
+## v1.6.0 (2022-12-26)
+
+- Add: #35 Warning color when a taks is close to a due date
+- Add: Virtual field `link` to display the `source_url` to make the output configurable
+- Fix: Ignore noteoverview blocks if they start with a codeblock (```) statement
+- Add: #36 Variable `{{count}}` to the summary of the details HTML tag
+- Add: #27 RegEx filter `regex` for excerpt
+- Add: Option for logfile
+- Add: #28 Stripe note-overview code block fields
+- Add: #26 Date variables for search query
+
 ## v1.5.5 (2022-01-26)
 
 - Improved: Alias keyword `AS` is now case insensetive #43

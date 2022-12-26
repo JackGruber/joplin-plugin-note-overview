@@ -1,0 +1,14 @@
+Some note body
+
+
+and more Text
+
+```
+<!-- note-overview-plugin
+search: type:todo
+fields: title, created_time, body, todo_due, tags
+sort: created_time ASC
+-->
+```
+
+and some more text

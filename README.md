@@ -16,8 +16,10 @@ A note overview is created based on the defined search and the specified fields.
     - [Automatic](#automatic)
     - [Manual](#manual)
 - [Usage](#usage)
+    - [Limitations](#limitations)
 - [Codeblock options](#codeblock-options)
     - [search](#search)
+        - [search variable date](#search-variable-date)
     - [fields](#fields)
     - [sort](#sort)
     - [alias](#alias)
@@ -26,6 +28,7 @@ A note overview is created based on the defined search and the specified fields.
     - [details](#details)
     - [count](#count)
     - [listview](#listview)
+    - [link](#link)
 - [Examples](#examples)
     - [ToDo Overview](#todo-overview)
     - [Show all ToDos with status](#show-all-todos-with-status)
@@ -40,9 +43,11 @@ A note overview is created based on the defined search and the specified fields.
     - [Change count for single overview](#change-count-for-single-overview)
     - [Change to listview no linbreak](#change-to-listview-no-linbreak)
     - [Combine notes dynamically](#combine-notes-dynamically)
+    - [Show all uncompleted checkboxes ToDos](#show-all-uncompleted-checkboxes-todos)
 - [Plugin options](#plugin-options)
 - [Keyboard Shortcuts](#keyboard-shortcuts)
 - [FAQ](#faq)
+    - [The note overview is not updated](#the-note-overview-is-not-updated)
     - [Error: Nested mappings are not allowed in compact mappings](#error-nested-mappings-are-not-allowed-in-compact-mappings)
     - [Error: Implicit map keys need to be followed by map values](#error-implicit-map-keys-need-to-be-followed-by-map-values)
     - [Error: All collection items must start at the same column](#error-all-collection-items-must-start-at-the-same-column)
@@ -90,11 +95,15 @@ Several of these blocks can be included in one note, also between text.
 
 The note content is updated every x minutes (depending on your setting) or manualy by `Tools > Create Note overview`.
 
+### Limitations
+
 > ⚠ Adding and editing the code block does not work in the **Rich Text (WYSIWYG)** editor!
 
 > ⚠ When the note is edited in `Rich Text` (WYSIWYG) editor, the note code block is not preserved!
 
-> ❕ The refresh of the note ist not working in the `Rich Text` (WYSIWYG) editor, to update the note view please change the note and switch back.
+> ⚠ The manual refresh of the note ist not working in the `Rich Text` (WYSIWYG) editor, to update the note chnage to markdown editor, viewer or a other note and trigger the note overview update again.
+
+> With an automatic update, the currently displayed note opened in the `markdown` or `Rich Text` (WYSIWYG) editor is not updated to prevent data loss during editing!
 
 ## Codeblock options
 
@@ -107,6 +116,30 @@ The search filter which will be used to create the overview.
 
 ```yml
 search: type:todo
+```
+
+#### search variable date
+
+To search for date texts the variable `{{moments:<FORMAT>}}` is available, replace the `<FORMAT>` with the [moments formatting](https://momentjs.com/docs/#/displaying/)
+
+```yml
+search: Logbook {{moments:YYYY}}
+```
+
+The date can be manipulated with `modify:<MANIPULATION>`, for `<MANIPULATION>` the syntax is `<+ or -><amount><Key>` and the following key. This syntax can be repeated comma separated.
+
+| Modification | Key |
+| ------------ | --- |
+| years        | y   |
+| quarters     | Q   |
+| months       | M   |
+| weeks        | w   |
+| days         | d   |
+| hours        | h   |
+| minutes      | m   |
+
+```yml
+search: Logbook {{moments:DD-MM-YYYY modify:+1m,-1d}}
 ```
 
 ### fields
@@ -125,6 +158,7 @@ In addition to the Joplin fields, there are the following virtual fields:
 - `breadcrumb`: Folder breadcrumb (Folder path)
 - `image`: In this field a image resource from the note will be displayed. This field can be configured using the `image` option
 - `excerpt`: Displays an excerpt of the note body
+- `link`: Display the `source_url`. This field can be configured using the `link` option
 
 ```yml
 fields: todo_due, title, tags, notebook
@@ -169,21 +203,32 @@ image:
 
 ### excerpt
 
-Displays an excerpt of the note body, the length of the excerpt can be configured using `maxlength`.
+Displays an excerpt of the note body, the length of the excerpt can be configured using `maxlength` or you can use a RegEx to select data for the excerpt.
 
 ```yml
 excerpt:
   maxlength: 200
+  removenewline: [true | false]
+  removemd: [true | false]
+  regex: ^.*Joplin.*$
+  regexflags: gmi
 ```
+
+- `maxlength`: Maximum length for the excerpt
+- `removenewline`: Remove new lines from excerpt, default `true`
+- `removemd`: Remove markdown from excerpt, default `true`
+- `regex`: Regular expression to match content for the excerpt. `maxlength` will be ignored if this option is used.
+- `regexflags`: Regular expression flags for the `regex` match
 
 ### details
 
 Add the overview into a details section that can open and close on demand.
+In the summary the variable `{{count}}` can be used, to display the number of matched notes.
 
 ```yml
 details:
   open: [true | false]
-  summary: All notes without a Tag
+  summary: {{count}} notes without a Tag
 ```
 
 ### count
@@ -210,6 +255,21 @@ listview:
   separator: " | "
   prefix: ==
   suffix: ==
+```
+
+### link
+
+This allows you to control the output displayed in the `link` field.
+
+- `caption`: The text to display for the link (default = `Link`).
+- `html`:
+  `false` = Output is a markdown link (default)
+  `true` = Output is a HTML link
+
+```yml
+link:
+  caption: "Jump to"
+  html: true
 ```
 
 ## Examples
@@ -365,6 +425,27 @@ listview:
 -->
 ```
 
+### Show all uncompleted checkboxes (ToDos)
+
+```yml
+<!-- note-overview-plugin
+search: tag:todo
+fields: title, excerpt
+listview:
+  text: |-
+
+    {{title}}
+    {{excerpt}}
+excerpt:
+  regex: ^.*- \[( )\].*$
+  regexflags: gmi
+  removenewline: false
+  removemd: false
+-->
+```
+
+<img src="img/example_option_excerpt_regex_checkbox.png">
+
 ## Plugin options
 
 Settings for the plugin, accessible at `Tools > Options > Note overview`.
@@ -372,13 +453,15 @@ Settings for the plugin, accessible at `Tools > Options > Note overview`.
 | Option                         | Description                                                                                                                                                      | Default                 |
 | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
 | `Show note count`              | Show the number of notes found.                                                                                                                                  | `off`                   |
-| `Note count text`              | Text for the display of the found notes, `{count}` is replace with the number of matched notes.                                                                  | `Note count: {{count}}` |
+| `Note count text`              | Text for the display of the found notes, `{{count}}` is replace with the number of matched notes.                                                                | `Note count: {{count}}` |
 | `Update interval in minutes`   | How often the overview notes should be updated.                                                                                                                  | `5`                     |
 | `Update on Joplin sync`        | Update the Noteoverview after a Joplin syncronisation. Independent of the update interval.                                                                       | `No`                    |
 | `Field status: open todo`      | Text for the `status` field, when the todo is not completed.                                                                                                     |                         |
 | `Field status: todo completed` | Text for the `status` field, when the todo is completed.                                                                                                         |                         |
 | `Field status: todo over due`  | Text for the `status` field, when the due date of the todo is exceeded.                                                                                          |                         |
 | `Color: todo [open]`           | HTML color for the `due_date`, when the todo is not completed.                                                                                                   |                         |
+| `Color: todo [warning]`        | HTML color for the `due_date`, when the todo is not completed and within `todo [warning] hours`.                                                                 |                         |
+| `todo [warning] hours`         | How many hours before due_date the warning color should be applied. 0 = Disabled.                                                                                | `0`                     |
 | `Color: todo [open_overdue]`   | HTML color for the `due_date`, when the todo is over the due date.                                                                                               | `red`                   |
 | `Color: todo [done]`           | HTML color for the `due_date` and `todo_completed`, when the todo is completed. Seperate the color for due_date and todo_completed by a `,`.                     | `limegreen,limegreen`   |
 | `Color: todo [done_overdue]`   | HTML color for the `due_date` and `todo_completed`, when the todo was completed after the due date. Seperate the color for due_date and todo_completed by a `,`. | `orange,orange`         |
@@ -391,6 +474,10 @@ Under `Options > Keyboard Shortcuts` you can assign a keyboard shortcut for the 
 - `Create note overview`
 
 ## FAQ
+
+### The note overview is not updated
+
+See the [limitations](#limitations) section.
 
 ### Error: Nested mappings are not allowed in compact mappings
 

@@ -1,5 +1,10 @@
 import { noteoverview, logging } from "../src/noteoverview";
 import * as YAML from "yaml";
+import { getRemoveNoteoverviewCodeData } from "./tools";
+import joplin from "api";
+import { when } from "jest-when";
+
+const spyOnGlobalValue = jest.spyOn(joplin.settings, "globalValue");
 
 describe("String escaping for md tables", function () {
   beforeEach(async () => {
@@ -223,5 +228,188 @@ describe("get MD excerpt", function () {
     const expected = "some text with a Python.svg image test dsa.png";
     const actual = await noteoverview.getMarkdownExcerpt(md, settings);
     expect(actual).toBe(expected);
+  });
+
+  it(`don't remove new line, removemd: false and max length 26`, async () => {
+    const settings = {
+      maxlength: 26,
+      removenewline: false,
+      removemd: false,
+    };
+    const md = "- [ ] Test Item 1\n- [ ] 123";
+    const expected = "- [ ] Test Item 1\n- [ ] 12...";
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual).toBe(expected);
+  });
+
+  it(`Regex, removeMd: false`, async () => {
+    const settings = {
+      maxlength: 100,
+      regex: "^.*item.*$",
+      regexflags: "mig",
+      removemd: false,
+    };
+    const md =
+      "- [ ] Test Item 1\n- [ ] Test item 2\n- [ ] Test 3\n- [ ] Test Item 3";
+    const expected = "- [ ] Test Item 1 - [ ] Test item 2 - [ ] Test Item 3";
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual).toBe(expected);
+  });
+
+  it(`Regex, removeMd: false, no match`, async () => {
+    const settings = {
+      maxlength: 100,
+      regex: "^.*item.*$",
+      removemd: false,
+    };
+    const md =
+      "- [ ] Test Item 1\n- [ ] Test item 2\n- [ ] Test 3\n- [ ] Test Item 3";
+    const expected = "";
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual).toBe(expected);
+  });
+
+  it(`Regex, removeMd: false, no options`, async () => {
+    const settings = {
+      maxlength: 100,
+      regex: ".*item.*",
+      removemd: false,
+    };
+    const md =
+      "- [ ] Test Item 1\n- [ ] Test item 2\n- [ ] Test 3\n- [ ] Test Item 3";
+    const expected = "- [ ] Test item 2";
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual).toBe(expected);
+  });
+
+  it(`Regex, removeMd: false, no global option`, async () => {
+    const settings = {
+      maxlength: 100,
+      regex: "^.*item.*$",
+      removemd: false,
+      regexflags: "mi",
+    };
+    const md =
+      "- [ ] Test Item 1\n- [ ] Test item 2\n- [ ] Test 3\n- [ ] Test Item 3";
+    const expected = "- [ ] Test Item 1";
+    const actual = await noteoverview.getMarkdownExcerpt(md, settings);
+    expect(actual).toBe(expected);
+  });
+});
+
+describe("Remove note-overview codeblock", function () {
+  it(`single`, async () => {
+    const data = getRemoveNoteoverviewCodeData("single");
+    const actual = await noteoverview.removeNoteoverviewCode(data["input"]);
+    expect(actual).toBe(data["expected"]);
+  });
+
+  it(`multiple`, async () => {
+    const data = getRemoveNoteoverviewCodeData("multiple");
+    const actual = await noteoverview.removeNoteoverviewCode(data["input"]);
+    expect(actual).toBe(data["expected"]);
+  });
+
+  it(`single and codeblock`, async () => {
+    const data = getRemoveNoteoverviewCodeData("singleCodeblock");
+    const actual = await noteoverview.removeNoteoverviewCode(data["input"]);
+    expect(actual).toBe(data["expected"]);
+  });
+
+  it(`closeTag`, async () => {
+    const data = getRemoveNoteoverviewCodeData("closeTag");
+    const actual = await noteoverview.removeNoteoverviewCode(data["input"]);
+    expect(actual).toBe(data["expected"]);
+  });
+});
+
+describe("Search vars", function () {
+  beforeEach(async () => {
+    jest.spyOn(logging, "silly").mockImplementation(() => {});
+    jest.spyOn(logging, "verbose").mockImplementation(() => {});
+    jest.spyOn(logging, "info").mockImplementation(() => {});
+
+    /* prettier-ignore */
+    when(spyOnGlobalValue)
+      .mockImplementation(() => Promise.resolve("no mockImplementation"))
+      .calledWith("locale").mockImplementation(() => Promise.resolve("en"));
+  });
+
+  afterEach(async () => {
+    spyOnGlobalValue.mockReset();
+  });
+
+  it(`moments`, async () => {
+    const testEpoch = new Date(2021, 0, 2, 16, 30, 45, 0).getTime();
+    const spyOnDateNow = jest
+      .spyOn(Date, "now")
+      .mockImplementation(() => testEpoch);
+
+    const testCases = [
+      {
+        query: "One moments {{moments:DDMMyy}}",
+        expected: "One moments 02012021",
+      },
+      {
+        query: "First {{moments:Qoyy}}, second {{moments:dddd MMMM YYYY}}",
+        expected: "First 1st2021, second Saturday January 2021",
+      },
+      {
+        query: "First {{moments:MM-YY}}, error {{moment:dddd MMMM YYYY}}",
+        expected: "First 01-21, error {{moment:dddd MMMM YYYY}}",
+      },
+      {
+        query:
+          "First error {moments:MM-YY}}, second error {moment:dddd MMMM YYYY}",
+        expected:
+          "First error {moments:MM-YY}}, second error {moment:dddd MMMM YYYY}",
+      },
+      {
+        query: "+1 Day {{moments:DDMMyy modify:+1d}}",
+        expected: "+1 Day 03012021",
+      },
+      {
+        query: "+1 Day, -1 Year {{moments:DDMMyy modify:+1d,-1y}}",
+        expected: "+1 Day, -1 Year 03012020",
+      },
+      {
+        query: "+1 Day, -1 Year {{moments:DDMMyy modify:+1k,-1y}}",
+        expected: "+1 Day, -1 Year 02012020",
+      },
+      {
+        query: "Logbook {{moments:DD-MM-YYYY modify:-1y,+1d,+5M}}",
+        expected: "Logbook 03-06-2020",
+      },
+      {
+        query: "Day of Week {{moments:dddd}}",
+        expected: "Day of Week Saturday",
+      },
+    ];
+
+    for (const test of testCases) {
+      expect(await noteoverview.replaceSearchVars(test["query"])).toBe(
+        test["expected"]
+      );
+    }
+
+    spyOnDateNow.mockRestore();
+  });
+
+  it(`moments deutsch`, async () => {
+    const testEpoch = new Date(2021, 0, 2, 16, 30, 45, 0).getTime();
+    const spyOnDateNow = jest
+      .spyOn(Date, "now")
+      .mockImplementation(() => testEpoch);
+
+    /* prettier-ignore */
+    when(spyOnGlobalValue)
+      .mockImplementation(() => Promise.resolve("no mockImplementation"))
+      .calledWith("locale").mockImplementation(() => Promise.resolve("de"));
+
+    expect(
+      await noteoverview.replaceSearchVars("Wochentag {{moments:dddd}}")
+    ).toBe("Wochentag Samstag");
+
+    spyOnDateNow.mockRestore();
   });
 });

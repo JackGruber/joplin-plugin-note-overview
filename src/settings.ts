@@ -97,6 +97,28 @@ export namespace settings {
         description:
           "HTML color for the due_date, when the todo is not completed.",
       },
+      colorTodoWarning: {
+        value: "",
+        advanced: true,
+        type: SettingItemType.String,
+        section: "noteOverviewSection",
+        public: true,
+        label: "Color: todo [warning]",
+        description:
+          "HTML color for the due_date, when the todo date is within 'todo [warning] hours' of the due date.",
+      },
+      todoWarningHours: {
+        value: 0,
+        minimum: 0,
+        maximum: 2880,
+        type: SettingItemType.Int,
+        section: "noteOverviewSection",
+        advanced: true,
+        public: true,
+        label: "todo [warning] hours",
+        description:
+          "How many hours before due_date the warning color should be applied. 0 = Disabled",
+      },
       colorTodoOpenOverdue: {
         value: "red",
         advanced: true,
@@ -136,6 +158,22 @@ export namespace settings {
         label: "Color: todo [done_nodue]",
         description:
           "HTML color for the todo_completed, when the todo was completed but no due date was set.",
+      },
+      fileLogLevel: {
+        value: "info",
+        type: SettingItemType.String,
+        section: "noteOverviewSection",
+        advanced: true,
+        isEnum: true,
+        public: true,
+        label: "Logfile",
+        options: {
+          false: "Off",
+          verbose: "Verbose",
+          info: "Info",
+          warn: "Warning",
+          error: "Error",
+        },
       },
     });
   }

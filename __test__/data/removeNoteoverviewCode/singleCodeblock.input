@@ -1,0 +1,19 @@
+Some note body
+
+<!-- note-overview-plugin
+search: type:todo iscompleted:0 notebook:"3 - WAITING" tag:pro
+fields: title, created_time, body, todo_due, tags
+sort: created_time ASC
+-->
+
+and more Text
+
+```
+<!-- note-overview-plugin
+search: type:todo
+fields: title, created_time, body, todo_due, tags
+sort: created_time ASC
+-->
+```
+
+and some more text

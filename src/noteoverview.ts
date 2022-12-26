@@ -18,6 +18,7 @@ let globalSettings: any = {};
 const consoleLogLevel = "verbose";
 let firstSyncCompleted = false;
 let joplinNotebooks: any = null;
+let logFile = null;
 
 export namespace noteoverview {
   export async function getImageNr(
@@ -25,7 +26,7 @@ export namespace noteoverview {
     imagrNr: number,
     imageSettings: Object
   ): Promise<string> {
-    logging.silly("func: getImageNr");
+    logging.verbose("func: getImageNr");
     const regExresourceId = /!\[([^\]]+|)\]\(:\/(?<resourceId>[\da-z]{32})\)/g;
     let ids = [];
     let imageId = null;
@@ -106,6 +107,13 @@ export namespace noteoverview {
     noteoverviewSettings: object
   ): Promise<string> {
     let settingsBlock = [];
+
+    // Replace search with original search
+    if (noteoverviewSettings["searchWithVars"]) {
+      noteoverviewSettings["search"] = noteoverviewSettings["searchWithVars"];
+      delete noteoverviewSettings["searchWithVars"];
+    }
+
     const yamlBlock = YAML.stringify(noteoverviewSettings);
     settingsBlock.push("<!-- note-overview-plugin");
     settingsBlock.push(yamlBlock.substring(0, yamlBlock.length - 1));
@@ -183,7 +191,7 @@ export namespace noteoverview {
     todo_completed: number,
     type: string
   ): Promise<string> {
-    logging.silly("func: getToDoDateColor");
+    logging.verbose("func: getToDoDateColor");
     const now = new Date();
     let colorType = "";
 
@@ -193,6 +201,14 @@ export namespace noteoverview {
     } else if (todo_due === 0 && todo_completed !== 0) {
       // ToDo done no due date
       colorType = "done_nodue";
+    } else if (
+      todo_due > now.getTime() &&
+      todo_completed === 0 &&
+      coloring["todo"]["warningHours"] !== 0 &&
+      todo_due - 3600 * coloring["todo"]["warningHours"] * 1000 < now.getTime()
+    ) {
+      // ToDo open and in warning time
+      colorType = "warning";
     } else if (todo_due > now.getTime() && todo_completed === 0) {
       // ToDo open in time
       colorType = "open";
@@ -228,6 +244,8 @@ export namespace noteoverview {
       todo: {
         open_nodue: "",
         open: await joplin.settings.value("colorTodoOpen"),
+        warning: await joplin.settings.value("colorTodoWarning"),
+        warningHours: await joplin.settings.value("todoWarningHours"),
         open_overdue: await joplin.settings.value("colorTodoOpenOverdue"),
         done: await joplin.settings.value("colorTodoDone"),
         done_overdue: await joplin.settings.value("colorTodoDoneOverdue"),
@@ -281,7 +299,7 @@ export namespace noteoverview {
     todo_due: number,
     todo_completed: number
   ) {
-    logging.silly("func: getToDoStatus");
+    logging.verbose("func: getToDoStatus");
     const now = new Date();
     if (todo_completed === 0 && todo_due !== 0 && todo_due < now.getTime())
       return "overdue";
@@ -310,6 +328,14 @@ export namespace noteoverview {
       excerptSettings && excerptSettings.hasOwnProperty("maxlength")
         ? excerptSettings["maxlength"]
         : 200;
+    const excerptRegex =
+      excerptSettings && excerptSettings.hasOwnProperty("regex")
+        ? excerptSettings["regex"]
+        : false;
+    const excerptRegexFlags =
+      excerptSettings && excerptSettings.hasOwnProperty("regexflags")
+        ? excerptSettings["regexflags"]
+        : false;
     const removeMd =
       excerptSettings && excerptSettings.hasOwnProperty("removemd")
         ? excerptSettings["removemd"]
@@ -318,29 +344,79 @@ export namespace noteoverview {
       excerptSettings && excerptSettings.hasOwnProperty("imagename")
         ? excerptSettings["imagename"]
         : false;
+    const removeNewLine =
+      excerptSettings && excerptSettings.hasOwnProperty("removenewline")
+        ? excerptSettings["removenewline"]
+        : true;
     let contentText = markdown;
 
-    if (imageName === false) {
-      contentText = contentText.replace(/(!\[)([^\]]+)(\]\([^\)]+\))/g, "$1$3");
-    }
+    let excerpt = "";
 
+    if (excerptRegex !== false) {
+      let matchRegex = null;
+      if (excerptRegexFlags !== false) {
+        matchRegex = new RegExp(excerptRegex, excerptRegexFlags);
+      } else {
+        matchRegex = new RegExp(excerptRegex);
+      }
+
+      const hits = markdown.match(matchRegex);
+      const excerptArray = [];
+      if (hits == null) return "";
+
+      for (let match of hits) {
+        excerptArray.push(match);
+      }
+      excerpt = await cleanExcerpt(
+        excerptArray.join("\n"),
+        removeMd,
+        imageName,
+        removeNewLine
+      );
+      return excerpt;
+    } else {
+      contentText = await cleanExcerpt(
+        contentText,
+        removeMd,
+        imageName,
+        removeNewLine
+      );
+      excerpt = contentText.slice(0, maxExcerptLength);
+
+      if (contentText.length > maxExcerptLength) {
+        return excerpt + "...";
+      }
+
+      return excerpt;
+    }
+  }
+
+  export async function cleanExcerpt(
+    content: string,
+    removeMd: boolean,
+    imageName: boolean,
+    removeNewLine: boolean
+  ): Promise<string> {
+    if (imageName === false) {
+      content = content.replace(/(!\[)([^\]]+)(\]\([^\)]+\))/g, "$1$3");
+    }
     if (removeMd === true) {
-      let processedMd = remark().use(strip).processSync(contentText);
-      contentText = String(processedMd["contents"]);
-      contentText = contentText.replace(/(\s\\?~~|~~\s)/g, " ");
-      contentText = contentText.replace(/(\s\\?==|==\s)/g, " ");
-      contentText = contentText.replace(/(\s\\?\+\+|\+\+\s)/g, " ");
+      let processedMd = remark().use(strip).processSync(content);
+      content = processedMd["contents"].toString();
+      content = content.substring(0, content.length - 1);
+      content = content.replace(/(\s\\?~~|~~\s)/g, " ");
+      content = content.replace(/(\s\\?==|==\s)/g, " ");
+      content = content.replace(/(\s\\?\+\+|\+\+\s)/g, " ");
     }
 
     // Trim and normalize whitespace in content text
-    contentText = contentText.trim().replace(/\s+/g, " ");
-    const excerpt = contentText.slice(0, maxExcerptLength);
-
-    if (contentText.length > maxExcerptLength) {
-      return excerpt + "...";
+    if (removeNewLine === false) {
+      content = content.trim().replace(/(\t| )+/g, " ");
+    } else {
+      content = content.trim().replace(/\s+/g, " ");
     }
 
-    return excerpt;
+    return content;
   }
 
   // Replace fields for header with alias
@@ -385,9 +461,9 @@ export namespace noteoverview {
   }
 
   export async function loadNotebooks(reload = false) {
-    logging.silly("Func: loadNotebooks");
+    logging.verbose("Func: loadNotebooks");
     if (reload === true || joplinNotebooks === null) {
-      logging.silly("load notebooks");
+      logging.verbose("load notebooks");
       joplinNotebooks = {};
       let queryFolders;
       let pageQuery = 1;
@@ -565,6 +641,37 @@ export namespace noteoverview {
     logging.info("all overviews checked");
   }
 
+  export async function validateExcerptRegEx(
+    settings: any,
+    title: string
+  ): Promise<Boolean> {
+    // Validate excerpt regex match
+    if (
+      settings.hasOwnProperty("excerpt") &&
+      settings["excerpt"].hasOwnProperty("regexp")
+    ) {
+      const flags =
+        settings &&
+        settings.hasOwnProperty("excerpt") &&
+        settings["excerpt"].hasOwnProperty("regexflags")
+          ? settings["excerpt"]["regexflags"]
+          : false;
+      try {
+        if (flags !== false) new RegExp(settings["excerpt"]["regex"], flags);
+        else new RegExp(settings["excerpt"]["regex"]);
+      } catch (error) {
+        logging.error("RegEx parse error: " + error.message);
+        await noteoverview.showError(
+          title,
+          "RegEx parse error</br>" + error.message,
+          settings["excerpt"]["regex"]
+        );
+        return false;
+      }
+    }
+    return true;
+  }
+
   export async function update(noteId: string, userTriggerd: boolean) {
     const note = await joplin.data.get(["notes", noteId], {
       fields: ["id", "title", "body"],
@@ -573,7 +680,7 @@ export namespace noteoverview {
 
     // Search all note-overview blocks in note
     const noteOverviewRegEx =
-      /(<!--\s?note-overview-plugin(?<settings>[\w\W]*?)-->)([\w\W]*?)(<!--endoverview-->|(?=<!--\s?note-overview-plugin)|$)/gi;
+      /(?<!```\n)(?<!``` \n)(<!--\s?note-overview-plugin(?<settings>[\w\W]*?)-->)([\w\W]*?)(<!--endoverview-->|(?=<!--\s?note-overview-plugin)|$)/gi;
     let regExMatch = null;
     let startOrgTextIndex = 0;
     let startIndex = 0;
@@ -596,7 +703,22 @@ export namespace noteoverview {
         );
         return;
       }
+
+      if (
+        (await validateExcerptRegEx(noteOverviewSettings, note.title)) === false
+      ) {
+        return;
+      }
+
+      noteOverviewSettings["searchWithVars"] = noteOverviewSettings["search"];
+      noteOverviewSettings["search"] = await noteoverview.replaceSearchVars(
+        noteOverviewSettings["search"]
+      );
+
       logging.verbose("Search: " + noteOverviewSettings["search"]);
+      logging.verbose(
+        "Search with vars: " + noteOverviewSettings["searchWithVars"]
+      );
 
       // add original content before the settings block
       if (startOrgTextIndex != startIndex) {
@@ -646,7 +768,7 @@ export namespace noteoverview {
   export async function getOptions(
     overviewSettings: any
   ): Promise<OverviewOptions> {
-    logging.silly("func: getOptions");
+    logging.verbose("func: getOptions");
     const settings: any = {};
     settings.overview = overviewSettings;
 
@@ -698,6 +820,8 @@ export namespace noteoverview {
       ? overviewSettings["listview"]
       : null;
 
+    settings.link = overviewSettings["link"] ? overviewSettings["link"] : null;
+
     return settings;
   }
 
@@ -725,6 +849,10 @@ export namespace noteoverview {
       additionalFields.push("body");
     }
 
+    if (fields.includes("link")) {
+      additionalFields.push("source_url");
+    }
+
     return additionalFields;
   }
 
@@ -733,7 +861,7 @@ export namespace noteoverview {
     noteTitle: string,
     overviewSettings: any
   ): Promise<string[]> {
-    logging.silly("func: getOverviewContent");
+    logging.verbose("func: getOverviewContent");
     const query: string = overviewSettings["search"];
     let overviewContent: string[] = [];
 
@@ -767,6 +895,7 @@ export namespace noteoverview {
             "status",
             "image",
             "excerpt",
+            "link",
           ].indexOf(el) === -1
       );
 
@@ -850,7 +979,7 @@ export namespace noteoverview {
 
       await addNoteCount(overviewContent, noteCount, options);
 
-      await addHTMLDetailsTag(overviewContent, options);
+      await addHTMLDetailsTag(overviewContent, noteCount, options);
     }
 
     overviewContent.unshift(
@@ -863,12 +992,17 @@ export namespace noteoverview {
 
   export async function addHTMLDetailsTag(
     overview: string[],
+    noteCount: number,
     options: OverviewOptions
   ) {
     if (options.details) {
       overview.unshift("");
       if (options.details.summary) {
-        overview.unshift(`<summary>${options.details.summary}</summary>`);
+        const summary = options.details.summary.replace(
+          "{{count}}",
+          noteCount.toString()
+        );
+        overview.unshift(`<summary>${summary}</summary>`);
       }
       overview.unshift(
         `<details ` + (options.details.open === true ? ` open` : `close`) + `>`
@@ -982,12 +1116,33 @@ export namespace noteoverview {
     return "|" + info.join("|") + "|";
   }
 
+  export async function removeNoteoverviewCode(data: string): Promise<string> {
+    data = data.replace(
+      /(?<!```\n)(?<!``` \n)(<!--\s?note-overview-plugin([\w\W]*?)-->)/gi,
+      "REMOVE_NOTOVERVIEW_LINE"
+    );
+    data = data.replace(
+      /(<!--endoverview-->)(?!\n```)/gi,
+      "REMOVE_NOTOVERVIEW_LINE"
+    );
+
+    const lines = data.split("\n");
+    let newLines = [];
+    for (const line of lines) {
+      if (line.match("REMOVE_NOTOVERVIEW_LINE") === null) {
+        newLines.push(line);
+      }
+    }
+
+    return newLines.join("\n");
+  }
+
   export async function getFieldValue(
     field: string,
     fields: any,
     options: OverviewOptions
   ): Promise<string> {
-    logging.silly("func: getFieldValue for " + field);
+    logging.verbose("func: getFieldValue for " + field);
     let value = "";
     switch (field) {
       case "title":
@@ -1066,9 +1221,26 @@ export namespace noteoverview {
       case "breadcrumb":
         value = await noteoverview.getNotebookBreadcrumb(fields["parent_id"]);
         break;
+      case "link":
+        const caption =
+          options.link && options.link.hasOwnProperty("caption")
+            ? options.link["caption"]
+            : "Link";
+        const htmlLink =
+          options.link && options.link.hasOwnProperty("html")
+            ? options.link["html"]
+            : false;
+        if (htmlLink) {
+          value = '<a href="' + fields["source_url"] + '">' + caption + "</a>";
+        } else {
+          value = "[" + caption + "](" + fields["source_url"] + ")";
+        }
+        break;
       default:
         value = fields[field];
     }
+
+    value = await noteoverview.removeNoteoverviewCode(value);
 
     if (options.escapeForTable === true) {
       value = await noteoverview.escapeForTable(value);
@@ -1101,26 +1273,15 @@ export namespace noteoverview {
     return await noteoverview.removeNewLineAt(orgContent, stripe[0], stripe[1]);
   }
 
-  export async function getFileLogLevel(): Promise<any> {
-    const logLevelFile = path.join(
-      await joplin.plugins.installationDir(),
-      "debug.txt"
-    );
-    if (fs.existsSync(logLevelFile)) {
-      return "silly";
-    } else {
-      return "error";
-    }
-  }
-
   export async function setupLogging() {
     const logFormatFile = "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}";
     const logFormatConsole = "[{level}] {text}";
-    const logFile = path.join(
+    logFile = path.join(
       await joplin.plugins.installationDir(),
       "noteoverview.log"
     );
-    const levelFile = await noteoverview.getFileLogLevel();
+
+    const levelFile = await joplin.settings.value("fileLogLevel");
     logging.transports.file.format = logFormatFile;
     logging.transports.file.level = levelFile;
     logging.transports.file.resolvePath = () => logFile;
@@ -1128,10 +1289,22 @@ export namespace noteoverview {
     logging.transports.console.format = logFormatConsole;
   }
 
+  export async function deleteLogFile() {
+    logging.verbose("Delete log file");
+    if (fs.existsSync(logFile)) {
+      try {
+        await fs.unlinkSync(logFile);
+      } catch (e) {
+        logging.error("deleteLogFile: " + e.message);
+      }
+    }
+  }
+
   export async function init() {
     logging.info("Note overview plugin started!");
 
     await settings.register();
+    await noteoverview.deleteLogFile();
     await noteoverview.setupLogging();
 
     noteoverviewDialog = await joplin.views.dialogs.create(
@@ -1198,6 +1371,10 @@ export namespace noteoverview {
         await joplin.settings.value("updateInterval")
       );
     }
+
+    if (event.keys.indexOf("fileLogLevel") !== -1) {
+      await noteoverview.setupLogging();
+    }
   }
 
   export async function setTimer(updateInterval: number) {
@@ -1220,6 +1397,51 @@ export namespace noteoverview {
     } else {
       timer = null;
     }
+  }
+
+  export async function replaceSearchVars(query: string): Promise<string> {
+    logging.verbose("replaceSearchVars");
+
+    const joplinLocale = await joplin.settings.globalValue("locale");
+    const momentsLocale = joplinLocale.split("_")[0];
+
+    return query.replace(/{{moments:(?<format>[^}]+)}}/g, (match, groups) => {
+      let now = new Date(Date.now());
+      let momentDate = moment(now);
+      momentDate.locale(momentsLocale);
+
+      // Modify date
+      const modifyDateRegEx = /( modify:)(?<modify>.*)/;
+      const modifyDate = groups.match(modifyDateRegEx);
+      groups = groups.replace(modifyDateRegEx, "");
+      if (modifyDate !== null) {
+        let actions = [];
+        if (modifyDate["groups"]["modify"].match(",") !== null) {
+          actions = modifyDate["groups"]["modify"].split(",");
+        } else {
+          actions.push(modifyDate["groups"]["modify"]);
+        }
+
+        for (const action of actions) {
+          let add = action.substring(0, 1);
+          let quantity = action.substring(1, action.length - 1);
+          let type = action.substring(action.length - 1, action.length);
+
+          try {
+            if (add == "-") {
+              momentDate.subtract(quantity, type);
+            } else if (add == "+") {
+              momentDate.add(quantity, type);
+            }
+          } catch (e) {
+            logging.error(e);
+          }
+        }
+        now = new Date(momentDate.valueOf());
+      }
+
+      return momentDate.format(groups);
+    });
   }
 }
 
