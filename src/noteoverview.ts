@@ -18,6 +18,7 @@ let globalSettings: any = {};
 const consoleLogLevel = "verbose";
 let firstSyncCompleted = false;
 let joplinNotebooks: any = null;
+let logFile = null;
 
 export namespace noteoverview {
   export async function getImageNr(
@@ -25,7 +26,7 @@ export namespace noteoverview {
     imagrNr: number,
     imageSettings: Object
   ): Promise<string> {
-    logging.silly("func: getImageNr");
+    logging.verbose("func: getImageNr");
     const regExresourceId = /!\[([^\]]+|)\]\(:\/(?<resourceId>[\da-z]{32})\)/g;
     let ids = [];
     let imageId = null;
@@ -183,7 +184,7 @@ export namespace noteoverview {
     todo_completed: number,
     type: string
   ): Promise<string> {
-    logging.silly("func: getToDoDateColor");
+    logging.verbose("func: getToDoDateColor");
     const now = new Date();
     let colorType = "";
 
@@ -291,7 +292,7 @@ export namespace noteoverview {
     todo_due: number,
     todo_completed: number
   ) {
-    logging.silly("func: getToDoStatus");
+    logging.verbose("func: getToDoStatus");
     const now = new Date();
     if (todo_completed === 0 && todo_due !== 0 && todo_due < now.getTime())
       return "overdue";
@@ -453,9 +454,9 @@ export namespace noteoverview {
   }
 
   export async function loadNotebooks(reload = false) {
-    logging.silly("Func: loadNotebooks");
+    logging.verbose("Func: loadNotebooks");
     if (reload === true || joplinNotebooks === null) {
-      logging.silly("load notebooks");
+      logging.verbose("load notebooks");
       joplinNotebooks = {};
       let queryFolders;
       let pageQuery = 1;
@@ -752,7 +753,7 @@ export namespace noteoverview {
   export async function getOptions(
     overviewSettings: any
   ): Promise<OverviewOptions> {
-    logging.silly("func: getOptions");
+    logging.verbose("func: getOptions");
     const settings: any = {};
     settings.overview = overviewSettings;
 
@@ -845,7 +846,7 @@ export namespace noteoverview {
     noteTitle: string,
     overviewSettings: any
   ): Promise<string[]> {
-    logging.silly("func: getOverviewContent");
+    logging.verbose("func: getOverviewContent");
     const query: string = overviewSettings["search"];
     let overviewContent: string[] = [];
 
@@ -1105,7 +1106,7 @@ export namespace noteoverview {
     fields: any,
     options: OverviewOptions
   ): Promise<string> {
-    logging.silly("func: getFieldValue for " + field);
+    logging.verbose("func: getFieldValue for " + field);
     let value = "";
     switch (field) {
       case "title":
@@ -1234,26 +1235,15 @@ export namespace noteoverview {
     return await noteoverview.removeNewLineAt(orgContent, stripe[0], stripe[1]);
   }
 
-  export async function getFileLogLevel(): Promise<any> {
-    const logLevelFile = path.join(
-      await joplin.plugins.installationDir(),
-      "debug.txt"
-    );
-    if (fs.existsSync(logLevelFile)) {
-      return "silly";
-    } else {
-      return "error";
-    }
-  }
-
   export async function setupLogging() {
     const logFormatFile = "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}";
     const logFormatConsole = "[{level}] {text}";
-    const logFile = path.join(
+    logFile = path.join(
       await joplin.plugins.installationDir(),
       "noteoverview.log"
     );
-    const levelFile = await noteoverview.getFileLogLevel();
+
+    const levelFile = await joplin.settings.value("fileLogLevel");
     logging.transports.file.format = logFormatFile;
     logging.transports.file.level = levelFile;
     logging.transports.file.resolvePath = () => logFile;
@@ -1261,10 +1251,22 @@ export namespace noteoverview {
     logging.transports.console.format = logFormatConsole;
   }
 
+  export async function deleteLogFile() {
+    logging.verbose("Delete log file");
+    if (fs.existsSync(logFile)) {
+      try {
+        await fs.unlinkSync(logFile);
+      } catch (e) {
+        logging.error("deleteLogFile: " + e.message);
+      }
+    }
+  }
+
   export async function init() {
     logging.info("Note overview plugin started!");
 
     await settings.register();
+    await noteoverview.deleteLogFile();
     await noteoverview.setupLogging();
 
     noteoverviewDialog = await joplin.views.dialogs.create(
@@ -1330,6 +1332,10 @@ export namespace noteoverview {
       await noteoverview.setTimer(
         await joplin.settings.value("updateInterval")
       );
+    }
+
+    if (event.keys.indexOf("fileLogLevel") !== -1) {
+      await noteoverview.setupLogging();
     }
   }
 

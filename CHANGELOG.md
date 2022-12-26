@@ -7,6 +7,7 @@
 - Fix: Ignore noteoverview blocks if they start with a codeblock (```) statement
 - Add: #36 Variable `{{count}}` to the summary of the details HTML tag
 - Add: #27 RegEx filter `regex` for excerpt
+- Add: Option for logfile
 
 ## v1.5.5 (2022-01-26)
 
