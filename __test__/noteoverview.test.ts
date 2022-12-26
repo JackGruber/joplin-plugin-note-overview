@@ -1,5 +1,6 @@
 import { noteoverview, logging } from "../src/noteoverview";
 import * as YAML from "yaml";
+import { getRemoveNoteoverviewCodeData } from "./tools";
 
 describe("String escaping for md tables", function () {
   beforeEach(async () => {
@@ -289,5 +290,31 @@ describe("get MD excerpt", function () {
     const expected = "- [ ] Test Item 1";
     const actual = await noteoverview.getMarkdownExcerpt(md, settings);
     expect(actual).toBe(expected);
+  });
+});
+
+describe("Remove note-overview codeblock", function () {
+  it(`single`, async () => {
+    const data = getRemoveNoteoverviewCodeData("single");
+    const actual = await noteoverview.removeNoteoverviewCode(data["input"]);
+    expect(actual).toBe(data["expected"]);
+  });
+
+  it(`multiple`, async () => {
+    const data = getRemoveNoteoverviewCodeData("multiple");
+    const actual = await noteoverview.removeNoteoverviewCode(data["input"]);
+    expect(actual).toBe(data["expected"]);
+  });
+
+  it(`single and codeblock`, async () => {
+    const data = getRemoveNoteoverviewCodeData("singleCodeblock");
+    const actual = await noteoverview.removeNoteoverviewCode(data["input"]);
+    expect(actual).toBe(data["expected"]);
+  });
+
+  it(`closeTag`, async () => {
+    const data = getRemoveNoteoverviewCodeData("closeTag");
+    const actual = await noteoverview.removeNoteoverviewCode(data["input"]);
+    expect(actual).toBe(data["expected"]);
   });
 });
