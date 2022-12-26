@@ -1400,8 +1400,14 @@ export namespace noteoverview {
 
   export async function replaceSearchVars(query: string): Promise<string> {
     logging.verbose("replaceSearchVars");
+
+    const joplinLocale = await joplin.settings.globalValue("locale");
+    const momentsLocale = joplinLocale.split("_")[0];
+
     return query.replace(/{{moments:(?<format>[^}]+)}}/g, (match, groups) => {
       let now = new Date(Date.now());
+      let momentDate = moment(now);
+      momentDate.locale(momentsLocale);
 
       // Modify date
       const modifyDateRegEx = /( modify:)(?<modify>.*)/;
@@ -1414,8 +1420,6 @@ export namespace noteoverview {
         } else {
           actions.push(modifyDate["groups"]["modify"]);
         }
-
-        let momentDate = moment(now);
 
         for (const action of actions) {
           let add = action.substring(0, 1);
@@ -1435,7 +1439,7 @@ export namespace noteoverview {
         now = new Date(momentDate.valueOf());
       }
 
-      return moment(now.getTime()).format(groups);
+      return momentDate.format(groups);
     });
   }
 }

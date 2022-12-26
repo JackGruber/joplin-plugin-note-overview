@@ -1,6 +1,10 @@
 import { noteoverview, logging } from "../src/noteoverview";
 import * as YAML from "yaml";
 import { getRemoveNoteoverviewCodeData } from "./tools";
+import joplin from "api";
+import { when } from "jest-when";
+
+const spyOnGlobalValue = jest.spyOn(joplin.settings, "globalValue");
 
 describe("String escaping for md tables", function () {
   beforeEach(async () => {
@@ -324,6 +328,15 @@ describe("Search vars", function () {
     jest.spyOn(logging, "silly").mockImplementation(() => {});
     jest.spyOn(logging, "verbose").mockImplementation(() => {});
     jest.spyOn(logging, "info").mockImplementation(() => {});
+
+    /* prettier-ignore */
+    when(spyOnGlobalValue)
+      .mockImplementation(() => Promise.resolve("no mockImplementation"))
+      .calledWith("locale").mockImplementation(() => Promise.resolve("en"));
+  });
+
+  afterEach(async () => {
+    spyOnGlobalValue.mockReset();
   });
 
   it(`moments`, async () => {
@@ -367,6 +380,10 @@ describe("Search vars", function () {
         query: "Logbook {{moments:DD-MM-YYYY modify:-1y,+1d,+5M}}",
         expected: "Logbook 03-06-2020",
       },
+      {
+        query: "Day of Week {{moments:dddd}}",
+        expected: "Day of Week Saturday",
+      },
     ];
 
     for (const test of testCases) {
@@ -374,6 +391,24 @@ describe("Search vars", function () {
         test["expected"]
       );
     }
+
+    spyOnDateNow.mockRestore();
+  });
+
+  it(`moments deutsch`, async () => {
+    const testEpoch = new Date(2021, 0, 2, 16, 30, 45, 0).getTime();
+    const spyOnDateNow = jest
+      .spyOn(Date, "now")
+      .mockImplementation(() => testEpoch);
+
+    /* prettier-ignore */
+    when(spyOnGlobalValue)
+      .mockImplementation(() => Promise.resolve("no mockImplementation"))
+      .calledWith("locale").mockImplementation(() => Promise.resolve("de"));
+
+    expect(
+      await noteoverview.replaceSearchVars("Wochentag {{moments:dddd}}")
+    ).toBe("Wochentag Samstag");
 
     spyOnDateNow.mockRestore();
   });
