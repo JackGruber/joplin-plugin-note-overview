@@ -18,6 +18,7 @@ let globalSettings: any = {};
 const consoleLogLevel = "verbose";
 let firstSyncCompleted = false;
 let joplinNotebooks: any = null;
+let logFile = null;
 
 export namespace noteoverview {
   export async function getImageNr(
@@ -1237,7 +1238,7 @@ export namespace noteoverview {
   export async function setupLogging() {
     const logFormatFile = "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}";
     const logFormatConsole = "[{level}] {text}";
-    const logFile = path.join(
+    logFile = path.join(
       await joplin.plugins.installationDir(),
       "noteoverview.log"
     );
