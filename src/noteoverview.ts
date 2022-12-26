@@ -110,7 +110,6 @@ export namespace noteoverview {
 
     // Replace search with original search
     noteoverviewSettings["search"] = noteoverviewSettings["searchWithVars"];
-    console.log(noteoverviewSettings);
     delete noteoverviewSettings["searchWithVars"];
 
     const yamlBlock = YAML.stringify(noteoverviewSettings);
