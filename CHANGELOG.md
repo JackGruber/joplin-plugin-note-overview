@@ -8,6 +8,7 @@
 - Add: #36 Variable `{{count}}` to the summary of the details HTML tag
 - Add: #27 RegEx filter `regex` for excerpt
 - Add: Option for logfile
+- Add: #28 Stripe note-overview code block fields
 
 ## v1.5.5 (2022-01-26)
 
