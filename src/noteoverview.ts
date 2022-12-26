@@ -26,7 +26,7 @@ export namespace noteoverview {
     imagrNr: number,
     imageSettings: Object
   ): Promise<string> {
-    logging.silly("func: getImageNr");
+    logging.verbose("func: getImageNr");
     const regExresourceId = /!\[([^\]]+|)\]\(:\/(?<resourceId>[\da-z]{32})\)/g;
     let ids = [];
     let imageId = null;
@@ -184,7 +184,7 @@ export namespace noteoverview {
     todo_completed: number,
     type: string
   ): Promise<string> {
-    logging.silly("func: getToDoDateColor");
+    logging.verbose("func: getToDoDateColor");
     const now = new Date();
     let colorType = "";
 
@@ -292,7 +292,7 @@ export namespace noteoverview {
     todo_due: number,
     todo_completed: number
   ) {
-    logging.silly("func: getToDoStatus");
+    logging.verbose("func: getToDoStatus");
     const now = new Date();
     if (todo_completed === 0 && todo_due !== 0 && todo_due < now.getTime())
       return "overdue";
@@ -454,9 +454,9 @@ export namespace noteoverview {
   }
 
   export async function loadNotebooks(reload = false) {
-    logging.silly("Func: loadNotebooks");
+    logging.verbose("Func: loadNotebooks");
     if (reload === true || joplinNotebooks === null) {
-      logging.silly("load notebooks");
+      logging.verbose("load notebooks");
       joplinNotebooks = {};
       let queryFolders;
       let pageQuery = 1;
@@ -753,7 +753,7 @@ export namespace noteoverview {
   export async function getOptions(
     overviewSettings: any
   ): Promise<OverviewOptions> {
-    logging.silly("func: getOptions");
+    logging.verbose("func: getOptions");
     const settings: any = {};
     settings.overview = overviewSettings;
 
@@ -846,7 +846,7 @@ export namespace noteoverview {
     noteTitle: string,
     overviewSettings: any
   ): Promise<string[]> {
-    logging.silly("func: getOverviewContent");
+    logging.verbose("func: getOverviewContent");
     const query: string = overviewSettings["search"];
     let overviewContent: string[] = [];
 
@@ -1106,7 +1106,7 @@ export namespace noteoverview {
     fields: any,
     options: OverviewOptions
   ): Promise<string> {
-    logging.silly("func: getFieldValue for " + field);
+    logging.verbose("func: getFieldValue for " + field);
     let value = "";
     switch (field) {
       case "title":
