@@ -1101,6 +1101,15 @@ export namespace noteoverview {
     return "|" + info.join("|") + "|";
   }
 
+  export async function removeNoteoverviewCode(data: string): Promise<string> {
+    data = data.replace(
+      /(?<!```\n)(?<!``` \n)(<!--\s?note-overview-plugin([\w\W]*?)-->)/gi,
+      ""
+    );
+    data = data.replace(/(<!--endoverview-->)(?!\n```)/gi, "");
+    return data;
+  }
+
   export async function getFieldValue(
     field: string,
     fields: any,
@@ -1203,6 +1212,8 @@ export namespace noteoverview {
       default:
         value = fields[field];
     }
+
+    value = await noteoverview.removeNoteoverviewCode(value);
 
     if (options.escapeForTable === true) {
       value = await noteoverview.escapeForTable(value);
