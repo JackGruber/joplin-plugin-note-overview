@@ -1251,10 +1251,22 @@ export namespace noteoverview {
     logging.transports.console.format = logFormatConsole;
   }
 
+  export async function deleteLogFile() {
+    logging.verbose("Delete log file");
+    if (fs.existsSync(logFile)) {
+      try {
+        await fs.unlinkSync(logFile);
+      } catch (e) {
+        logging.error("deleteLogFile: " + e.message);
+      }
+    }
+  }
+
   export async function init() {
     logging.info("Note overview plugin started!");
 
     await settings.register();
+    await noteoverview.deleteLogFile();
     await noteoverview.setupLogging();
 
     noteoverviewDialog = await joplin.views.dialogs.create(
