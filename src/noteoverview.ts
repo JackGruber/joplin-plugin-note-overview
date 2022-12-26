@@ -1399,8 +1399,42 @@ export namespace noteoverview {
   }
 
   export async function replaceSearchVars(query: string): Promise<string> {
+    logging.verbose("replaceSearchVars");
     return query.replace(/{{moments:(?<format>[^}]+)}}/g, (match, groups) => {
-      const now = new Date(Date.now());
+      let now = new Date(Date.now());
+
+      // Modify date
+      const modifyDateRegEx = /( modify:)(?<modify>.*)/;
+      const modifyDate = groups.match(modifyDateRegEx);
+      groups = groups.replace(modifyDateRegEx, "");
+      if (modifyDate !== null) {
+        let actions = [];
+        if (modifyDate["groups"]["modify"].match(",") !== null) {
+          actions = modifyDate["groups"]["modify"].split(",");
+        } else {
+          actions.push(modifyDate["groups"]["modify"]);
+        }
+
+        let momentDate = moment(now);
+
+        for (const action of actions) {
+          let add = action.substring(0, 1);
+          let quantity = action.substring(1, action.length - 1);
+          let type = action.substring(action.length - 1, action.length);
+
+          try {
+            if (add == "-") {
+              momentDate.subtract(quantity, type);
+            } else if (add == "+") {
+              momentDate.add(quantity, type);
+            }
+          } catch (e) {
+            logging.error(e);
+          }
+        }
+        now = new Date(momentDate.valueOf());
+      }
+
       return moment(now.getTime()).format(groups);
     });
   }

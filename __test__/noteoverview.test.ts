@@ -320,6 +320,12 @@ describe("Remove note-overview codeblock", function () {
 });
 
 describe("Search vars", function () {
+  beforeEach(async () => {
+    jest.spyOn(logging, "silly").mockImplementation(() => {});
+    jest.spyOn(logging, "verbose").mockImplementation(() => {});
+    jest.spyOn(logging, "info").mockImplementation(() => {});
+  });
+
   it(`moments`, async () => {
     const testEpoch = new Date(2021, 0, 2, 16, 30, 45, 0).getTime();
     const spyOnDateNow = jest
@@ -344,6 +350,22 @@ describe("Search vars", function () {
           "First error {moments:MM-YY}}, second error {moment:dddd MMMM YYYY}",
         expected:
           "First error {moments:MM-YY}}, second error {moment:dddd MMMM YYYY}",
+      },
+      {
+        query: "+1 Day {{moments:DDMMyy modify:+1d}}",
+        expected: "+1 Day 03012021",
+      },
+      {
+        query: "+1 Day, -1 Year {{moments:DDMMyy modify:+1d,-1y}}",
+        expected: "+1 Day, -1 Year 03012020",
+      },
+      {
+        query: "+1 Day, -1 Year {{moments:DDMMyy modify:+1k,-1y}}",
+        expected: "+1 Day, -1 Year 02012020",
+      },
+      {
+        query: "Logbook {{moments:DD-MM-YYYY modify:-1y,+1d,+5M}}",
+        expected: "Logbook 03-06-2020",
       },
     ];
 
