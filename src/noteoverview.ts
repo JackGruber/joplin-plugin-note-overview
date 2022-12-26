@@ -1333,6 +1333,10 @@ export namespace noteoverview {
         await joplin.settings.value("updateInterval")
       );
     }
+
+    if (event.keys.indexOf("fileLogLevel") !== -1) {
+      await noteoverview.setupLogging();
+    }
   }
 
   export async function setTimer(updateInterval: number) {
