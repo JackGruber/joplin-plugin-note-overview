@@ -1403,8 +1403,6 @@ export namespace noteoverview {
       const now = new Date(Date.now());
       return moment(now.getTime()).format(groups);
     });
-
-    return "";
   }
 }
 
