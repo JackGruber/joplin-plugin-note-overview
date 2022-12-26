@@ -159,6 +159,22 @@ export namespace settings {
         description:
           "HTML color for the todo_completed, when the todo was completed but no due date was set.",
       },
+      fileLogLevel: {
+        value: "info",
+        type: SettingItemType.String,
+        section: "noteOverviewSection",
+        advanced: true,
+        isEnum: true,
+        public: true,
+        label: "Logfile",
+        options: {
+          false: "Off",
+          verbose: "Verbose",
+          info: "Info",
+          warn: "Warning",
+          error: "Error",
+        },
+      },
     });
   }
 }

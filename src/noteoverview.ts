@@ -1234,18 +1234,6 @@ export namespace noteoverview {
     return await noteoverview.removeNewLineAt(orgContent, stripe[0], stripe[1]);
   }
 
-  export async function getFileLogLevel(): Promise<any> {
-    const logLevelFile = path.join(
-      await joplin.plugins.installationDir(),
-      "debug.txt"
-    );
-    if (fs.existsSync(logLevelFile)) {
-      return "silly";
-    } else {
-      return "error";
-    }
-  }
-
   export async function setupLogging() {
     const logFormatFile = "[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}] {text}";
     const logFormatConsole = "[{level}] {text}";
@@ -1253,7 +1241,8 @@ export namespace noteoverview {
       await joplin.plugins.installationDir(),
       "noteoverview.log"
     );
-    const levelFile = await noteoverview.getFileLogLevel();
+
+    const levelFile = await joplin.settings.value("fileLogLevel");
     logging.transports.file.format = logFormatFile;
     logging.transports.file.level = levelFile;
     logging.transports.file.resolvePath = () => logFile;
