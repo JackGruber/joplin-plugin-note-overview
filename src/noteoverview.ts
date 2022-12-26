@@ -107,6 +107,12 @@ export namespace noteoverview {
     noteoverviewSettings: object
   ): Promise<string> {
     let settingsBlock = [];
+
+    // Replace search with original search
+    noteoverviewSettings["search"] = noteoverviewSettings["searchWithVars"];
+    console.log(noteoverviewSettings);
+    delete noteoverviewSettings["searchWithVars"];
+
     const yamlBlock = YAML.stringify(noteoverviewSettings);
     settingsBlock.push("<!-- note-overview-plugin");
     settingsBlock.push(yamlBlock.substring(0, yamlBlock.length - 1));
@@ -703,7 +709,15 @@ export namespace noteoverview {
         return;
       }
 
+      noteOverviewSettings["searchWithVars"] = noteOverviewSettings["search"];
+      noteOverviewSettings["search"] = await noteoverview.replaceSearchVars(
+        noteOverviewSettings["search"]
+      );
+
       logging.verbose("Search: " + noteOverviewSettings["search"]);
+      logging.verbose(
+        "Search with vars: " + noteOverviewSettings["searchWithVars"]
+      );
 
       // add original content before the settings block
       if (startOrgTextIndex != startIndex) {
@@ -1382,6 +1396,15 @@ export namespace noteoverview {
     } else {
       timer = null;
     }
+  }
+
+  export async function replaceSearchVars(query: string): Promise<string> {
+    return query.replace(/{{moments:(?<format>[^}]+)}}/g, (match, groups) => {
+      const now = new Date(Date.now());
+      return moment(now.getTime()).format(groups);
+    });
+
+    return "";
   }
 }
 
