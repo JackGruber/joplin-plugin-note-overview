@@ -1104,10 +1104,22 @@ export namespace noteoverview {
   export async function removeNoteoverviewCode(data: string): Promise<string> {
     data = data.replace(
       /(?<!```\n)(?<!``` \n)(<!--\s?note-overview-plugin([\w\W]*?)-->)/gi,
-      ""
+      "REMOVE_NOTOVERVIEW_LINE"
     );
-    data = data.replace(/(<!--endoverview-->)(?!\n```)/gi, "");
-    return data;
+    data = data.replace(
+      /(<!--endoverview-->)(?!\n```)/gi,
+      "REMOVE_NOTOVERVIEW_LINE"
+    );
+
+    const lines = data.split("\n");
+    let newLines = [];
+    for (const line of lines) {
+      if (line.match("REMOVE_NOTOVERVIEW_LINE") === null) {
+        newLines.push(line);
+      }
+    }
+
+    return newLines.join("\n");
   }
 
   export async function getFieldValue(
