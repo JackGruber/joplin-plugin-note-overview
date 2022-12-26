@@ -318,3 +318,41 @@ describe("Remove note-overview codeblock", function () {
     expect(actual).toBe(data["expected"]);
   });
 });
+
+describe("Search vars", function () {
+  it(`moments`, async () => {
+    const testEpoch = new Date(2021, 0, 2, 16, 30, 45, 0).getTime();
+    const spyOnDateNow = jest
+      .spyOn(Date, "now")
+      .mockImplementation(() => testEpoch);
+
+    const testCases = [
+      {
+        query: "One moments {{moments:DDMMyy}}",
+        expected: "One moments 02012021",
+      },
+      {
+        query: "First {{moments:Qoyy}}, second {{moments:dddd MMMM YYYY}}",
+        expected: "First 1st2021, second Saturday January 2021",
+      },
+      {
+        query: "First {{moments:MM-YY}}, error {{moment:dddd MMMM YYYY}}",
+        expected: "First 01-21, error {{moment:dddd MMMM YYYY}}",
+      },
+      {
+        query:
+          "First error {moments:MM-YY}}, second error {moment:dddd MMMM YYYY}",
+        expected:
+          "First error {moments:MM-YY}}, second error {moment:dddd MMMM YYYY}",
+      },
+    ];
+
+    for (const test of testCases) {
+      expect(await noteoverview.replaceSearchVars(test["query"])).toBe(
+        test["expected"]
+      );
+    }
+
+    spyOnDateNow.mockRestore();
+  });
+});
