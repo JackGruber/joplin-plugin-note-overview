@@ -3,17 +3,25 @@ import { noteoverview, logging } from "../src/noteoverview";
 import { when, verifyAllWhenMocksCalled } from "jest-when";
 import { getNote } from "./tools";
 
+const spyOnGlobalValue = jest.spyOn(joplin.settings, "globalValue");
+
 describe("noteoverview.update", function () {
   beforeEach(async () => {
     jest.spyOn(logging, "silly").mockImplementation(() => {});
     jest.spyOn(logging, "verbose").mockImplementation(() => {});
     jest.spyOn(logging, "info").mockImplementation(() => {});
+
+    /* prettier-ignore */
+    when(spyOnGlobalValue)
+      .mockImplementation(() => Promise.resolve("no mockImplementation"))
+      .calledWith("locale").mockImplementation(() => Promise.resolve("en"));
   });
 
   afterEach(async () => {
     jest.spyOn(logging, "silly").mockReset();
     jest.spyOn(logging, "verbose").mockReset();
     jest.spyOn(logging, "info").mockReset();
+    spyOnGlobalValue.mockReset();
   });
 
   it(`Check calls of getOverviewContent function`, async () => {

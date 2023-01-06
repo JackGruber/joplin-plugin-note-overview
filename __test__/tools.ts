@@ -21,6 +21,36 @@ export function getNote(id: string) {
   return data;
 }
 
+export function getRemoveNoteoverviewCodeData(testcase: string): Object {
+  const inputFile = path.join(
+    dataDir,
+    "removeNoteoverviewCode",
+    testcase + ".input"
+  );
+  const expectedFile = path.join(
+    dataDir,
+    "removeNoteoverviewCode",
+    testcase + ".expected"
+  );
+
+  let data = { input: "no input file", expected: "no expected file" };
+  if (fs.existsSync(inputFile)) {
+    data.input = fs.readFileSync(inputFile, {
+      encoding: "utf8",
+      flag: "r",
+    });
+  }
+
+  if (fs.existsSync(expectedFile)) {
+    data.expected = fs.readFileSync(expectedFile, {
+      encoding: "utf8",
+      flag: "r",
+    });
+  }
+
+  return data;
+}
+
 export function getColoringTestObject() {
   return {
     todo: {

@@ -19,6 +19,7 @@ A note overview is created based on the defined search and the specified fields.
     - [Limitations](#limitations)
 - [Codeblock options](#codeblock-options)
     - [search](#search)
+        - [search variable date](#search-variable-date)
     - [fields](#fields)
     - [sort](#sort)
     - [alias](#alias)
@@ -115,6 +116,30 @@ The search filter which will be used to create the overview.
 
 ```yml
 search: type:todo
+```
+
+#### search variable date
+
+To search for date texts the variable `{{moments:<FORMAT>}}` is available, replace the `<FORMAT>` with the [moments formatting](https://momentjs.com/docs/#/displaying/)
+
+```yml
+search: Logbook {{moments:YYYY}}
+```
+
+The date can be manipulated with `modify:<MANIPULATION>`, for `<MANIPULATION>` the syntax is `<+ or -><amount><Key>` and the following key. This syntax can be repeated comma separated.
+
+| Modification | Key |
+| ------------ | --- |
+| years        | y   |
+| quarters     | Q   |
+| months       | M   |
+| weeks        | w   |
+| days         | d   |
+| hours        | h   |
+| minutes      | m   |
+
+```yml
+search: Logbook {{moments:DD-MM-YYYY modify:+1m,-1d}}
 ```
 
 ### fields
