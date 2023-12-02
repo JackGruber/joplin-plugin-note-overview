@@ -112,7 +112,7 @@ Options that can be specified in the in the code block using YAML syntax.
 ### search
 
 The search filter which will be used to create the overview.
-[Documentation of search filters](https://joplinapp.org/help/#search-filters).
+[Documentation of search filters](https://joplinapp.org/help/apps/search#search-filters).
 
 ```yml
 search: type:todo
