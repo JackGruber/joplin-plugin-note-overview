@@ -2,6 +2,8 @@
 
 ## not released
 
+- Add: Translation
+
 ## v1.6.0 (2022-12-26)
 
 - Add: #35 Warning color when a taks is close to a due date
