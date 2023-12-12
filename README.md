@@ -450,23 +450,6 @@ excerpt:
 
 Settings for the plugin, accessible at `Tools > Options > Note overview`.
 
-| Option                         | Description                                                                                                                                                      | Default                 |
-| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| `Show note count`              | Show the number of notes found.                                                                                                                                  | `off`                   |
-| `Note count text`              | Text for the display of the found notes, `{{count}}` is replace with the number of matched notes.                                                                | `Note count: {{count}}` |
-| `Update interval in minutes`   | How often the overview notes should be updated.                                                                                                                  | `5`                     |
-| `Update on Joplin sync`        | Update the Noteoverview after a Joplin syncronisation. Independent of the update interval.                                                                       | `No`                    |
-| `Field status: open todo`      | Text for the `status` field, when the todo is not completed.                                                                                                     |                         |
-| `Field status: todo completed` | Text for the `status` field, when the todo is completed.                                                                                                         |                         |
-| `Field status: todo over due`  | Text for the `status` field, when the due date of the todo is exceeded.                                                                                          |                         |
-| `Color: todo [open]`           | HTML color for the `due_date`, when the todo is not completed.                                                                                                   |                         |
-| `Color: todo [warning]`        | HTML color for the `due_date`, when the todo is not completed and within `todo [warning] hours`.                                                                 |                         |
-| `todo [warning] hours`         | How many hours before due_date the warning color should be applied. 0 = Disabled.                                                                                | `0`                     |
-| `Color: todo [open_overdue]`   | HTML color for the `due_date`, when the todo is over the due date.                                                                                               | `red`                   |
-| `Color: todo [done]`           | HTML color for the `due_date` and `todo_completed`, when the todo is completed. Seperate the color for due_date and todo_completed by a `,`.                     | `limegreen,limegreen`   |
-| `Color: todo [done_overdue]`   | HTML color for the `due_date` and `todo_completed`, when the todo was completed after the due date. Seperate the color for due_date and todo_completed by a `,`. | `orange,orange`         |
-| `Color: todo [done_nodue]`     | HTML color for the `todo_completed`, when the todo was completed but no due date was set.                                                                        |                         |
-
 ## Keyboard Shortcuts
 
 Under `Options > Keyboard Shortcuts` you can assign a keyboard shortcut for the following commands:
