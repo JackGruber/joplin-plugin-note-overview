@@ -184,6 +184,20 @@ export namespace noteoverview {
       return "";
     }
   }
+  export async function getDateHumanized(
+    epoch: number
+  ): Promise<string> {
+    if (epoch !== 0) {
+      const dateObject = new Date(epoch);
+      const dateString = moment.duration(
+        moment(dateObject.getTime()).diff(moment())
+      ).humanize(true);
+
+      return dateString;
+    } else {
+      return "";
+    }
+  }
 
   export async function getToDoDateColor(
     coloring: object,
@@ -822,6 +836,11 @@ export namespace noteoverview {
 
     settings.link = overviewSettings["link"] ? overviewSettings["link"] : null;
 
+    settings.datetimeSettings = await mergeObject(
+      { "date": globalSettings.dateFormat, "time": globalSettings.timeFormat, "humanize": false },
+      overviewSettings["datetime"]
+    );
+
     return settings;
   }
 
@@ -1159,9 +1178,19 @@ export namespace noteoverview {
         const dateObject = new Date(fields[field]);
         value = await noteoverview.getDateFormated(
           dateObject.getTime(),
-          globalSettings.dateFormat,
-          globalSettings.timeFormat
+          options.datetimeSettings.date,
+          options.datetimeSettings.time,
         );
+
+        const htmlAttr: string[] = [];
+        if (value !== "" && options.datetimeSettings.humanize) {
+          htmlAttr.push(`title="${value}"`);
+
+          value = await noteoverview.getDateHumanized(
+            dateObject.getTime()
+          );
+        }
+
         switch (field) {
           case "todo_due":
           case "todo_completed":
@@ -1172,9 +1201,13 @@ export namespace noteoverview {
               field
             );
             if (color !== "") {
-              value = `<font color="${color}">${value}</font>`;
+              htmlAttr.push(`color="${color}"`);
             }
             break;
+        }
+
+        if (htmlAttr.length) {
+          value = `<font ${htmlAttr.join(' ')}>${value}</font>`;
         }
         break;
       case "status":
