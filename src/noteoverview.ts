@@ -187,14 +187,12 @@ export namespace noteoverview {
       return "";
     }
   }
-  export async function getDateHumanized(
-    epoch: number
-  ): Promise<string> {
+  export async function getDateHumanized(epoch: number): Promise<string> {
     if (epoch !== 0) {
       const dateObject = new Date(epoch);
-      const dateString = moment.duration(
-        moment(dateObject.getTime()).diff(moment())
-      ).humanize(true);
+      const dateString = moment
+        .duration(moment(dateObject.getTime()).diff(moment()))
+        .humanize(true);
 
       return dateString;
     } else {
@@ -840,7 +838,11 @@ export namespace noteoverview {
     settings.link = overviewSettings["link"] ? overviewSettings["link"] : null;
 
     settings.datetimeSettings = await mergeObject(
-      { "date": globalSettings.dateFormat, "time": globalSettings.timeFormat, "humanize": false },
+      {
+        date: globalSettings.dateFormat,
+        time: globalSettings.timeFormat,
+        humanize: false,
+      },
       overviewSettings["datetime"]
     );
 
@@ -1182,16 +1184,14 @@ export namespace noteoverview {
         value = await noteoverview.getDateFormated(
           dateObject.getTime(),
           options.datetimeSettings.date,
-          options.datetimeSettings.time,
+          options.datetimeSettings.time
         );
 
         const htmlAttr: string[] = [];
         if (value !== "" && options.datetimeSettings.humanize) {
           htmlAttr.push(`title="${value}"`);
 
-          value = await noteoverview.getDateHumanized(
-            dateObject.getTime()
-          );
+          value = await noteoverview.getDateHumanized(dateObject.getTime());
         }
 
         switch (field) {
@@ -1210,7 +1210,7 @@ export namespace noteoverview {
         }
 
         if (htmlAttr.length) {
-          value = `<font ${htmlAttr.join(' ')}>${value}</font>`;
+          value = `<font ${htmlAttr.join(" ")}>${value}</font>`;
         }
         break;
       case "status":

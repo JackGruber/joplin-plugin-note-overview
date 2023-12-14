@@ -43,5 +43,5 @@ type OverviewOptionsDatetime = {
   date: string;
   time: string;
   humanize: boolean;
-}
+};
 export { OverviewOptions };

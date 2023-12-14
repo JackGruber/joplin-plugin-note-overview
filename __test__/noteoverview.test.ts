@@ -51,6 +51,29 @@ describe("Date formating", function () {
       await noteoverview.getDateFormated(epoch, dateFormat, timeFormat)
     ).toBe("21/06/2021 15:30");
   });
+
+  it(`Get empty time string`, async () => {
+    const testDate = new Date(2021, 5, 21, 15, 30, 45);
+    const epoch = testDate.getTime();
+    const dateFormat = "DD/MM/YYYY";
+    const timeFormat = "[]";
+    expect(
+      await noteoverview.getDateFormated(epoch, dateFormat, timeFormat)
+    ).toBe("21/06/2021");
+  });
+
+  it(`Get humanize string`, async () => {
+    let epoch;
+    const testDate = new Date();
+    testDate.setDate(new Date().getDate() + 1);
+    epoch = testDate.getTime();
+
+    expect(await noteoverview.getDateHumanized(epoch)).toBe("in a day");
+
+    testDate.setDate(new Date().getDate() - 1);
+    epoch = testDate.getTime();
+    expect(await noteoverview.getDateHumanized(epoch)).toBe("a day ago");
+  });
 });
 
 describe("Singel tests", function () {
