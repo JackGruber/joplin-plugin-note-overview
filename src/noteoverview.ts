@@ -174,12 +174,15 @@ export namespace noteoverview {
   ): Promise<string> {
     if (epoch !== 0) {
       const dateObject = new Date(epoch);
-      const dateString =
-        moment(dateObject.getTime()).format(dateFormat) +
-        " " +
-        moment(dateObject.getTime()).format(timeFormat);
+      const date: string = moment(dateObject.getTime()).format(dateFormat);
+      const time: string = moment(dateObject.getTime()).format(timeFormat);
 
-      return dateString;
+      const datetime: string[] = [date];
+      if (time !== "") {
+        datetime.push(time);
+      }
+
+      return datetime.join(" ");
     } else {
       return "";
     }
