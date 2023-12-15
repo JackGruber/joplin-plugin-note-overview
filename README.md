@@ -29,6 +29,7 @@ A note overview is created based on the defined search and the specified fields.
     - [count](#count)
     - [listview](#listview)
     - [link](#link)
+    - [status](#status)
 - [Examples](#examples)
     - [ToDo Overview](#todo-overview)
     - [Show all ToDos with status](#show-all-todos-with-status)
@@ -270,6 +271,19 @@ This allows you to control the output displayed in the `link` field.
 link:
   caption: "Jump to"
   html: true
+```
+
+### status
+
+Customize note status field for a single overview.
+
+```yml
+status:
+  note: ""
+  todo:
+    open: "☐"
+    done: "🗹"
+    overdue: "⚠"
 ```
 
 ## Examples

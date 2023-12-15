@@ -310,6 +310,7 @@ export namespace noteoverview {
 
   export async function getDefaultStatusText(): Promise<Object> {
     let status = {
+      note: "",
       todo: {
         overdue: await joplin.settings.value("todoStatusOverdue"),
         open: await joplin.settings.value("todoStatusOpen"),
@@ -912,7 +913,7 @@ export namespace noteoverview {
         try {
           queryNotes = await joplin.data.get(["search"], {
             query: query,
-            fields: "id, parent_id, " + dbFieldsArray.join(","),
+            fields: "id, parent_id, is_todo, " + dbFieldsArray.join(","),
             order_by: options.orderBy,
             order_dir: options.orderDir.toUpperCase(),
             limit: 50,
@@ -1178,11 +1179,15 @@ export namespace noteoverview {
         }
         break;
       case "status":
-        const status: string = await noteoverview.getToDoStatus(
-          fields["todo_due"],
-          fields["todo_completed"]
-        );
-        value = options.statusText["todo"][status];
+        if (!!fields["is_todo"]) {
+          const status: string = await noteoverview.getToDoStatus(
+            fields["todo_due"],
+            fields["todo_completed"]
+          );
+          value = options.statusText["todo"][status];
+        } else {
+          value = options.statusText["note"];
+        }
         break;
       case "excerpt":
         value = await noteoverview.getMarkdownExcerpt(
