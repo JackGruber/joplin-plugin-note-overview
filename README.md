@@ -44,6 +44,7 @@ A note overview is created based on the defined search and the specified fields.
     - [Change to listview no linbreak](#change-to-listview-no-linbreak)
     - [Combine notes dynamically](#combine-notes-dynamically)
     - [Show all uncompleted checkboxes ToDos](#show-all-uncompleted-checkboxes-todos)
+    - [Disable automatic note overview update for one note overview](#disable-automatic-note-overview-update-for-one-note-overview)
 - [Plugin options](#plugin-options)
 - [Keyboard Shortcuts](#keyboard-shortcuts)
 - [FAQ](#faq)
@@ -445,6 +446,18 @@ excerpt:
 ```
 
 <img src="img/example_option_excerpt_regex_checkbox.png">
+
+### Disable automatic note overview update for one note overview
+
+When you set the `update` option to `manual`, then note overview is only updated when you select the note and trigger a update.
+
+```yml
+<!-- note-overview-plugin
+search: tag:todo
+fields: title, excerpt
+update: manual
+-->
+```
 
 ## Plugin options
 

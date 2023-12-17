@@ -707,6 +707,26 @@ export namespace noteoverview {
         return;
       }
 
+      // Skipp note update when set to manual
+      if (
+        noteOverviewSettings.hasOwnProperty("update") &&
+        noteOverviewSettings["update"] == "manual"
+      ) {
+        logging.verbose("noteoverview update setting: manual");
+
+        if (userTriggerd == false) {
+          logging.verbose("skip update, not user triggerd");
+          continue;
+        }
+        const selectedNote = await joplin.workspace.selectedNote();
+        if (userTriggerd == true && noteId !== selectedNote.id) {
+          logging.verbose(
+            "skip update, selected note " + selectedNote.id + " <> " + noteId
+          );
+          continue;
+        }
+      }
+
       if (
         (await validateExcerptRegEx(noteOverviewSettings, note.title)) === false
       ) {
