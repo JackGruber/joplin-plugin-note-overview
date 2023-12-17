@@ -3,6 +3,7 @@
 ## not released
 
 - Add: Translation
+- Fix: #67 HTML image tags are not recognized for `image` option
 
 ## v1.6.0 (2022-12-26)
 
