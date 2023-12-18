@@ -1,0 +1,89 @@
+{
+  "settings": {
+    "updateInterval": {
+      "label": "Update interval in minutes",
+      "description": "0 = disable automatic note overview creation"
+    },
+    "updateOnSync": {
+      "label": "Update after Joplin sync",
+      "values": {
+        "yes": "Yes",
+        "no": "No"
+      },
+      "description": "Update the Noteoverview after a Joplin syncronisation. Independent of the update interval"
+    },
+    "showNoteCount": {
+      "label": "Show note count",
+      "values": {
+        "off": "Off",
+        "above": "Above",
+        "below": "Below"
+      },
+      "description": "Show the number of notes matching the search"
+    },
+    "showNoteCountText": {
+      "label": "Note count text",
+      "description": "Text for the display of the found notes, %s is replace with the number of matched notes"
+    },
+    "todoStatusOpen": {
+      "label": "Field status: %s",
+      "description": "Text for the status field, when the todo is not completed"
+    },
+    "todoStatusDone": {
+      "label": "Field status: %s",
+      "description": "Text for the status field, when the todo is completed"
+    },
+    "todoStatusOverdue": {
+      "label": "Field status: %s",
+      "description": "Text for the `status` field, when the due date of the todo is exceeded"
+    },
+    "colorTodoOpen": {
+      "label": "Color: %s",
+      "description": "HTML color for the %s, when the todo is not completed"
+    },
+    "colorTodoWarning": {
+      "label": "Color: %s",
+      "description": "HTML color for the %s when the due date is reached in x hours"
+    },
+    "todoWarningHours": {
+      "label": "%s hours",
+      "description": "How many hours before %s the warning color should be applied. 0 = Disabled"
+    },
+    "colorTodoOpenOverdue": {
+      "label": "Color: %s",
+      "description": "HTML color for the %s, when the todo is over the due date"
+    },
+    "colorTodoDone": {
+      "label": "Color: %s",
+      "description": "HTML color for the {{field_due_date}} and {{field_todo_completed}}, when the todo is completed. Seperate the color for {{field_due_date}} and {{field_todo_completed}} by a comma"
+    },
+    "colorTodoDoneOverdue": {
+      "label": "Color: %s",
+      "description": "HTML color for the {{field_due_date}} and {{field_todo_completed}}, when the todo was completed after the due date. Seperate the color for {{field_due_date}} and {{field_todo_completed}} by a comma"
+    },
+    "colorTodoDoneNodue": {
+      "label": "Color: %s",
+      "description": "HTML color for the %s, when the todo was completed but no due date was set"
+    },
+    "fileLogLevel": {
+      "label": "Loglevel",
+      "description": "Setting for the Loglevel",
+      "values": {
+        "false": "Off",
+        "verbose": "Verbose",
+        "info": "Info",
+        "warn": "Warn",
+        "error": "Error"
+      }
+    }
+  },
+  "msg": {
+    "error": {
+      "regexParseError": "RegEx parse error",
+      "yamlParseError": "YAML parse error"
+    }
+  },
+  "command": {
+    "createNoteOverview": "Update note overview"
+  }
+}
