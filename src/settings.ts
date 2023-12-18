@@ -57,6 +57,15 @@ export namespace settings {
           "Text for the display of the found notes, {{count}} is replace with the number of matched notes",
       },
 
+      noteStatus: {
+        value: "",
+        advanced: true,
+        type: SettingItemType.String,
+        section: "noteOverviewSection",
+        public: true,
+        label: "Field status: note",
+        description: "Text for the status field, for note.",
+      },
       todoStatusOpen: {
         value: "",
         advanced: true,

@@ -310,7 +310,7 @@ export namespace noteoverview {
 
   export async function getDefaultStatusText(): Promise<Object> {
     let status = {
-      note: "",
+      note: await joplin.settings.value("noteStatus"),
       todo: {
         overdue: await joplin.settings.value("todoStatusOverdue"),
         open: await joplin.settings.value("todoStatusOpen"),
@@ -843,6 +843,7 @@ export namespace noteoverview {
     if (fields.includes("status")) {
       additionalFields.push("todo_due");
       additionalFields.push("todo_completed");
+      additionalFields.push("is_todo");
     }
 
     // include body
@@ -913,7 +914,7 @@ export namespace noteoverview {
         try {
           queryNotes = await joplin.data.get(["search"], {
             query: query,
-            fields: "id, parent_id, is_todo, " + dbFieldsArray.join(","),
+            fields: "id, parent_id, " + dbFieldsArray.join(","),
             order_by: options.orderBy,
             order_dir: options.orderDir.toUpperCase(),
             limit: 50,
