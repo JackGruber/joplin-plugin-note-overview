@@ -185,7 +185,10 @@ alias: todo_due AS Due Date, notebook AS Folder
 
 ### datetime
 
-Customize datetime fromat for a single overview. Complete list of format can be found [here](https://momentjs.com/docs/#/displaying/format/)
+Customize datetime fromat for a single overview.
+
+Complete list of format can be found [here](https://momentjs.com/docs/#/displaying/format/).
+Default is Joplin global settings on `Tools` > `Options` > `General` > `Date format` and `Time format`
 
 ```yml
 datetime:
@@ -203,6 +206,8 @@ datetime:
     enabled: [true | false]
     withSuffix: [true | false]
 ```
+
+`withSuffix` : if `true`, add oriented duration `in a month`, `a month ago` instead of `a month` (with `false`). Default is `true`.
 
 ### image
 
