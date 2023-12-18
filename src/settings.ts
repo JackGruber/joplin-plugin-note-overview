@@ -66,8 +66,8 @@ export namespace settings {
         type: SettingItemType.String,
         section: "noteOverviewSection",
         public: true,
-        label: "Field status: note",
-        description: "Text for the status field, for note.",
+        label: i18n.__("settings.noteStatus.label", "note"),
+        description: i18n.__("settings.noteStatus.description"),
       },
       todoStatusOpen: {
         value: "",
