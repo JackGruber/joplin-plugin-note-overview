@@ -1,0 +1,6 @@
+datetime:
+  date: "DD/MM/YYYY"
+  time: "HH:mm"
+  humanize:
+    enabled: true
+    withSuffix: false

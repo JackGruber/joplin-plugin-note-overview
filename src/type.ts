@@ -42,6 +42,12 @@ type OverviewListview = {
 type OverviewOptionsDatetime = {
   date: string;
   time: string;
-  humanize: boolean;
+  humanize: OverviewOptionsDatetimeHumanize;
 };
+
+type OverviewOptionsDatetimeHumanize = {
+  enabled: boolean;
+  withSuffix: boolean;
+};
+
 export { OverviewOptions };

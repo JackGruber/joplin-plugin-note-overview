@@ -175,7 +175,8 @@ export namespace noteoverview {
     if (epoch !== 0) {
       const dateObject = new Date(epoch);
       const date: string = moment(dateObject.getTime()).format(dateFormat);
-      const time: string = moment(dateObject.getTime()).format(timeFormat);
+      const newTimeFormat: string = timeFormat === "" ? "[]" : timeFormat;
+      const time: string = moment(dateObject.getTime()).format(newTimeFormat);
 
       const datetime: string[] = [date];
       if (time !== "") {
@@ -187,12 +188,15 @@ export namespace noteoverview {
       return "";
     }
   }
-  export async function getDateHumanized(epoch: number): Promise<string> {
+  export async function getDateHumanized(
+    epoch: number,
+    withSuffix: boolean = false
+  ): Promise<string> {
     if (epoch !== 0) {
       const dateObject = new Date(epoch);
       const dateString = moment
         .duration(moment(dateObject.getTime()).diff(moment()))
-        .humanize(true);
+        .humanize(withSuffix);
 
       return dateString;
     } else {
@@ -841,7 +845,10 @@ export namespace noteoverview {
       {
         date: globalSettings.dateFormat,
         time: globalSettings.timeFormat,
-        humanize: false,
+        humanize: {
+          enabled: false,
+          withSuffix: true,
+        },
       },
       overviewSettings["datetime"]
     );
@@ -1188,10 +1195,13 @@ export namespace noteoverview {
         );
 
         const htmlAttr: string[] = [];
-        if (value !== "" && options.datetimeSettings.humanize) {
+        if (value !== "" && options.datetimeSettings.humanize.enabled) {
           htmlAttr.push(`title="${value}"`);
 
-          value = await noteoverview.getDateHumanized(dateObject.getTime());
+          value = await noteoverview.getDateHumanized(
+            dateObject.getTime(),
+            options.datetimeSettings.humanize.withSuffix
+          );
         }
 
         switch (field) {

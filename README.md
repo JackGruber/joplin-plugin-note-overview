@@ -23,6 +23,7 @@ A note overview is created based on the defined search and the specified fields.
     - [fields](#fields)
     - [sort](#sort)
     - [alias](#alias)
+    - [datetime](#datetime)
     - [image](#image)
     - [excerpt](#excerpt)
     - [details](#details)
@@ -180,6 +181,27 @@ Syntax: `<field> AS <new field name>`, multiple fields comma seperated.
 
 ```yml
 alias: todo_due AS Due Date, notebook AS Folder
+```
+
+### datetime
+
+Customize datetime fromat for a single overview. Complete list of format can be found [here](https://momentjs.com/docs/#/displaying/format/)
+
+```yml
+datetime:
+  date: "YYYY-MM-DD"
+  time: "HH:mm"
+```
+
+you can also set datetime format to [humanize](https://momentjs.com/docs/#/durations/humanize/) format, to display a length of time. You can do that by adding `humanize: true`, like this
+
+```yml
+datetime:
+  date: "YYYY-MM-DD"
+  time: "HH:mm"
+  humanize:
+    enabled: [true | false]
+    withSuffix: [true | false]
 ```
 
 ### image
