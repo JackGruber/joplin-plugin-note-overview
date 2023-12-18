@@ -1,0 +1,6 @@
+status:
+  note: "n"
+  todo:
+    open: "o"
+    done: "d"
+    overdue: "od"

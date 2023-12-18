@@ -65,6 +65,10 @@
       "label": "Color: %s",
       "description": "HTML color for the %s, when the todo was completed but no due date was set"
     },
+    "noteStatus": {
+      "label": "Field status: %s",
+      "description": "Text for the status field if it is a note and not a todo"
+    },
     "fileLogLevel": {
       "label": "Loglevel",
       "description": "Setting for the Loglevel",

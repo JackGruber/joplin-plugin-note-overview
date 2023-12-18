@@ -66,6 +66,10 @@
       "label": "Farbe: %s",
       "description": "HTML Farbe für das Abschlussdatum (%s), wenn die Aufgabe abgeschlossen wurde, aber kein Fälligkeitsdatum gesetzt wurde"
     },
+    "noteStatus": {
+      "label": "Feld status: %s",
+      "description": "Text für das Statusfeld wenn es sich um eine Notiz und keine Aufgabe handelt"
+    },
     "fileLogLevel": {
       "label": "Loglevel",
       "description": "Einstellung für das Loglevel",

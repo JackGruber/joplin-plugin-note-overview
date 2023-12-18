@@ -29,6 +29,7 @@ A note overview is created based on the defined search and the specified fields.
     - [count](#count)
     - [listview](#listview)
     - [link](#link)
+    - [status](#status)
 - [Examples](#examples)
     - [ToDo Overview](#todo-overview)
     - [Show all ToDos with status](#show-all-todos-with-status)
@@ -113,7 +114,7 @@ Options that can be specified in the in the code block using YAML syntax.
 ### search
 
 The search filter which will be used to create the overview.
-[Documentation of search filters](https://joplinapp.org/help/#search-filters).
+[Documentation of search filters](https://joplinapp.org/help/apps/search#search-filters).
 
 ```yml
 search: type:todo
@@ -271,6 +272,19 @@ This allows you to control the output displayed in the `link` field.
 link:
   caption: "Jump to"
   html: true
+```
+
+### status
+
+Customize note status field for a single overview.
+
+```yml
+status:
+  note: ""
+  todo:
+    open: ☐
+    done: 🗹
+    overdue: ⚠
 ```
 
 ## Examples

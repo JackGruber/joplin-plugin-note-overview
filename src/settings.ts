@@ -60,6 +60,15 @@ export namespace settings {
         ),
       },
 
+      noteStatus: {
+        value: "",
+        advanced: true,
+        type: SettingItemType.String,
+        section: "noteOverviewSection",
+        public: true,
+        label: i18n.__("settings.noteStatus.label", "note"),
+        description: i18n.__("settings.noteStatus.description"),
+      },
       todoStatusOpen: {
         value: "",
         advanced: true,
