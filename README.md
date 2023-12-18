@@ -282,9 +282,9 @@ Customize note status field for a single overview.
 status:
   note: ""
   todo:
-    open: "☐"
-    done: "🗹"
-    overdue: "⚠"
+    open: ☐
+    done: 🗹
+    overdue: ⚠
 ```
 
 ## Examples
