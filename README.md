@@ -185,10 +185,7 @@ alias: todo_due AS Due Date, notebook AS Folder
 
 ### datetime
 
-Customize datetime fromat for a single overview.
-
-Complete list of format can be found [here](https://momentjs.com/docs/#/displaying/format/).
-Default is Joplin global settings on `Tools` > `Options` > `General` > `Date format` and `Time format`
+Customize datetime format for a single overview.
 
 ```yml
 datetime:
@@ -196,7 +193,12 @@ datetime:
   time: "HH:mm"
 ```
 
-you can also set datetime format to [humanize](https://momentjs.com/docs/#/durations/humanize/) format, to display a length of time. You can do that by adding `humanize: true`, like this
+- `date`: Set date format. Default is Joplin global settings on `Tools` > `Options` > `General` > `Date format`
+- `time`: Set time format. Default is Joplin global settings on `Tools` > `Options` > `General` > `Time format`
+
+Complete list of format can be found [here](https://momentjs.com/docs/#/displaying/format/).
+
+You can also set datetime to [humanize](https://momentjs.com/docs/#/durations/humanize/) format, to display a length of time. You can do that by adding `humanize` settings.
 
 ```yml
 datetime:
@@ -207,7 +209,8 @@ datetime:
     withSuffix: [true | false]
 ```
 
-`withSuffix` : if `true`, add oriented duration `in a month`, `a month ago` instead of `a month` (with `false`). Default is `true`.
+- `enabled` : set `true` to enable humanize format. Default is `false`.
+- `withSuffix` : set `false`, to remove oriented duration (ex: `a month`). Default is `true`, it will add oriented duration (ex: `in a month`, `a month ago`).
 
 ### image
 

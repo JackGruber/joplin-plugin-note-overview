@@ -190,7 +190,7 @@ export namespace noteoverview {
   }
   export async function getDateHumanized(
     epoch: number,
-    withSuffix: boolean = false
+    withSuffix: boolean
   ): Promise<string> {
     if (epoch !== 0) {
       const dateObject = new Date(epoch);
