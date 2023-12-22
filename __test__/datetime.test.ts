@@ -1,7 +1,19 @@
-import { noteoverview } from "../src/noteoverview";
+import { noteoverview, logging } from "../src/noteoverview";
 import { getOptionsFromFile } from "./tools";
 
 describe("Datetime function", function () {
+  beforeEach(async () => {
+    jest.spyOn(logging, "silly").mockImplementation(() => {});
+    jest.spyOn(logging, "verbose").mockImplementation(() => {});
+    jest.spyOn(logging, "info").mockImplementation(() => {});
+  });
+
+  afterEach(async () => {
+    jest.spyOn(logging, "silly").mockReset();
+    jest.spyOn(logging, "verbose").mockReset();
+    jest.spyOn(logging, "info").mockReset();
+  });
+
   it(`empty time format`, async () => {
     const options = getOptionsFromFile("datetime");
     const optionsObject = await noteoverview.getOptions(options);
