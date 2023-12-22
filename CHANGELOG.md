@@ -2,6 +2,11 @@
 
 ## not released
 
+- Add: Translation
+- Fix: #67 HTML image tags are not recognized for `image` option
+- Add: Option to disable automatic update of a note overview #57
+- Add: Option to configure the `status` field per note overview #66 @aiosk
+
 ## v1.6.0 (2022-12-26)
 
 - Add: #35 Warning color when a taks is close to a due date

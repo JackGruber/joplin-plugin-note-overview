@@ -1,0 +1,94 @@
+{
+  "settings": {
+    "updateInterval": {
+      "label": "Aktualisierungs interval in minutes",
+      "description": "0 = deaktivert das automatische aktualisieren der note-overview"
+    },
+    "updateOnSync": {
+      "label": "Aktualisier nach Joplin sync",
+      "values": {
+        "yes": "Ja",
+        "no": "Nein"
+      },
+      "description": "Aktualisiert die note-overview nach einer Joplin-Syncronisation. Unabhängig vom Aktualisierungsintervall"
+    },
+    "showNoteCount": {
+      "label": "Anzahl Notizen anzeigen",
+      "values": {
+        "off": "Aus",
+        "above": "Darüber",
+        "below": "Darunter"
+      },
+      "description": "Zeigt die Anzahl der Notizen an, die gefunden wurden"
+    },
+    "showNoteCountText": {
+      "label": "Notiz anzahl text",
+      "description": "Text für die Anzeige der gefundenen Notizen, %s wird durch die Anzahl der gefundenen Notizen ersetzt"
+    },
+    "todoStatusOpen": {
+      "label": "Feld status: %s",
+      "description": "Text für das Feld `Status`, wenn die Aufgabe nicht abgeschlossen ist"
+    },
+    "todoStatusDone": {
+      "label": "Feld status: %s",
+      "description": "Text für das Feld `Status`, wenn die Aufgabe abgeschlossen ist"
+    },
+    "todoStatusOverdue": {
+      "label": "Feld status: %s",
+      "description": "Text für das Feld `Status`, wenn das Fälligkeitsdatum der Aufgabe überschritten ist"
+    },
+    "colorTodoOpen": {
+      "label": "Farbe: %s",
+      "description": "HTML Farbe für das Fälligkeitsdatum (%s), wenn die Aufgabe nicht abgeschlossen ist"
+    },
+    "colorTodoWarning": {
+      "label": "Farbe: %s",
+      "description": "HTML Farbe für das Fälligkeitsdatum (%s), wenn das Fälligkeitsdatum in x Stunden erreicht ist"
+    },
+    "todoWarningHours": {
+      "label": "%s Stunden",
+      "description": "Wie viele Stunden vor dem Fälligkeitsdatum (%s) soll die Warnfarbe angewendet werden. 0 = Deaktiviert"
+    },
+    "colorTodoOpenOverdue": {
+      "label": "Farbe: %s",
+      "description": "HTML Farbe für das Fälligkeitsdatum (%s), wenn die Aufgabe das Fälligkeitsdatum überschritten hat"
+    },
+    "colorTodoDone": {
+      "label": "Farbe: %s",
+      "description": "HTML Farbe für das Fälligkeitsdatum ({{field_due_date}}) und das Abschlussdatum ({{field_todo_completed}}) , wenn die Aufgabe abgeschlossen ist. Trennen Sie die Farbe für {{field_due_date}} und {{field_todo_completed}} durch ein Komma"
+    },
+
+    "colorTodoDoneOverdue": {
+      "label": "Farbe: %s",
+      "description": "HTML Farbe für das Fälligkeitsdatum ({{field_due_date}}) und das Abschlussdatum ({{field_todo_completed}}), wenn die Aufgabe nach dem Fälligkeitsdatum abgeschlossen wurde. Trennen Sie die Farbe für {{field_due_date}} und {{field_todo_completed}} durch ein Komma"
+    },
+    "colorTodoDoneNodue": {
+      "label": "Farbe: %s",
+      "description": "HTML Farbe für das Abschlussdatum (%s), wenn die Aufgabe abgeschlossen wurde, aber kein Fälligkeitsdatum gesetzt wurde"
+    },
+    "noteStatus": {
+      "label": "Feld status: %s",
+      "description": "Text für das Statusfeld wenn es sich um eine Notiz und keine Aufgabe handelt"
+    },
+    "fileLogLevel": {
+      "label": "Loglevel",
+      "description": "Einstellung für das Loglevel",
+      "values": {
+        "false": "Aus",
+        "verbose": "Verbose",
+        "info": "Info",
+        "warn": "Warnung",
+        "error": "Fehler"
+      }
+    }
+  },
+  "msg": {
+    "error": {
+      "regexParseError": "RegEx parse Fehler",
+      "yamlParseError": "YAML parse Fehler"
+    }
+  },
+  "command": {
+    "createNoteOverview": "Aktualisiere note overview"
+  }
+}

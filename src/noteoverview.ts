@@ -11,6 +11,7 @@ import logging from "electron-log";
 import * as path from "path";
 import { OverviewOptions } from "./type";
 import * as fs from "fs-extra";
+import { I18n } from "i18n";
 
 let noteoverviewDialog = null;
 let timer = null;
@@ -19,6 +20,7 @@ const consoleLogLevel = "verbose";
 let firstSyncCompleted = false;
 let joplinNotebooks: any = null;
 let logFile = null;
+let i18n: any;
 
 export namespace noteoverview {
   export async function getImageNr(
@@ -27,7 +29,8 @@ export namespace noteoverview {
     imageSettings: Object
   ): Promise<string> {
     logging.verbose("func: getImageNr");
-    const regExresourceId = /!\[([^\]]+|)\]\(:\/(?<resourceId>[\da-z]{32})\)/g;
+    const regExresourceId =
+      /(!\[([^\]]+|)\]\(|<img([^>]+)src=["']):\/(?<resourceId>[\da-z]{32})/g;
     let ids = [];
     let imageId = null;
     let regExMatch = null;
@@ -329,6 +332,7 @@ export namespace noteoverview {
 
   export async function getDefaultStatusText(): Promise<Object> {
     let status = {
+      note: await joplin.settings.value("noteStatus"),
       todo: {
         overdue: await joplin.settings.value("todoStatusOverdue"),
         open: await joplin.settings.value("todoStatusOpen"),
@@ -682,7 +686,7 @@ export namespace noteoverview {
         logging.error("RegEx parse error: " + error.message);
         await noteoverview.showError(
           title,
-          "RegEx parse error</br>" + error.message,
+          i18n.__("msg.error.regexParseError") + "</br>" + error.message,
           settings["excerpt"]["regex"]
         );
         return false;
@@ -717,10 +721,30 @@ export namespace noteoverview {
         logging.error("YAML parse error: " + error.message);
         await noteoverview.showError(
           note.title,
-          "YAML parse error</br>" + error.message,
+          i18n.__("msg.error.yamlParseError") + "</br>" + error.message,
           settingsBlock
         );
         return;
+      }
+
+      // Skipp note update when set to manual
+      if (
+        noteOverviewSettings.hasOwnProperty("update") &&
+        noteOverviewSettings["update"] == "manual"
+      ) {
+        logging.verbose("noteoverview update setting: manual");
+
+        if (userTriggerd == false) {
+          logging.verbose("skip update, not user triggerd");
+          continue;
+        }
+        const selectedNote = await joplin.workspace.selectedNote();
+        if (userTriggerd == true && noteId !== selectedNote.id) {
+          logging.verbose(
+            "skip update, selected note " + selectedNote.id + " <> " + noteId
+          );
+          continue;
+        }
       }
 
       if (
@@ -873,6 +897,7 @@ export namespace noteoverview {
     if (fields.includes("status")) {
       additionalFields.push("todo_due");
       additionalFields.push("todo_completed");
+      additionalFields.push("is_todo");
     }
 
     // include body
@@ -1224,11 +1249,15 @@ export namespace noteoverview {
         }
         break;
       case "status":
-        const status: string = await noteoverview.getToDoStatus(
-          fields["todo_due"],
-          fields["todo_completed"]
-        );
-        value = options.statusText["todo"][status];
+        if (!!fields["is_todo"]) {
+          const status: string = await noteoverview.getToDoStatus(
+            fields["todo_due"],
+            fields["todo_completed"]
+          );
+          value = options.statusText["todo"][status];
+        } else {
+          value = options.statusText["note"];
+        }
         break;
       case "excerpt":
         value = await noteoverview.getMarkdownExcerpt(
@@ -1349,6 +1378,7 @@ export namespace noteoverview {
   export async function init() {
     logging.info("Note overview plugin started!");
 
+    await noteoverview.configureTranslation();
     await settings.register();
     await noteoverview.deleteLogFile();
     await noteoverview.setupLogging();
@@ -1359,7 +1389,7 @@ export namespace noteoverview {
 
     await joplin.commands.register({
       name: "createNoteOverview",
-      label: "Create note overview",
+      label: i18n.__("command.createNoteOverview"),
       execute: async () => {
         noteoverview.updateAll(true);
       },
@@ -1489,6 +1519,23 @@ export namespace noteoverview {
       return momentDate.format(groups);
     });
   }
+
+  export async function configureTranslation() {
+    const joplinLocale = await joplin.settings.globalValue("locale");
+    const installationDir = await joplin.plugins.installationDir();
+
+    i18n = new I18n({
+      locales: ["en_US", "de_DE"],
+      defaultLocale: "en_US",
+      fallbacks: { "en_*": "en_US" },
+      updateFiles: true,
+      retryInDefaultLocale: true,
+      syncFiles: true,
+      directory: path.join(installationDir, "locales"),
+      objectNotation: true,
+    });
+    i18n.setLocale(joplinLocale);
+  }
 }
 
-export { logging };
+export { logging, i18n };
