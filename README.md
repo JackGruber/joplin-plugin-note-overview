@@ -23,6 +23,7 @@ A note overview is created based on the defined search and the specified fields.
     - [fields](#fields)
     - [sort](#sort)
     - [alias](#alias)
+    - [datetime](#datetime)
     - [image](#image)
     - [excerpt](#excerpt)
     - [details](#details)
@@ -183,6 +184,35 @@ Syntax: `<field> AS <new field name>`, multiple fields comma seperated.
 ```yml
 alias: todo_due AS Due Date, notebook AS Folder
 ```
+
+### datetime
+
+Customize datetime format for a single overview.
+
+```yml
+datetime:
+  date: "YYYY-MM-DD"
+  time: "HH:mm"
+```
+
+- `date`: Set date format. Default is Joplin global settings on `Tools` > `Options` > `General` > `Date format`
+- `time`: Set time format. Default is Joplin global settings on `Tools` > `Options` > `General` > `Time format`
+
+Complete list of format can be found [here](https://momentjs.com/docs/#/displaying/format/).
+
+You can also set datetime to [humanize](https://momentjs.com/docs/#/durations/humanize/) format, to display a length of time. You can do that by adding `humanize` settings.
+
+```yml
+datetime:
+  date: "YYYY-MM-DD"
+  time: "HH:mm"
+  humanize:
+    enabled: [true | false]
+    withSuffix: [true | false]
+```
+
+- `enabled` : set `true` to enable humanize format. Default is `false`.
+- `withSuffix` : set `false`, to remove oriented duration (ex: `a month`). Default is `true`, it will add oriented duration (ex: `in a month`, `a month ago`).
 
 ### image
 

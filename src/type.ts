@@ -13,6 +13,7 @@ type OverviewOptions = {
   listview: OverviewListview;
   escapeForTable: boolean;
   link: OverviewOptionsLink;
+  datetimeSettings: OverviewOptionsDatetime;
 };
 
 type OverviewOptionsLink = {
@@ -36,6 +37,17 @@ type OverviewListview = {
   linebreak: boolean;
   prefix: string;
   suffix: string;
+};
+
+type OverviewOptionsDatetime = {
+  date: string;
+  time: string;
+  humanize: OverviewOptionsDatetimeHumanize;
+};
+
+type OverviewOptionsDatetimeHumanize = {
+  enabled: boolean;
+  withSuffix: boolean;
 };
 
 export { OverviewOptions };

@@ -177,10 +177,29 @@ export namespace noteoverview {
   ): Promise<string> {
     if (epoch !== 0) {
       const dateObject = new Date(epoch);
-      const dateString =
-        moment(dateObject.getTime()).format(dateFormat) +
-        " " +
-        moment(dateObject.getTime()).format(timeFormat);
+      const date: string = moment(dateObject.getTime()).format(dateFormat);
+      const newTimeFormat: string = timeFormat === "" ? "[]" : timeFormat;
+      const time: string = moment(dateObject.getTime()).format(newTimeFormat);
+
+      const datetime: string[] = [date];
+      if (time !== "") {
+        datetime.push(time);
+      }
+
+      return datetime.join(" ");
+    } else {
+      return "";
+    }
+  }
+  export async function getDateHumanized(
+    epoch: number,
+    withSuffix: boolean
+  ): Promise<string> {
+    if (epoch !== 0) {
+      const dateObject = new Date(epoch);
+      const dateString = moment
+        .duration(moment(dateObject.getTime()).diff(moment()))
+        .humanize(withSuffix);
 
       return dateString;
     } else {
@@ -846,6 +865,18 @@ export namespace noteoverview {
 
     settings.link = overviewSettings["link"] ? overviewSettings["link"] : null;
 
+    settings.datetimeSettings = await mergeObject(
+      {
+        date: globalSettings.dateFormat,
+        time: globalSettings.timeFormat,
+        humanize: {
+          enabled: false,
+          withSuffix: true,
+        },
+      },
+      overviewSettings["datetime"]
+    );
+
     return settings;
   }
 
@@ -1184,9 +1215,20 @@ export namespace noteoverview {
         const dateObject = new Date(fields[field]);
         value = await noteoverview.getDateFormated(
           dateObject.getTime(),
-          globalSettings.dateFormat,
-          globalSettings.timeFormat
+          options.datetimeSettings.date,
+          options.datetimeSettings.time
         );
+
+        const htmlAttr: string[] = [];
+        if (value !== "" && options.datetimeSettings.humanize.enabled) {
+          htmlAttr.push(`title="${value}"`);
+
+          value = await noteoverview.getDateHumanized(
+            dateObject.getTime(),
+            options.datetimeSettings.humanize.withSuffix
+          );
+        }
+
         switch (field) {
           case "todo_due":
           case "todo_completed":
@@ -1197,9 +1239,13 @@ export namespace noteoverview {
               field
             );
             if (color !== "") {
-              value = `<font color="${color}">${value}</font>`;
+              htmlAttr.push(`color="${color}"`);
             }
             break;
+        }
+
+        if (htmlAttr.length) {
+          value = `<font ${htmlAttr.join(" ")}>${value}</font>`;
         }
         break;
       case "status":
