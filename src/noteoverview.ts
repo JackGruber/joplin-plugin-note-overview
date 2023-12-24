@@ -961,6 +961,19 @@ export namespace noteoverview {
       ];
 
       let noteCount = 0;
+      let queryLimit = 50;
+      let noteLimit = overviewSettings["limit"]
+        ? overviewSettings["limit"]
+        : -1;
+
+      if (noteLimit != -1) {
+        logging.verbose("Note limit: " + noteLimit);
+        if (overviewSettings.limit < queryLimit) {
+          queryLimit = overviewSettings.limit;
+          logging.verbose("Query limit: " + queryLimit);
+        }
+      }
+
       let queryNotes = null;
       let pageQueryNotes = 1;
       const entrys: string[] = [];
@@ -971,7 +984,7 @@ export namespace noteoverview {
             fields: "id, parent_id, " + dbFieldsArray.join(","),
             order_by: options.orderBy,
             order_dir: options.orderDir.toUpperCase(),
-            limit: 50,
+            limit: queryLimit,
             page: pageQueryNotes++,
           });
         } catch (error) {
@@ -988,6 +1001,9 @@ export namespace noteoverview {
         }
 
         for (let queryNotesKey in queryNotes.items) {
+          if (noteLimit != -1 && noteCount >= noteLimit) {
+            break;
+          }
           if (queryNotes.items[queryNotesKey].id != noteId) {
             noteCount++;
 
@@ -1009,7 +1025,10 @@ export namespace noteoverview {
             }
           }
         }
-      } while (queryNotes.has_more);
+      } while (
+        queryNotes.has_more &&
+        (noteCount <= noteLimit || noteLimit == -1)
+      );
 
       if (options.listview) {
         if (options.listview.separator) {

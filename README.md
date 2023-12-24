@@ -175,6 +175,14 @@ By which field the output should be sorted. It can be only sorted by one field a
 sort: todo_due ASC
 ```
 
+### limit
+
+Displayes only the first x hits of the search. Without the limit option all results are displayed.
+
+```yml
+limit: 5
+```
+
 ### alias
 
 This allows renaming the fields in the output.

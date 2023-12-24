@@ -7,6 +7,7 @@
 - Add: Option to disable automatic update of a note overview #57
 - Add: Option to configure the `status` field per note overview #66 @aiosk
 - Add: Option to configure the date and timeformat per note overview #68 @aiosk
+- Add: The option `limit` to set how many results should be displayed per note overview #69
 
 ## v1.6.0 (2022-12-26)
 
