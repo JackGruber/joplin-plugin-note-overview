@@ -49,6 +49,7 @@ A note overview is created based on the defined search and the specified fields.
     - [Combine notes dynamically](#combine-notes-dynamically)
     - [Show all uncompleted checkboxes ToDos](#show-all-uncompleted-checkboxes-todos)
     - [Disable automatic note overview update for one note overview](#disable-automatic-note-overview-update-for-one-note-overview)
+    - [Show the last 5 edited notes](#show-the-last-5-edited-notes)
 - [Plugin options](#plugin-options)
 - [Keyboard Shortcuts](#keyboard-shortcuts)
 - [FAQ](#faq)
@@ -510,6 +511,17 @@ When you set the `update` option to `manual`, then note overview is only updated
 search: tag:todo
 fields: title, excerpt
 update: manual
+-->
+```
+
+### Show the last 5 edited notes
+
+```yml
+<!-- note-overview-plugin
+search: /*
+fields: title, updated_time
+sort: updated_time DESC
+limit: 5
 -->
 ```
 
