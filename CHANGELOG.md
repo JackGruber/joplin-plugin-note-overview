@@ -2,6 +2,8 @@
 
 ## not released
 
+## v1.7.0 (2023-12-24)
+
 - Add: Translation
 - Fix: #67 HTML image tags are not recognized for `image` option
 - Add: Option to disable automatic update of a note overview #57
