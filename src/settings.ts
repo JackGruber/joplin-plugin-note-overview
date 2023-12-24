@@ -1,5 +1,6 @@
 import joplin from "api";
 import { SettingItemType } from "api/types";
+import { i18n } from "./noteoverview";
 
 export namespace settings {
   export async function register() {
@@ -16,8 +17,8 @@ export namespace settings {
         type: SettingItemType.Int,
         section: "noteOverviewSection",
         public: true,
-        label: "Update interval in minutes",
-        description: "0 = disable automatic note overview creation",
+        label: i18n.__("settings.updateInterval.label"),
+        description: i18n.__("settings.updateInterval.description"),
       },
       updateOnSync: {
         value: "no",
@@ -25,13 +26,12 @@ export namespace settings {
         section: "noteOverviewSection",
         isEnum: true,
         public: true,
-        label: "Update on Joplin sync",
+        label: i18n.__("settings.updateOnSync.label"),
         options: {
-          yes: "Yes",
-          no: "No",
+          yes: i18n.__("settings.updateOnSync.values.yes"),
+          no: i18n.__("settings.updateOnSync.values.no"),
         },
-        description:
-          "Update the Noteoverview after a Joplin syncronisation. Independent of the update interval.",
+        description: i18n.__("settings.updateOnSync.description"),
       },
       showNoteCount: {
         value: "off",
@@ -39,12 +39,13 @@ export namespace settings {
         section: "noteOverviewSection",
         isEnum: true,
         public: true,
-        label: "Show note count",
+        label: i18n.__("settings.showNoteCount.label"),
         options: {
-          off: "Off",
-          above: "Above",
-          below: "Below",
+          off: i18n.__("settings.showNoteCount.values.off"),
+          above: i18n.__("settings.showNoteCount.values.above"),
+          below: i18n.__("settings.showNoteCount.values.below"),
         },
+        description: i18n.__("settings.showNoteCount.description"),
       },
       showNoteCountText: {
         value: "Note count: {{count}}",
@@ -52,20 +53,30 @@ export namespace settings {
         section: "noteOverviewSection",
         public: true,
         advanced: true,
-        label: "Note count text",
-        description:
-          "Text for the display of the found notes, {{count}} is replace with the number of matched notes",
+        label: i18n.__("settings.showNoteCountText.label"),
+        description: i18n.__(
+          "settings.showNoteCountText.description",
+          "{{count}}"
+        ),
       },
 
+      noteStatus: {
+        value: "",
+        advanced: true,
+        type: SettingItemType.String,
+        section: "noteOverviewSection",
+        public: true,
+        label: i18n.__("settings.noteStatus.label", "note"),
+        description: i18n.__("settings.noteStatus.description"),
+      },
       todoStatusOpen: {
         value: "",
         advanced: true,
         type: SettingItemType.String,
         section: "noteOverviewSection",
         public: true,
-        label: "Field status: open todo",
-        description:
-          "Text for the status field, when the todo is not completed.",
+        label: i18n.__("settings.todoStatusOpen.label", "open todo"),
+        description: i18n.__("settings.todoStatusOpen.description"),
       },
       todoStatusDone: {
         value: "✔",
@@ -73,8 +84,8 @@ export namespace settings {
         type: SettingItemType.String,
         section: "noteOverviewSection",
         public: true,
-        label: "Field status: todo completed",
-        description: "Text for the status field, when the todo is completed.",
+        label: i18n.__("settings.todoStatusDone.label", "todo completed"),
+        description: i18n.__("settings.todoStatusDone.description"),
       },
       todoStatusOverdue: {
         value: "❗",
@@ -82,9 +93,8 @@ export namespace settings {
         type: SettingItemType.String,
         section: "noteOverviewSection",
         public: true,
-        label: "Field status: todo over due",
-        description:
-          "Text for the `status` field, when the due date of the todo is exceeded.",
+        label: i18n.__("settings.todoStatusOverdue.label", "todo over due"),
+        description: i18n.__("settings.todoStatusOverdue.description"),
       },
 
       colorTodoOpen: {
@@ -93,9 +103,8 @@ export namespace settings {
         type: SettingItemType.String,
         section: "noteOverviewSection",
         public: true,
-        label: "Color: todo [open]",
-        description:
-          "HTML color for the due_date, when the todo is not completed.",
+        label: i18n.__("settings.colorTodoOpen.label", "todo [open]"),
+        description: i18n.__("settings.colorTodoOpen.description", "due_date"),
       },
       colorTodoWarning: {
         value: "",
@@ -103,9 +112,11 @@ export namespace settings {
         type: SettingItemType.String,
         section: "noteOverviewSection",
         public: true,
-        label: "Color: todo [warning]",
-        description:
-          "HTML color for the due_date, when the todo date is within 'todo [warning] hours' of the due date.",
+        label: i18n.__("settings.colorTodoWarning.label", "todo [warning]"),
+        description: i18n.__(
+          "settings.colorTodoWarning.description",
+          "due_date"
+        ),
       },
       todoWarningHours: {
         value: 0,
@@ -115,9 +126,11 @@ export namespace settings {
         section: "noteOverviewSection",
         advanced: true,
         public: true,
-        label: "todo [warning] hours",
-        description:
-          "How many hours before due_date the warning color should be applied. 0 = Disabled",
+        label: i18n.__("settings.todoWarningHours.label", "todo [warning]"),
+        description: i18n.__(
+          "settings.todoWarningHours.description",
+          "due_date"
+        ),
       },
       colorTodoOpenOverdue: {
         value: "red",
@@ -125,9 +138,14 @@ export namespace settings {
         type: SettingItemType.String,
         section: "noteOverviewSection",
         public: true,
-        label: "Color: todo [open_overdue]",
-        description:
-          "HTML color for the due_date, when the todo is over the due date.",
+        label: i18n.__(
+          "settings.colorTodoOpenOverdue.label",
+          "todo [open_overdue]"
+        ),
+        description: i18n.__(
+          "settings.colorTodoOpenOverdue.description",
+          "due_date"
+        ),
       },
       colorTodoDone: {
         value: "limegreen,limegreen",
@@ -135,9 +153,11 @@ export namespace settings {
         type: SettingItemType.String,
         section: "noteOverviewSection",
         public: true,
-        label: "Color: todo [done]",
-        description:
-          "HTML color for the due_date and todo_completed, when the todo is completed. Seperate the color for due_date and todo_completed by a comma.",
+        label: i18n.__("settings.colorTodoDone.label", "todo [done]"),
+        description: i18n.__("settings.colorTodoDone.description", {
+          field_due_date: "due_date",
+          field_todo_completed: "todo_completed",
+        }),
       },
       colorTodoDoneOverdue: {
         value: "orange,orange",
@@ -145,9 +165,14 @@ export namespace settings {
         type: SettingItemType.String,
         section: "noteOverviewSection",
         public: true,
-        label: "Color: todo [done_overdue]",
-        description:
-          "HTML color for the due_date and todo_completed, when the todo was completed after the due date. Seperate the color for due_date and todo_completed by a comma.",
+        label: i18n.__(
+          "settings.colorTodoDoneOverdue.label",
+          "todo [done_overdue]"
+        ),
+        description: i18n.__("settings.colorTodoDoneOverdue.description", {
+          field_due_date: "due_date",
+          field_todo_completed: "todo_completed",
+        }),
       },
       colorTodoDoneNodue: {
         value: "",
@@ -155,9 +180,14 @@ export namespace settings {
         type: SettingItemType.String,
         section: "noteOverviewSection",
         public: true,
-        label: "Color: todo [done_nodue]",
-        description:
-          "HTML color for the todo_completed, when the todo was completed but no due date was set.",
+        label: i18n.__(
+          "settings.colorTodoDoneNodue.label",
+          "todo [done_nodue]"
+        ),
+        description: i18n.__(
+          "settings.colorTodoDoneNodue.description",
+          "todo_completed"
+        ),
       },
       fileLogLevel: {
         value: "info",
@@ -166,13 +196,14 @@ export namespace settings {
         advanced: true,
         isEnum: true,
         public: true,
-        label: "Logfile",
+        label: i18n.__("settings.fileLogLevel.label"),
+        description: i18n.__("settings.fileLogLevel.description"),
         options: {
-          false: "Off",
-          verbose: "Verbose",
-          info: "Info",
-          warn: "Warning",
-          error: "Error",
+          false: i18n.__("settings.fileLogLevel.values.false"),
+          verbose: i18n.__("settings.fileLogLevel.values.verbose"),
+          info: i18n.__("settings.fileLogLevel.values.info"),
+          warn: i18n.__("settings.fileLogLevel.values.warn"),
+          error: i18n.__("settings.fileLogLevel.values.error"),
         },
       },
     });

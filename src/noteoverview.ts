@@ -11,6 +11,7 @@ import logging from "electron-log";
 import * as path from "path";
 import { OverviewOptions } from "./type";
 import * as fs from "fs-extra";
+import { I18n } from "i18n";
 
 let noteoverviewDialog = null;
 let timer = null;
@@ -19,6 +20,7 @@ const consoleLogLevel = "verbose";
 let firstSyncCompleted = false;
 let joplinNotebooks: any = null;
 let logFile = null;
+let i18n: any;
 
 export namespace noteoverview {
   export async function getImageNr(
@@ -27,7 +29,8 @@ export namespace noteoverview {
     imageSettings: Object
   ): Promise<string> {
     logging.verbose("func: getImageNr");
-    const regExresourceId = /!\[([^\]]+|)\]\(:\/(?<resourceId>[\da-z]{32})\)/g;
+    const regExresourceId =
+      /(!\[([^\]]+|)\]\(|<img([^>]+)src=["']):\/(?<resourceId>[\da-z]{32})/g;
     let ids = [];
     let imageId = null;
     let regExMatch = null;
@@ -174,10 +177,29 @@ export namespace noteoverview {
   ): Promise<string> {
     if (epoch !== 0) {
       const dateObject = new Date(epoch);
-      const dateString =
-        moment(dateObject.getTime()).format(dateFormat) +
-        " " +
-        moment(dateObject.getTime()).format(timeFormat);
+      const date: string = moment(dateObject.getTime()).format(dateFormat);
+      const newTimeFormat: string = timeFormat === "" ? "[]" : timeFormat;
+      const time: string = moment(dateObject.getTime()).format(newTimeFormat);
+
+      const datetime: string[] = [date];
+      if (time !== "") {
+        datetime.push(time);
+      }
+
+      return datetime.join(" ");
+    } else {
+      return "";
+    }
+  }
+  export async function getDateHumanized(
+    epoch: number,
+    withSuffix: boolean
+  ): Promise<string> {
+    if (epoch !== 0) {
+      const dateObject = new Date(epoch);
+      const dateString = moment
+        .duration(moment(dateObject.getTime()).diff(moment()))
+        .humanize(withSuffix);
 
       return dateString;
     } else {
@@ -310,6 +332,7 @@ export namespace noteoverview {
 
   export async function getDefaultStatusText(): Promise<Object> {
     let status = {
+      note: await joplin.settings.value("noteStatus"),
       todo: {
         overdue: await joplin.settings.value("todoStatusOverdue"),
         open: await joplin.settings.value("todoStatusOpen"),
@@ -663,7 +686,7 @@ export namespace noteoverview {
         logging.error("RegEx parse error: " + error.message);
         await noteoverview.showError(
           title,
-          "RegEx parse error</br>" + error.message,
+          i18n.__("msg.error.regexParseError") + "</br>" + error.message,
           settings["excerpt"]["regex"]
         );
         return false;
@@ -698,10 +721,30 @@ export namespace noteoverview {
         logging.error("YAML parse error: " + error.message);
         await noteoverview.showError(
           note.title,
-          "YAML parse error</br>" + error.message,
+          i18n.__("msg.error.yamlParseError") + "</br>" + error.message,
           settingsBlock
         );
         return;
+      }
+
+      // Skipp note update when set to manual
+      if (
+        noteOverviewSettings.hasOwnProperty("update") &&
+        noteOverviewSettings["update"] == "manual"
+      ) {
+        logging.verbose("noteoverview update setting: manual");
+
+        if (userTriggerd == false) {
+          logging.verbose("skip update, not user triggerd");
+          continue;
+        }
+        const selectedNote = await joplin.workspace.selectedNote();
+        if (userTriggerd == true && noteId !== selectedNote.id) {
+          logging.verbose(
+            "skip update, selected note " + selectedNote.id + " <> " + noteId
+          );
+          continue;
+        }
       }
 
       if (
@@ -822,6 +865,18 @@ export namespace noteoverview {
 
     settings.link = overviewSettings["link"] ? overviewSettings["link"] : null;
 
+    settings.datetimeSettings = await mergeObject(
+      {
+        date: globalSettings.dateFormat,
+        time: globalSettings.timeFormat,
+        humanize: {
+          enabled: false,
+          withSuffix: true,
+        },
+      },
+      overviewSettings["datetime"]
+    );
+
     return settings;
   }
 
@@ -842,6 +897,7 @@ export namespace noteoverview {
     if (fields.includes("status")) {
       additionalFields.push("todo_due");
       additionalFields.push("todo_completed");
+      additionalFields.push("is_todo");
     }
 
     // include body
@@ -905,6 +961,19 @@ export namespace noteoverview {
       ];
 
       let noteCount = 0;
+      let queryLimit = 50;
+      let noteLimit = overviewSettings["limit"]
+        ? overviewSettings["limit"]
+        : -1;
+
+      if (noteLimit != -1) {
+        logging.verbose("Note limit: " + noteLimit);
+        if (overviewSettings.limit < queryLimit) {
+          queryLimit = overviewSettings.limit;
+          logging.verbose("Query limit: " + queryLimit);
+        }
+      }
+
       let queryNotes = null;
       let pageQueryNotes = 1;
       const entrys: string[] = [];
@@ -915,7 +984,7 @@ export namespace noteoverview {
             fields: "id, parent_id, " + dbFieldsArray.join(","),
             order_by: options.orderBy,
             order_dir: options.orderDir.toUpperCase(),
-            limit: 50,
+            limit: queryLimit,
             page: pageQueryNotes++,
           });
         } catch (error) {
@@ -932,6 +1001,9 @@ export namespace noteoverview {
         }
 
         for (let queryNotesKey in queryNotes.items) {
+          if (noteLimit != -1 && noteCount >= noteLimit) {
+            break;
+          }
           if (queryNotes.items[queryNotesKey].id != noteId) {
             noteCount++;
 
@@ -953,7 +1025,10 @@ export namespace noteoverview {
             }
           }
         }
-      } while (queryNotes.has_more);
+      } while (
+        queryNotes.has_more &&
+        (noteCount <= noteLimit || noteLimit == -1)
+      );
 
       if (options.listview) {
         if (options.listview.separator) {
@@ -1159,9 +1234,20 @@ export namespace noteoverview {
         const dateObject = new Date(fields[field]);
         value = await noteoverview.getDateFormated(
           dateObject.getTime(),
-          globalSettings.dateFormat,
-          globalSettings.timeFormat
+          options.datetimeSettings.date,
+          options.datetimeSettings.time
         );
+
+        const htmlAttr: string[] = [];
+        if (value !== "" && options.datetimeSettings.humanize.enabled) {
+          htmlAttr.push(`title="${value}"`);
+
+          value = await noteoverview.getDateHumanized(
+            dateObject.getTime(),
+            options.datetimeSettings.humanize.withSuffix
+          );
+        }
+
         switch (field) {
           case "todo_due":
           case "todo_completed":
@@ -1172,17 +1258,25 @@ export namespace noteoverview {
               field
             );
             if (color !== "") {
-              value = `<font color="${color}">${value}</font>`;
+              htmlAttr.push(`color="${color}"`);
             }
             break;
         }
+
+        if (htmlAttr.length) {
+          value = `<font ${htmlAttr.join(" ")}>${value}</font>`;
+        }
         break;
       case "status":
-        const status: string = await noteoverview.getToDoStatus(
-          fields["todo_due"],
-          fields["todo_completed"]
-        );
-        value = options.statusText["todo"][status];
+        if (!!fields["is_todo"]) {
+          const status: string = await noteoverview.getToDoStatus(
+            fields["todo_due"],
+            fields["todo_completed"]
+          );
+          value = options.statusText["todo"][status];
+        } else {
+          value = options.statusText["note"];
+        }
         break;
       case "excerpt":
         value = await noteoverview.getMarkdownExcerpt(
@@ -1303,6 +1397,7 @@ export namespace noteoverview {
   export async function init() {
     logging.info("Note overview plugin started!");
 
+    await noteoverview.configureTranslation();
     await settings.register();
     await noteoverview.deleteLogFile();
     await noteoverview.setupLogging();
@@ -1313,7 +1408,7 @@ export namespace noteoverview {
 
     await joplin.commands.register({
       name: "createNoteOverview",
-      label: "Create note overview",
+      label: i18n.__("command.createNoteOverview"),
       execute: async () => {
         noteoverview.updateAll(true);
       },
@@ -1443,6 +1538,23 @@ export namespace noteoverview {
       return momentDate.format(groups);
     });
   }
+
+  export async function configureTranslation() {
+    const joplinLocale = await joplin.settings.globalValue("locale");
+    const installationDir = await joplin.plugins.installationDir();
+
+    i18n = new I18n({
+      locales: ["en_US", "de_DE"],
+      defaultLocale: "en_US",
+      fallbacks: { "en_*": "en_US" },
+      updateFiles: true,
+      retryInDefaultLocale: true,
+      syncFiles: true,
+      directory: path.join(installationDir, "locales"),
+      objectNotation: true,
+    });
+    i18n.setLocale(joplinLocale);
+  }
 }
 
-export { logging };
+export { logging, i18n };

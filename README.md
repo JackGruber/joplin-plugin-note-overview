@@ -1,6 +1,7 @@
 <!-- markdownlint-disable MD033 -->
 <!-- markdownlint-disable MD028 -->
 <!-- markdownlint-disable MD007 -->
+<!-- markdownlint-disable MD045 -->
 
 # Joplin note overview
 
@@ -22,13 +23,16 @@ A note overview is created based on the defined search and the specified fields.
         - [search variable date](#search-variable-date)
     - [fields](#fields)
     - [sort](#sort)
+    - [limit](#limit)
     - [alias](#alias)
+    - [datetime](#datetime)
     - [image](#image)
     - [excerpt](#excerpt)
     - [details](#details)
     - [count](#count)
     - [listview](#listview)
     - [link](#link)
+    - [status](#status)
 - [Examples](#examples)
     - [ToDo Overview](#todo-overview)
     - [Show all ToDos with status](#show-all-todos-with-status)
@@ -44,6 +48,8 @@ A note overview is created based on the defined search and the specified fields.
     - [Change to listview no linbreak](#change-to-listview-no-linbreak)
     - [Combine notes dynamically](#combine-notes-dynamically)
     - [Show all uncompleted checkboxes ToDos](#show-all-uncompleted-checkboxes-todos)
+    - [Disable automatic note overview update for one note overview](#disable-automatic-note-overview-update-for-one-note-overview)
+    - [Show the last 5 edited notes](#show-the-last-5-edited-notes)
 - [Plugin options](#plugin-options)
 - [Keyboard Shortcuts](#keyboard-shortcuts)
 - [FAQ](#faq)
@@ -112,7 +118,7 @@ Options that can be specified in the in the code block using YAML syntax.
 ### search
 
 The search filter which will be used to create the overview.
-[Documentation of search filters](https://joplinapp.org/help/#search-filters).
+[Documentation of search filters](https://joplinapp.org/help/apps/search#search-filters).
 
 ```yml
 search: type:todo
@@ -172,6 +178,14 @@ By which field the output should be sorted. It can be only sorted by one field a
 sort: todo_due ASC
 ```
 
+### limit
+
+Displayes only the first x hits of the search. Without the limit option all results are displayed.
+
+```yml
+limit: 5
+```
+
 ### alias
 
 This allows renaming the fields in the output.
@@ -181,6 +195,35 @@ Syntax: `<field> AS <new field name>`, multiple fields comma seperated.
 ```yml
 alias: todo_due AS Due Date, notebook AS Folder
 ```
+
+### datetime
+
+Customize datetime format for a single overview.
+
+```yml
+datetime:
+  date: "YYYY-MM-DD"
+  time: "HH:mm"
+```
+
+- `date`: Set date format. Default is Joplin global settings on `Tools` > `Options` > `General` > `Date format`
+- `time`: Set time format. Default is Joplin global settings on `Tools` > `Options` > `General` > `Time format`
+
+Complete list of format can be found [here](https://momentjs.com/docs/#/displaying/format/).
+
+You can also set datetime to [humanize](https://momentjs.com/docs/#/durations/humanize/) format, to display a length of time. You can do that by adding `humanize` settings.
+
+```yml
+datetime:
+  date: "YYYY-MM-DD"
+  time: "HH:mm"
+  humanize:
+    enabled: [true | false]
+    withSuffix: [true | false]
+```
+
+- `enabled` : set `true` to enable humanize format. Default is `false`.
+- `withSuffix` : set `false`, to remove oriented duration (ex: `a month`). Default is `true`, it will add oriented duration (ex: `in a month`, `a month ago`).
 
 ### image
 
@@ -270,6 +313,19 @@ This allows you to control the output displayed in the `link` field.
 link:
   caption: "Jump to"
   html: true
+```
+
+### status
+
+Customize note status field for a single overview.
+
+```yml
+status:
+  note: ""
+  todo:
+    open: ☐
+    done: 🗹
+    overdue: ⚠
 ```
 
 ## Examples
@@ -446,26 +502,32 @@ excerpt:
 
 <img src="img/example_option_excerpt_regex_checkbox.png">
 
+### Disable automatic note overview update for one note overview
+
+When you set the `update` option to `manual`, then note overview is only updated when you select the note and trigger a update.
+
+```yml
+<!-- note-overview-plugin
+search: tag:todo
+fields: title, excerpt
+update: manual
+-->
+```
+
+### Show the last 5 edited notes
+
+```yml
+<!-- note-overview-plugin
+search: /*
+fields: title, updated_time
+sort: updated_time DESC
+limit: 5
+-->
+```
+
 ## Plugin options
 
 Settings for the plugin, accessible at `Tools > Options > Note overview`.
-
-| Option                         | Description                                                                                                                                                      | Default                 |
-| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| `Show note count`              | Show the number of notes found.                                                                                                                                  | `off`                   |
-| `Note count text`              | Text for the display of the found notes, `{{count}}` is replace with the number of matched notes.                                                                | `Note count: {{count}}` |
-| `Update interval in minutes`   | How often the overview notes should be updated.                                                                                                                  | `5`                     |
-| `Update on Joplin sync`        | Update the Noteoverview after a Joplin syncronisation. Independent of the update interval.                                                                       | `No`                    |
-| `Field status: open todo`      | Text for the `status` field, when the todo is not completed.                                                                                                     |                         |
-| `Field status: todo completed` | Text for the `status` field, when the todo is completed.                                                                                                         |                         |
-| `Field status: todo over due`  | Text for the `status` field, when the due date of the todo is exceeded.                                                                                          |                         |
-| `Color: todo [open]`           | HTML color for the `due_date`, when the todo is not completed.                                                                                                   |                         |
-| `Color: todo [warning]`        | HTML color for the `due_date`, when the todo is not completed and within `todo [warning] hours`.                                                                 |                         |
-| `todo [warning] hours`         | How many hours before due_date the warning color should be applied. 0 = Disabled.                                                                                | `0`                     |
-| `Color: todo [open_overdue]`   | HTML color for the `due_date`, when the todo is over the due date.                                                                                               | `red`                   |
-| `Color: todo [done]`           | HTML color for the `due_date` and `todo_completed`, when the todo is completed. Seperate the color for due_date and todo_completed by a `,`.                     | `limegreen,limegreen`   |
-| `Color: todo [done_overdue]`   | HTML color for the `due_date` and `todo_completed`, when the todo was completed after the due date. Seperate the color for due_date and todo_completed by a `,`. | `orange,orange`         |
-| `Color: todo [done_nodue]`     | HTML color for the `todo_completed`, when the todo was completed but no due date was set.                                                                        |                         |
 
 ## Keyboard Shortcuts
 
