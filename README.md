@@ -23,6 +23,7 @@ A note overview is created based on the defined search and the specified fields.
         - [search variable date](#search-variable-date)
     - [fields](#fields)
     - [sort](#sort)
+    - [limit](#limit)
     - [alias](#alias)
     - [datetime](#datetime)
     - [image](#image)
