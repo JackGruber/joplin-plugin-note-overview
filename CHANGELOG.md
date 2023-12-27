@@ -2,6 +2,8 @@
 
 ## not released
 
+- Add: Translation of humanized dates
+
 ## v1.7.0 (2023-12-24)
 
 - Add: Translation
