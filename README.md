@@ -3,7 +3,7 @@
 <!-- markdownlint-disable MD007 -->
 <!-- markdownlint-disable MD045 -->
 
-# Joplin note overview
+# Joplin note overview <img src=img/icon_32.png>
 
 A note overview is created based on the defined search and the specified fields.
 
