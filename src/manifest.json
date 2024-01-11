@@ -12,6 +12,10 @@
   "categories": ["productivity"],
   "screenshots": [
     {
+      "src": "img/main.png",
+      "label": "Screenshot: Main Screenshot"
+    },
+    {
       "src": "img/showcase1.png",
       "label": "Screenshot: Showcase 1"
     },
