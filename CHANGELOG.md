@@ -2,6 +2,11 @@
 
 ## not released
 
+## v1.7.1 (2024-01-11)
+
+- Add: Translation of humanized dates
+- Add: Screenshots / icon for [https://joplinapp.org/plugins/](https://joplinapp.org/plugins/)
+
 ## v1.7.0 (2023-12-24)
 
 - Add: Translation

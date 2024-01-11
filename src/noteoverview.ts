@@ -1554,6 +1554,7 @@ export namespace noteoverview {
       objectNotation: true,
     });
     i18n.setLocale(joplinLocale);
+    moment.locale(joplinLocale);
   }
 }
 
