@@ -9,7 +9,7 @@
   "homepage_url": "https://github.com/JackGruber/joplin-plugin-note-overview/blob/master/README.md",
   "repository_url": "https://github.com/JackGruber/joplin-plugin-note-overview",
   "keywords": ["search", "overview", "savedsearch", "saved", "query"],
-  "categories": ["productivity"],
+  "categories": ["productivity", "search"],
   "screenshots": [
     {
       "src": "img/main.png",
