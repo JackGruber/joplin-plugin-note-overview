@@ -96,6 +96,8 @@ describe("Get image nr X from body", function () {
         <img src=":/a1fd1b6fd6be4ab58f99e01beb704b18" alt="1aa911358498d84e725fba441e88c05a.png" width="392" height="246">
         text
         <img  alt='8f99e01beb704b18a1fd1b6fd6be4ab5.png' width='392' src=':/8f99e01beb704b18a1fd1b6fd6be4ab5' height='246'>
+        test
+        ![alt](:/8f99tr1beb7a1fd1b6fd6b4d11368a71> "title")
         `;
 
     imgStr = await noteoverview.getImageNr(body, 1, imageSettings);
@@ -108,7 +110,7 @@ describe("Get image nr X from body", function () {
       `<img src=':/766bf08661e51d3897e6314b56f4d113' width='200' height='200'>`
     );
 
-    imgStr = await noteoverview.getImageNr(body, 6, imageSettings);
+    imgStr = await noteoverview.getImageNr(body, 7, imageSettings);
     expect(imgStr).toBe(``);
 
     imgStr = await noteoverview.getImageNr(body, 4, imageSettings);
@@ -119,6 +121,11 @@ describe("Get image nr X from body", function () {
     imgStr = await noteoverview.getImageNr(body, 5, imageSettings);
     expect(imgStr).toBe(
       `<img src=':/8f99e01beb704b18a1fd1b6fd6be4ab5' width='200' height='200'>`
+    );
+
+    imgStr = await noteoverview.getImageNr(body, 6, imageSettings);
+    expect(imgStr).toBe(
+      `<img src=':/8f99tr1beb7a1fd1b6fd6b4d11368a71' width='200' height='200'>`
     );
   });
 
